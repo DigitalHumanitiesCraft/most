@@ -310,7 +310,9 @@ const STEPS = {
    gets a notch. Two inks stay two inks: the break carries the meaning. */
 let LAUF = null;
 function stand(f) { return LAUF ? (LAUF.specs[f] || null) : null; }
-function riss(st) { return st ? (st.gefallen ? 2.6 : st.flaky ? .9 : 0) : 0; }
+/* cut depth in band thicknesses: > .5 severs (failed), .35 leaves a thin
+   sharp-edged sliver (flaky), 0 keeps the band whole */
+function riss(st) { return st ? (st.gefallen ? 2.6 : st.flaky ? .35 : 0) : 0; }
 function standWort(st) {
   if (!st) return '';
   if (st.gefallen) return st.gefallen + ' von ' + st.gesamt + ' gefallen';
@@ -566,12 +568,12 @@ function zeichnen(t) {
             const px = a + bw * s.pos;
             const sw = bw * s.br * 2.4;
             const d = (x - px) / sw;
-            const dr = (x - px) / (sw * .42);
-            /* with run data only a real failure may sever the band, the decorative
-               pinch just thins it; without data the old full pinch stays */
+            /* failure is a hard straight cut through the swell: in an image where
+               everything tapers organically, the sharp edge alone means broken */
+            const schnitt = riss(st) && Math.abs(x - px) < sw * .45 ? riss(st) * dicke : 0;
             return s.amp * dicke * (heiss ? 1.5 : .9) * Math.exp(-d * d)
-                 - dicke * (LAUF ? .38 : .55) * Math.pow(Math.max(0, Math.sin(x * .0026 + t * .00003 + s.ph)), 6)
-                 - riss(st) * dicke * Math.exp(-dr * dr);
+                 - dicke * .55 * Math.pow(Math.max(0, Math.sin(x * .0026 + t * .00003 + s.ph)), 6)
+                 - schnitt;
           },
         });
       }
@@ -600,10 +602,10 @@ function zeichnen(t) {
         welle: w,
         stoer: (x) => {
           const d = (x - px) / sw;
-          const dr = (x - px) / (sw * .42);
+          const schnitt = riss(st) && Math.abs(x - px) < sw * .45 ? riss(st) * dicke : 0;
           return s.amp * dicke * (heiss ? 2.1 : 1.25) * Math.exp(-d * d)
-               - dicke * (LAUF ? .4 : .6) * Math.pow(Math.max(0, Math.sin(x * .0024 + t * .000028 + s.ph)), 6)
-               - riss(st) * dicke * Math.exp(-dr * dr);
+               - dicke * .6 * Math.pow(Math.max(0, Math.sin(x * .0024 + t * .000028 + s.ph)), 6)
+               - schnitt;
         },
       });
       /* denser echo below each band: density as depth */
@@ -626,9 +628,8 @@ function zeichnen(t) {
         stoer: (x) => {
           const px = W * s.pos, sw = W * s.br * 3;
           const d = (x - px) / sw;
-          const dr = (x - px) / (sw * .38);
-          return s.amp * dicke * .8 * Math.exp(-d * d)
-               - riss(st) * dicke * Math.exp(-dr * dr);
+          const schnitt = riss(st) && Math.abs(x - px) < sw * .40 ? riss(st) * dicke : 0;
+          return s.amp * dicke * .8 * Math.exp(-d * d) - schnitt;
         },
       });
     }
