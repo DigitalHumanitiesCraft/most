@@ -10,6 +10,8 @@ updated: 2026-08-08
 
 Alles Folgende entstand in einer einzigen Session des Teams (zwei Personen, selbst im Zielzustand) mit dem Assistenten. Reihenfolge rückwärts.
 
+**Grounded Vault.** Instanziierung des Templates DigitalHumanitiesCraft/grounded-vault als `grounded-vault/` im Repo. Der gesamte Wissensstand liegt dort provenance-vollständig, acht Quellrepräsentationen mit Block-Ankern, fünf CSL-Referenzen, dreizehn Distillate, sechzehn Claims (alle grounded) unter drei Topics, drei Report-Kapitel mit siebzehn geankerten Fußnoten und sechs Posits. Validator und Tests fehlerfrei, vom Orchestrator nachgeprüft. Zitat-Check ergab, dass per Fetch gelieferte Zitate auf Zeichenebene unzuverlässig sind; drei Zitate wurden auf die verifizierte Spanne gekürzt. Machine Review steht aus, nichts trägt einen Status über grounded.
+
 **Vault-Ausbau.** Der knowledge-Ordner wurde zum vollständigen Promptotyping-Vault ausgebaut (INDEX, specification, architecture, journal, plan, CLAUDE.md im Root), nachdem der most-Himmelskörper seine eigenen Geisterdokumente angezeigt hatte.
 
 **Textstraffung Helio-Scheibe.** Die Fokusansicht der Promptotyping-Scheibe stapelte fünf Textblöcke; reduziert auf Wort, einen Satz, Kennzahlen, Diagnose, ergänzt um eine formale Miniatur der Scheibe mit leuchtendem Band. Regel daraus in die Spezifikation übernommen, höchstens ein Untertitel pro Ansicht.

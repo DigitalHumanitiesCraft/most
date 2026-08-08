@@ -1,0 +1,69 @@
+[
+  {
+    "id": "bourque2021cannabis",
+    "type": "article-journal",
+    "title": "Cannabis and Cognitive Functioning: From Acute to Residual Effects, From Randomized Controlled Trials to Prospective Designs",
+    "author": [
+      { "family": "Bourque", "given": "Josiane" },
+      { "family": "Potvin", "given": "Stéphane" }
+    ],
+    "container-title": "Frontiers in Psychiatry",
+    "volume": "12",
+    "page": "596601",
+    "issued": { "date-parts": [[2021]] },
+    "DOI": "10.3389/fpsyt.2021.596601",
+    "URL": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8222623/",
+    "accessed": { "date-parts": [[2026, 8, 8]] }
+  },
+  {
+    "id": "crean2011executive",
+    "type": "article-journal",
+    "title": "An Evidence Based Review of Acute and Long-Term Effects of Cannabis Use on Executive Cognitive Functions",
+    "author": [
+      { "family": "Crean", "given": "Rebecca D." },
+      { "family": "Crane", "given": "Natania A." },
+      { "family": "Mason", "given": "Barbara J." }
+    ],
+    "container-title": "Journal of Addiction Medicine",
+    "volume": "5",
+    "issue": "1",
+    "page": "1-8",
+    "issued": { "date-parts": [[2011]] },
+    "DOI": "10.1097/ADM.0b013e31820c23fa",
+    "URL": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3037578/",
+    "accessed": { "date-parts": [[2026, 8, 8]] }
+  },
+  {
+    "id": "wikipedia-tangential-speech",
+    "type": "entry-encyclopedia",
+    "title": "Tangential speech",
+    "author": [{ "literal": "Wikipedia contributors" }],
+    "container-title": "Wikipedia",
+    "publisher": "Wikimedia Foundation",
+    "URL": "https://en.wikipedia.org/wiki/Tangential_speech",
+    "accessed": { "date-parts": [[2026, 8, 8]] },
+    "note": "Tertiary source; used only for the terminological definition of tangentiality, never as evidence for an empirical effect."
+  },
+  {
+    "id": "veriheal2026speech",
+    "type": "post-weblog",
+    "title": "Does Cannabis Affect Speech? New Research on Voice Changes",
+    "author": [{ "literal": "Veriheal (editorial)" }],
+    "container-title": "Veriheal Blog",
+    "publisher": "Veriheal",
+    "issued": { "date-parts": [[2026, 4, 24]] },
+    "URL": "https://www.veriheal.com/blog/does-cannabis-affect-our-speech-a-new-study-weighs-in/",
+    "accessed": { "date-parts": [[2026, 8, 8]] },
+    "note": "Commercial cannabis-industry blog, not peer reviewed. Byline omitted per the project rule on third-party personal names."
+  },
+  {
+    "id": "medium2021stonedspeech",
+    "type": "post-weblog",
+    "title": "Why do stoners talk \"like that\"? The Phenomenon of \"Stoned Speech\"",
+    "container-title": "Medium",
+    "issued": { "date-parts": [[2021, 5, 9]] },
+    "URL": "https://jamiemarrara.medium.com/why-do-stoners-talk-like-that-the-phenomenon-of-stoned-speech-7137ed2c6982",
+    "accessed": { "date-parts": [[2026, 8, 8]] },
+    "note": "Personal essay, not peer reviewed. Byline omitted per the project rule on third-party personal names."
+  }
+]
