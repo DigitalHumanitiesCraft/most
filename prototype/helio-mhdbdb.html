@@ -1,0 +1,745 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<html lang="de">
+<title>MHDBDB · Helio</title>
+<style>
+/* Helio: two inks only. Red ground #d81e12..#e8402a, warm off-white #efeae2.
+   Every intermediate value comes from transparency or grain, never from a third hue. */
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  overflow: hidden;
+  background: #dd2c1b;
+  color: #efeae2;
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-text-size-adjust: 100%;
+}
+canvas { position: fixed; inset: 0; width: 100%; height: 100%; }
+#motiv { z-index: 0; }
+/* the grain sits above everything, so type and motif share one printed surface */
+#korn { z-index: 40; pointer-events: none; mix-blend-mode: normal; }
+
+.szene {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: none;
+  overflow: hidden; /* bleed: display type is cut by the frame, never shrunk to fit */
+}
+.szene.offen { display: block; }
+
+.kopf {
+  position: absolute;
+  top: clamp(1.4rem, 4vh, 3rem);
+  left: 0;
+  right: 0;
+  padding: 0 clamp(.9rem, 3vw, 2.2rem);
+  pointer-events: none;
+  z-index: 12;
+}
+.riesig {
+  margin: 0;
+  font-weight: 900;
+  letter-spacing: -.045em;
+  line-height: .84;
+  font-size: clamp(3rem, 15vw, 9.5rem);
+  margin-left: -.055em; /* optical bleed past the left edge */
+  overflow-wrap: anywhere;
+}
+.szene.kompakt .riesig { font-size: clamp(2.2rem, 8vw, 4.6rem); }
+.szene.kompakt .kopf .still { display: none; }
+/* Small type stays bold and >= 19px: off-white on this red only clears WCAG
+   at the large-text threshold (3:1), so nothing here drops below it. */
+.still {
+  margin: .7rem 0 0;
+  font-weight: 700;
+  font-size: clamp(1.2rem, 1.7vw, 1.4rem);
+  line-height: 1.35;
+  max-width: 34ch;
+  letter-spacing: -.005em;
+}
+
+.reihen { position: absolute; inset: 0; z-index: 11; pointer-events: none; }
+/* A row is the hitbox and never moves. Only the band painted beneath it travels. */
+.reihe {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  padding: 0 clamp(.9rem, 3vw, 2.2rem);
+  background: none;
+  border: 0;
+  color: #efeae2;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  pointer-events: auto;
+}
+.reihe .spalte { display: flex; flex-direction: column; gap: .12em; }
+.reihe .wort {
+  font-weight: 900;
+  letter-spacing: -.03em;
+  line-height: 1;
+  font-size: clamp(1.15rem, 2.6vw, 2.1rem);
+  overflow-wrap: anywhere;
+}
+.reihe .zahl { font-weight: 700; font-size: 1.2rem; line-height: 1; opacity: .82; }
+.reihe:focus-visible { outline: 3px solid #efeae2; outline-offset: -5px; }
+
+.zurueck {
+  position: absolute;
+  top: clamp(.7rem, 2.4vh, 1.6rem);
+  right: clamp(.7rem, 2.4vw, 1.6rem);
+  width: 56px;
+  height: 56px;
+  z-index: 30;
+  background: none;
+  border: 0;
+  color: #efeae2;
+  font-family: inherit;
+  font-weight: 900;
+  font-size: 2rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.zurueck:focus-visible { outline: 3px solid #efeae2; outline-offset: -4px; }
+
+#fok-flaeche {
+  position: absolute;
+  inset: 0;
+  padding: clamp(4.5rem, 12vh, 8rem) clamp(.9rem, 3vw, 2.2rem) clamp(6rem, 14vh, 9rem);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 11;
+}
+#fok-wort {
+  margin: 0;
+  font-weight: 900;
+  letter-spacing: -.05em;
+  line-height: .82;
+  font-size: clamp(3.4rem, 19vw, 12rem);
+  margin-left: -.06em;
+  overflow-wrap: anywhere;
+}
+#fok-satz { max-width: 30ch; }
+#fok-stufen {
+  list-style: none;
+  margin: clamp(1.4rem, 4vh, 2.6rem) 0 0;
+  padding: 0;
+  max-width: 46rem;
+}
+#fok-stufen li { display: flex; align-items: center; gap: .9rem; margin-bottom: .55rem; }
+/* the three stations of every spec as a growing band: prepare, act, assert */
+#fok-stufen .balken {
+  height: 13px;
+  flex: 0 0 auto;
+  width: var(--w);
+  background: #efeae2;
+  opacity: var(--o);
+}
+#fok-stufen .txt { font-weight: 700; font-size: clamp(1.2rem, 1.6vw, 1.35rem); }
+#fok-spec {
+  margin: clamp(1.1rem, 3vh, 2rem) 0 0;
+  font-family: ui-monospace, 'Cascadia Mono', Consolas, monospace;
+  font-weight: 700;
+  font-size: 1.2rem;
+  letter-spacing: -.01em;
+}
+.hinweis {
+  position: absolute;
+  left: clamp(.9rem, 3vw, 2.2rem);
+  right: clamp(.9rem, 3vw, 2.2rem);
+  bottom: clamp(4.6rem, 8vh, 5.4rem);
+  margin: 0;
+  max-width: none;
+  z-index: 12;
+  pointer-events: none;
+}
+#fok-nav {
+  position: absolute;
+  left: clamp(.5rem, 2vw, 1.6rem);
+  bottom: clamp(.5rem, 2vh, 1.4rem);
+  display: flex;
+  gap: .4rem;
+  z-index: 30;
+}
+#fok-nav button {
+  min-width: 64px;
+  min-height: 48px;
+  background: none;
+  border: 0;
+  color: #efeae2;
+  font-family: inherit;
+  font-weight: 900;
+  font-size: 1.7rem;
+  cursor: pointer;
+}
+#fok-nav button:focus-visible { outline: 3px solid #efeae2; outline-offset: -4px; }
+#fok-nav button[disabled] { opacity: .35; cursor: default; }
+</style>
+
+<canvas id="motiv" aria-hidden="true"></canvas>
+<canvas id="korn" aria-hidden="true"></canvas>
+
+<section id="uebersicht" class="szene offen" aria-label="Übersicht, sechs Bänder">
+  <div class="kopf">
+    <h1 class="riesig">MHDBDB</h1>
+    <p class="still">Sechs Bänder, 31 Prüfungen. Bandhöhe und Banddichte tragen die Anzahl.</p>
+  </div>
+  <div class="reihen" id="kat-reihen"></div>
+</section>
+
+<section id="kategorie" class="szene" aria-label="Kategorie" inert>
+  <div class="kopf">
+    <h2 class="riesig" id="kat-wort"></h2>
+    <p class="still" id="kat-still"></p>
+  </div>
+  <div class="reihen" id="test-reihen"></div>
+  <button class="zurueck" id="kat-zu" aria-label="Zurück zur Übersicht">↑</button>
+</section>
+
+<section id="fokus" class="szene" aria-label="Einzelner Test" inert>
+  <div id="fok-flaeche">
+    <p class="riesig" id="fok-wort"></p>
+    <p class="still" id="fok-satz"></p>
+    <ol id="fok-stufen"></ol>
+    <p id="fok-spec"></p>
+  </div>
+  <p class="still hinweis" id="fok-hinweis"></p>
+  <div id="fok-nav">
+    <button type="button" id="fok-vor" aria-label="Vorheriger Test">←</button>
+    <button type="button" id="fok-nach" aria-label="Nächster Test">→</button>
+  </div>
+  <button class="zurueck" id="fok-zu" aria-label="Zurück zur Kategorie">↑</button>
+</section>
+
+<script>
+const ROOMS = [
+  { wort: 'Suchen', tests: [
+    { w: 'Finden', s: 'Die Suche findet dein Wort, auch wenn du nur fast richtig liegst.', f: 'search-engine' },
+    { w: 'Vereinfachen', s: 'ô und æ werden vor jeder Suche zu o und a, überall gleich.', f: 'search-normalization' },
+    { w: 'Sechs Wege', s: 'Autoren, Werke, Wörter, Begriffe, Gattungen, Namen, alle sechs Suchen liefern.', f: 'search-with-corpus' },
+    { w: 'Genau', s: 'Markiert wird genau dein Wort, keine Wörter, die es nur enthalten.', f: 'lemma-matching' },
+    { w: 'Teile', s: 'wein findet alle Wörter, in denen wein steckt.', f: 'word-component-search' },
+    { w: 'Nähe', s: 'Zwei Wörter nah beieinander, der Abstand wird richtig gemessen.', f: 'proximity-and-resolution' },
+    { w: 'Vers', s: 'minne und herze im selben Vers finden.', f: 'multi-lemma-verse' },
+    { w: 'Doppelt', s: 'Gibt es ein Wort zweimal, gewinnt das häufigere, wechseln geht immer.', f: 'cooccurrence-ranking' },
+    { w: 'Übergabe', s: 'Springst du aus einer Liste in die Suche, kommt genau dein Wort an.', f: 'lemma-occurrence-handoff' },
+  ]},
+  { wort: 'Lesen', tests: [
+    { w: 'Leuchten', s: 'Dein gesuchtes Wort leuchtet farbig im alten Text.', f: 'reading-view' },
+    { w: 'Zählen', s: 'Alle Teile des Systems zählen die Wortpositionen exakt gleich.', f: 'position-parity' },
+    { w: 'Merken', s: 'Ein gelesener Text ist beim zweiten Mal sofort wieder da.', f: 'tei-caching' },
+  ]},
+  { wort: 'Bedeutung', tests: [
+    { w: 'Zuhause', s: 'Jedes Wort hat eine eigene Seite mit Fundstellen und Links.', f: 'lemma-page' },
+    { w: 'Blättern', s: 'Von A bis Z, und jede Stelle hat eine merkbare Adresse.', f: 'woerterbuch' },
+    { w: 'Fäden', s: 'Vom Werk zum Autor, vom Wort zum Begriff, alles verknüpft.', f: 'cross-reference-test' },
+  ]},
+  { wort: 'Spielsachen', tests: [
+    { w: 'Reime', s: 'gân reimt auf begân, muot auf guot.', f: 'rhyme-dictionary' },
+    { w: 'Enden', s: 'Eine Zählung darüber, wie Verse aufhören.', f: 'verse-ending-profile' },
+    { w: 'Namen', s: 'Wie Figuren in den Geschichten genannt werden, mit Belegen.', f: 'naming-explorer' },
+    { w: 'Einmal', s: 'Wörter, die im ganzen Korpus nur ein einziges Mal vorkommen.', f: 'hapax-legomena' },
+    { w: 'Flut', s: 'Auch riesige Begriffsmengen frieren die Seite nicht ein.', f: 'concept-distribution' },
+  ]},
+  { wort: 'Treffer', tests: [
+    { w: 'Tabelle', s: 'Treffer als Liste oder Tabelle, sortierbar, mitnehmbar, gemerkt.', f: 'results-table' },
+  ]},
+  { wort: 'Fundament', tests: [
+    { w: 'Start', s: 'Die Startseite lädt ohne Fehler, die Suche geht sofort.', f: 'main-site' },
+    { w: 'Fangen', s: 'Geht etwas schief, kommt eine Meldung, die Seite lebt weiter.', f: 'error-handling' },
+    { w: 'Laden', s: 'Der Korpus mit allen Texten lädt zuverlässig.', f: 'corpus' },
+    { w: '667', s: 'Alle 667 Texte kommen wirklich an.', f: 'playground-corpus' },
+    { w: 'Werkstatt', s: 'Der Datenbereich startet mit allen Bausteinen.', f: 'playground' },
+    { w: 'Register', s: 'Die großen Register laden schnell und vollständig.', f: 'playground-authority-index' },
+    { w: 'Rahmen', s: 'Menü und Fußzeile funktionieren auf jeder Unterseite.', f: 'site-chrome' },
+    { w: 'Daheim', s: 'Keine fremden Server, alle Bausteine liegen bei der Seite.', f: 'vendor' },
+    { w: 'Handy', s: 'Auch auf Handy und Tablet gut bedienbar.', f: 'visual-mobile-test' },
+    { w: 'Gleich', s: 'Python und JavaScript vereinfachen Wörter exakt gleich.', f: 'normalization-parity' },
+  ]},
+];
+
+/* Formal structure of every spec as a three-station process:
+   prepare → act → assert. Drawn as a band that grows to full width. */
+const STEPS = {
+  'search-engine': ['Wort tippen', 'Index befragen', 'Nächstes prüfen'],
+  'search-normalization': ['Sonderzeichen rein', 'vereinfachen', 'Gleichheit prüfen'],
+  'search-with-corpus': ['Suchart wählen', 'suchen', 'Treffer zählen'],
+  'lemma-matching': ['Text laden', 'Wort markieren', 'exakt zählen'],
+  'word-component-search': ['Wortteil tippen', 'Komposita sammeln', 'Gruppen prüfen'],
+  'proximity-and-resolution': ['zwei Wörter', 'Abstand messen', 'Fenster prüfen'],
+  'multi-lemma-verse': ['Vers-Modus an', 'minne + herze', 'Vers prüfen'],
+  'cooccurrence-ranking': ['Doppelwort tippen', 'häufigstes wählen', 'Wechsel prüfen'],
+  'lemma-occurrence-handoff': ['Liste anklicken', 'Kennung mitgeben', 'Ankunft prüfen'],
+  'reading-view': ['Text öffnen', 'Wort markieren', 'Leuchten prüfen'],
+  'position-parity': ['Python zählt', 'JavaScript zählt', 'Gleichstand prüfen'],
+  'tei-caching': ['Text laden', 'erneut öffnen', 'Speicher prüfen'],
+  'lemma-page': ['Seite laden', 'Daten prüfen', 'Links prüfen'],
+  'woerterbuch': ['Buchstabe A', 'blättern', 'Adresse prüfen'],
+  'cross-reference-test': ['Werk öffnen', 'Faden folgen', 'Ziel prüfen'],
+  'rhyme-dictionary': ['Wort geben', 'Reime scannen', 'begân finden'],
+  'verse-ending-profile': ['Korpus scannen', 'Endungen zählen', 'Tabelle prüfen'],
+  'naming-explorer': ['Werk + Figur', 'Namen sammeln', 'Belege prüfen'],
+  'hapax-legomena': ['Korpus zählen', 'Einzelne filtern', 'Fundort prüfen'],
+  'concept-distribution': ['Begriff wählen', 'aggregieren', 'flüssig bleiben'],
+  'results-table': ['suchen', 'Tabelle schalten', 'sortiert prüfen'],
+  'main-site': ['Startseite laden', 'Konsole lauschen', 'still bleiben'],
+  'error-handling': ['Fehler auslösen', 'Meldung prüfen', 'weiterleben'],
+  'corpus': ['Korpus laden', 'Struktur prüfen', 'Fortschritt sehen'],
+  'playground-corpus': ['Playground öffnen', '667 laden', 'Liste prüfen'],
+  'playground': ['Seite öffnen', 'Module prüfen', 'Speicher leeren'],
+  'playground-authority-index': ['Register laden', 'füllen', 'schnell bleiben'],
+  'site-chrome': ['Unterseite öffnen', 'Menü prüfen', 'Fußzeile prüfen'],
+  'vendor': ['Seiten scannen', 'Fremdes suchen', 'nichts finden'],
+  'visual-mobile-test': ['Handy-Maß setzen', 'rendern', 'Berührung prüfen'],
+  'normalization-parity': ['gleiche Wörter', 'beide vereinfachen', 'Gleichheit prüfen'],
+};
+
+const WEISS = '239,234,226';
+const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const ZEIT_FEST = 41000; /* frozen frame for reduced motion, a fully valid still */
+
+/* Seeded LCG, no Math.random anywhere: the print stays identical on every load. */
+let seed = 20260808;
+function rnd() { seed = (seed * 16807) % 2147483647; return seed / 2147483647; }
+
+/* Stable per-test signature: position, amplitude and frequency of its disturbance
+   come from the spec filename, so a test always sits in the same place in its band. */
+function hash(s) {
+  let h = 2166136261;
+  for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619) >>> 0; }
+  return h;
+}
+function sig(f) {
+  const h = hash(f);
+  return {
+    pos: .22 + ((h & 255) / 255) * .62,
+    amp: .45 + (((h >> 8) & 255) / 255) * .55,
+    br: .045 + (((h >> 16) & 255) / 255) * .06,
+    ph: ((h >> 24) & 255) / 255 * 6.283,
+  };
+}
+
+/* ---------- canvas plumbing ---------- */
+const mc = document.getElementById('motiv'), mg = mc.getContext('2d');
+const kc = document.getElementById('korn'), kg = kc.getContext('2d');
+let W = 0, H = 0, DPR = 1;
+
+function messen() {
+  DPR = Math.min(devicePixelRatio || 1, 2);
+  W = innerWidth; H = innerHeight;
+  for (const [c, g] of [[mc, mg], [kc, kg]]) {
+    c.width = Math.round(W * DPR); c.height = Math.round(H * DPR);
+    g.setTransform(DPR, 0, 0, DPR, 0, 0);
+  }
+}
+
+/* Grain tiles: monochrome speckle of the off-white, pre-rendered once and
+   cycled at a low rate so the surface lives without anything moving. */
+const KACHELN = [];
+function kornBauen() {
+  KACHELN.length = 0;
+  for (let k = 0; k < 4; k++) {
+    const t = document.createElement('canvas');
+    t.width = t.height = 168;
+    const g = t.getContext('2d');
+    const img = g.createImageData(168, 168);
+    const d = img.data;
+    for (let i = 0; i < d.length; i += 4) {
+      const v = rnd();
+      d[i] = 239; d[i + 1] = 234; d[i + 2] = 226;
+      d[i + 3] = v > .52 ? Math.round(Math.pow((v - .52) / .48, 1.6) * 128) : 0;
+    }
+    g.putImageData(img, 0, 0);
+    KACHELN.push(g.createPattern(t, 'repeat'));
+  }
+}
+let kornIdx = 0;
+function kornFuellen() {
+  kg.clearRect(0, 0, W, H);
+  kg.fillStyle = KACHELN[kornIdx];
+  kg.fillRect(0, 0, W, H);
+}
+
+/* ---------- band drawing ---------- */
+/* One band, sampled across x. Where the disturbance pinches the band shut,
+   the run breaks: the interruption is the carrier of meaning, not decoration. */
+function band(g, y, dicke, cfg) {
+  const [x0, x1] = cfg.spanne(y);
+  if (x1 - x0 < 3) return;
+  const schritt = 5;
+  let ot = [], ob = [];
+  const fertig = () => {
+    if (ot.length > 1) {
+      g.beginPath();
+      g.moveTo(ot[0][0], ot[0][1]);
+      for (let i = 1; i < ot.length; i++) g.lineTo(ot[i][0], ot[i][1]);
+      for (let i = ob.length - 1; i >= 0; i--) g.lineTo(ob[i][0], ob[i][1]);
+      g.closePath();
+      g.fill();
+    }
+    ot = []; ob = [];
+  };
+  g.fillStyle = 'rgba(' + WEISS + ',' + cfg.alpha + ')';
+  for (let x = x0; x <= x1 + schritt; x += schritt) {
+    const xx = Math.min(x, x1);
+    const o = cfg.welle(xx, y);
+    const s = cfg.stoer(xx, y);
+    const t = y - dicke / 2 + o - s, b = y + dicke / 2 + o + s;
+    if (b - t > 1.4) { ot.push([xx, t]); ob.push([xx, b]); } else fertig();
+  }
+  fertig();
+}
+
+/* ---------- layout ---------- */
+let RECTS = [];       /* current row rectangles, shared by DOM hitboxes and canvas */
+let modus = 'uebersicht';
+let aktiv = -1;       /* hovered or focused row, its disturbance swells */
+let kreis = null;     /* circular envelope of the overview sun */
+let feldX = 0;
+
+function kopfUnterkante(szene) {
+  const k = szene.querySelector('.kopf');
+  return k ? k.getBoundingClientRect().bottom : H * .3;
+}
+
+function layouten() {
+  const szene = document.querySelector('.szene.offen');
+  if (!szene) return;
+  feldX = Math.min(Math.max(W * .34, 148), 340); /* the words keep their own field */
+  const n = modus === 'uebersicht' ? ROOMS.length
+          : modus === 'kategorie' ? aktRaum.tests.length : 0;
+  RECTS = [];
+  kreis = null;
+  if (!n) { zeilenSetzen(szene, []); return; }
+
+  szene.classList.remove('kompakt');
+  let oben = kopfUnterkante(szene) + Math.min(24, H * .03);
+  let spanne = H - 10 - oben;
+  if (spanne / n < 48) {                      /* display type yields to the hitboxes */
+    szene.classList.add('kompakt');
+    oben = kopfUnterkante(szene) + 14;
+    spanne = H - 8 - oben;
+  }
+  let hoehen = [];
+  if (modus === 'uebersicht') {
+    /* Height carries the count, but every band keeps a floor so no row
+       falls under the 44px target. Density inside the band carries it exactly. */
+    const summe = ROOMS.reduce((a, r) => a + r.tests.length, 0);
+    for (const r of ROOMS) hoehen.push(spanne * (.5 / ROOMS.length + .5 * r.tests.length / summe));
+  } else {
+    for (let i = 0; i < n; i++) hoehen.push(spanne / n);
+  }
+  /* No row ever falls under the 44px target: scale the whole stack instead of
+     clipping single rows, so the proportions keep carrying the counts. */
+  const kleinste = Math.min(...hoehen);
+  if (kleinste < 44) hoehen = hoehen.map(h => h * 44 / kleinste);
+  const gesamt = hoehen.reduce((a, b) => a + b, 0);
+  let y = Math.max(6, Math.min(oben, H - 8 - gesamt));
+  spanne = gesamt;
+  for (let i = 0; i < n; i++) {
+    RECTS.push({ y0: y, y1: y + hoehen[i], i });
+    y += hoehen[i];
+  }
+  oben = RECTS[0].y0;
+  if (modus === 'uebersicht') {
+    /* A rising sun: the crown sits just above the first band, the disc widens
+       downward and is cut by the bottom edge. R is solved so the widest chord
+       lands exactly on the field, which lets the arc stay visible on any screen. */
+    const krone = oben - spanne * .12;
+    const sp2 = oben + spanne - krone;
+    const hwMax = Math.max(60, (W - feldX - 14) * .53);
+    const R = (hwMax * hwMax + sp2 * sp2) / (2 * sp2);
+    kreis = { cx: feldX + 14 + hwMax * .96, cy: krone + R, R };
+  }
+  zeilenSetzen(szene, RECTS);
+}
+
+function zeilenSetzen(szene, rects) {
+  const reihen = szene.querySelectorAll('.reihe');
+  reihen.forEach((b, i) => {
+    const r = rects[i];
+    if (!r) return;
+    b.style.top = r.y0.toFixed(1) + 'px';
+    b.style.height = (r.y1 - r.y0).toFixed(1) + 'px';
+    const sp = b.querySelector('.spalte');
+    if (sp) sp.style.maxWidth = (feldX - 26) + 'px';
+  });
+}
+
+/* ---------- the motif ---------- */
+function grund(g) {
+  const lg = g.createLinearGradient(0, 0, 0, H);
+  lg.addColorStop(0, '#d81e12');
+  lg.addColorStop(1, '#e8402a');
+  g.fillStyle = lg;
+  g.fillRect(0, 0, W, H);
+}
+
+function wellen(t, k, amp, sp) {
+  return (x, y) => amp * Math.sin(x * k + t * sp + y * .006)
+                 + amp * .42 * Math.sin(x * k * 2.6 - t * sp * .7 + y * .011);
+}
+
+function himmel(g, t, oben) {
+  /* faint cloud bands above the motif, the quiet part of the surface */
+  const w = wellen(t, .0042, 9, .000055);
+  for (let i = 0; i < 7; i++) {
+    const y = oben * (i + .5) / 7;
+    band(g, y, oben / 26, {
+      alpha: .1 + i * .012,
+      spanne: () => [-40, W + 40],
+      welle: w,
+      stoer: (x, y2) => 7 * Math.sin(x * .0031 + t * .00004 + i),
+    });
+  }
+}
+
+function zeichnen(t) {
+  const g = mg;
+  g.clearRect(0, 0, W, H);
+  grund(g);
+  const oben = RECTS.length ? RECTS[0].y0 : H * .3;
+  himmel(g, t, Math.max(oben, 60));
+
+  if (modus === 'uebersicht') {
+    const w = wellen(t, .0036, 7, .00005);
+    const spanne = (y) => {
+      const dy = y - kreis.cy;
+      const hw = Math.sqrt(Math.max(0, kreis.R * kreis.R - dy * dy));
+      return [Math.max(feldX + 6, kreis.cx - hw), kreis.cx + hw];
+    };
+    RECTS.forEach((r, gi) => {
+      const raum = ROOMS[gi];
+      const n = raum.tests.length;
+      const h = (r.y1 - r.y0) * .84;   /* gap between groups: six readable bands */
+      const y0 = r.y0 + (r.y1 - r.y0 - h) / 2;
+      const schritt = h / n;
+      const dicke = Math.max(2.5, schritt * (n > 5 ? .52 : .44));
+      const heiss = gi === aktiv;
+      const bulges = raum.tests.map(tt => sig(tt.f));
+      for (let k = 0; k < n; k++) {
+        const y = y0 + schritt * (k + .5);
+        band(g, y, dicke, {
+          alpha: heiss ? 1 : .88,
+          spanne,
+          welle: w,
+          stoer: (x, y2) => {
+            const [a, b] = spanne(y2);
+            const bw = Math.max(60, (b - a));
+            const s = bulges[k];
+            const px = a + bw * s.pos;
+            const sw = bw * s.br * 2.4;
+            const d = (x - px) / sw;
+            return s.amp * dicke * (heiss ? 1.5 : .9) * Math.exp(-d * d)
+                 - dicke * .55 * Math.pow(Math.max(0, Math.sin(x * .0026 + t * .00003 + s.ph)), 6);
+          },
+        });
+      }
+    });
+    /* horizon: the one continuous band, bleeding past both edges */
+    const hy = RECTS.length ? RECTS[RECTS.length - 1].y1 + 4 : H - 20;
+    if (hy < H - 2) {
+      band(g, hy, 5, { alpha: .55, spanne: () => [-40, W + 40], welle: w, stoer: () => 0 });
+    }
+  } else if (modus === 'kategorie') {
+    const w = wellen(t, .0034, 6, .000045);
+    const spanne = () => [feldX + 6, W + 60];
+    RECTS.forEach((r, i) => {
+      const tt = aktRaum.tests[i];
+      const s = sig(tt.f);
+      const h = r.y1 - r.y0;
+      const dicke = Math.max(4, h * .34);
+      const heiss = i === aktiv;
+      const [a, b] = spanne();
+      const px = a + (b - a) * s.pos;
+      const sw = (b - a) * s.br * 2.6;
+      band(g, r.y0 + h / 2, dicke, {
+        alpha: heiss ? 1 : .84,
+        spanne,
+        welle: w,
+        stoer: (x) => {
+          const d = (x - px) / sw;
+          return s.amp * dicke * (heiss ? 2.1 : 1.25) * Math.exp(-d * d)
+               - dicke * .6 * Math.pow(Math.max(0, Math.sin(x * .0024 + t * .000028 + s.ph)), 6);
+        },
+      });
+      /* denser echo below each band: density as depth */
+      band(g, r.y0 + h / 2 + dicke * 1.5, Math.max(1.5, dicke * .18), {
+        alpha: .3, spanne, welle: w, stoer: () => 0,
+      });
+    });
+  } else {
+    /* focus: the field goes quiet so the word can carry the screen alone */
+    const w = wellen(t, .003, 8, .00004);
+    const s = aktTest ? sig(aktTest.f) : { pos: .5, amp: 1, br: .07, ph: 0 };
+    for (let i = 0; i < 16; i++) {
+      const y = H * (i + .5) / 16;
+      const dicke = 4 + i * .9;
+      band(g, y, dicke, {
+        alpha: .13 + i * .006,
+        spanne: () => [-40, W + 40],
+        welle: w,
+        stoer: (x) => {
+          const px = W * s.pos, sw = W * s.br * 3;
+          const d = (x - px) / sw;
+          return s.amp * dicke * .8 * Math.exp(-d * d);
+        },
+      });
+    }
+  }
+}
+
+/* ---------- scenes ---------- */
+const szenen = {
+  uebersicht: document.getElementById('uebersicht'),
+  kategorie: document.getElementById('kategorie'),
+  fokus: document.getElementById('fokus'),
+};
+let aktRaum = null, aktTest = null, idx = -1;
+
+function zeige(name, fokusZiel) {
+  modus = name;
+  for (const [k, el] of Object.entries(szenen)) {
+    const an = k === name;
+    el.classList.toggle('offen', an);
+    el.inert = !an;
+  }
+  aktiv = -1;
+  layouten();
+  neuZeichnen();
+  if (fokusZiel) fokusZiel.focus();
+}
+
+function zahlwort(n) { return n + (n === 1 ? ' Prüfung' : ' Prüfungen'); }
+
+/* overview rows */
+const katReihen = document.getElementById('kat-reihen');
+ROOMS.forEach((r, i) => {
+  const b = document.createElement('button');
+  b.type = 'button';
+  b.className = 'reihe';
+  b.setAttribute('aria-label', r.wort + ', ' + zahlwort(r.tests.length) + ', Band öffnen');
+  b.innerHTML = '<span class="spalte"><span class="wort"></span><span class="zahl"></span></span>';
+  b.querySelector('.wort').textContent = r.wort;
+  b.querySelector('.zahl').textContent = zahlwort(r.tests.length);
+  b.addEventListener('click', () => raumOeffnen(i));
+  b.addEventListener('pointerenter', () => { aktiv = i; if (still) neuZeichnen(); });
+  b.addEventListener('pointerleave', () => { aktiv = -1; if (still) neuZeichnen(); });
+  b.addEventListener('focus', () => { aktiv = i; if (still) neuZeichnen(); });
+  b.addEventListener('blur', () => { aktiv = -1; if (still) neuZeichnen(); });
+  katReihen.appendChild(b);
+});
+
+const testReihen = document.getElementById('test-reihen');
+function raumOeffnen(i) {
+  aktRaum = ROOMS[i];
+  document.getElementById('kat-wort').textContent = aktRaum.wort;
+  document.getElementById('kat-still').textContent =
+    zahlwort(aktRaum.tests.length) + ' als Störungen im Band. Antippen für den einzelnen Test.';
+  testReihen.innerHTML = '';
+  aktRaum.tests.forEach((t, k) => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'reihe';
+    b.setAttribute('aria-label', 'Test ' + (k + 1) + ' von ' + aktRaum.tests.length + ': ' + t.w);
+    b.innerHTML = '<span class="spalte"><span class="wort"></span></span>';
+    b.querySelector('.wort').textContent = t.w;
+    b.addEventListener('click', () => fokus(k));
+    b.addEventListener('pointerenter', () => { aktiv = k; if (still) neuZeichnen(); });
+    b.addEventListener('pointerleave', () => { aktiv = -1; if (still) neuZeichnen(); });
+    b.addEventListener('focus', () => { aktiv = k; if (still) neuZeichnen(); });
+    b.addEventListener('blur', () => { aktiv = -1; if (still) neuZeichnen(); });
+    testReihen.appendChild(b);
+  });
+  zeige('kategorie', testReihen.firstElementChild);
+}
+
+const stufenListe = document.getElementById('fok-stufen');
+function fokus(k) {
+  idx = k;
+  aktTest = aktRaum.tests[k];
+  document.getElementById('fok-wort').textContent = aktTest.w;
+  document.getElementById('fok-satz').textContent = aktTest.s;
+  const steps = STEPS[aktTest.f] || ['öffnen', 'handeln', 'prüfen'];
+  stufenListe.innerHTML = '';
+  steps.forEach((s, i) => {
+    const li = document.createElement('li');
+    const bal = document.createElement('span');
+    bal.className = 'balken';
+    bal.style.setProperty('--w', (18 + i * 12) + '%');
+    bal.style.setProperty('--o', (.4 + i * .3).toFixed(2));
+    const tx = document.createElement('span');
+    tx.className = 'txt';
+    tx.textContent = s;
+    li.append(bal, tx);
+    stufenListe.appendChild(li);
+  });
+  document.getElementById('fok-spec').textContent = aktTest.f + '.spec.js';
+  document.getElementById('fok-hinweis').textContent =
+    aktRaum.wort + ' · Test ' + (k + 1) + ' von ' + aktRaum.tests.length + ' · Pfeiltasten weiter, Esc zurück';
+  document.getElementById('fok-vor').disabled = k === 0;
+  document.getElementById('fok-nach').disabled = k === aktRaum.tests.length - 1;
+  zeige('fokus', document.getElementById('fok-zu'));
+}
+
+document.getElementById('kat-zu').addEventListener('click', () => {
+  zeige('uebersicht', katReihen.children[ROOMS.indexOf(aktRaum)] || null);
+});
+document.getElementById('fok-zu').addEventListener('click', () => {
+  zeige('kategorie', testReihen.children[idx] || null);
+});
+document.getElementById('fok-vor').addEventListener('click', (e) => { e.stopPropagation(); if (idx > 0) fokus(idx - 1); });
+document.getElementById('fok-nach').addEventListener('click', (e) => { e.stopPropagation(); if (idx + 1 < aktRaum.tests.length) fokus(idx + 1); });
+document.getElementById('fok-flaeche').addEventListener('click', () => {
+  if (idx + 1 < aktRaum.tests.length) fokus(idx + 1);
+  else zeige('kategorie', testReihen.children[idx] || null);
+});
+
+addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    if (modus === 'fokus') document.getElementById('fok-zu').click();
+    else if (modus === 'kategorie') document.getElementById('kat-zu').click();
+    return;
+  }
+  if (modus !== 'fokus') return;
+  if (e.key === 'ArrowRight' && idx + 1 < aktRaum.tests.length) { e.preventDefault(); fokus(idx + 1); }
+  if (e.key === 'ArrowLeft' && idx > 0) { e.preventDefault(); fokus(idx - 1); }
+});
+
+/* ---------- loop ---------- */
+function neuZeichnen() { if (still) zeichnen(ZEIT_FEST); }
+
+let letzt = 0, kornLetzt = 0;
+function tick(ts) {
+  if (ts - letzt > 60) { letzt = ts; zeichnen(ts); }
+  if (ts - kornLetzt > 200) {
+    kornLetzt = ts;
+    kornIdx = (kornIdx + 1) % KACHELN.length;
+    kornFuellen();
+  }
+  requestAnimationFrame(tick);
+}
+
+let resizeTimer = 0;
+addEventListener('resize', () => {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(() => {
+    messen(); kornFuellen(); layouten(); neuZeichnen();
+  }, 120);
+});
+
+messen();
+kornBauen();
+kornFuellen();
+layouten();
+if (still) zeichnen(ZEIT_FEST); else requestAnimationFrame(tick);
+</script>

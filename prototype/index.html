@@ -2,140 +2,248 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>most · Projekte</title>
 <style>
-/* Single-theme by design: the project's night. All colors explicit. */
+/* Helio aesthetic per knowledge/design.md: two colors, banded sun motif, grain, heavy grotesk.
+   Single-theme by design, all colors explicit. */
 * { box-sizing: border-box; }
+:root {
+  --rot-a: #d81e12;
+  --rot-b: #e8402a;
+  --weiss: #efeae2;
+}
 body {
   margin: 0;
   min-height: 100vh;
-  background: #150d11;
-  color: #efe9d6;
-  font-family: Georgia, 'Iowan Old Style', serif;
-  padding: 7vh 6vw 8vh;
+  background: linear-gradient(180deg, var(--rot-a), var(--rot-b));
+  color: var(--weiss);
+  font-family: system-ui, -apple-system, sans-serif;
+  overflow-x: hidden;
 }
-main { max-width: 46rem; margin: 0 auto; }
+#sonne {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+#schleier {
+  /* red scrim between sun and text so copy stays legible where bands pass behind it */
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: linear-gradient(100deg, rgba(221,44,27,.92) 38%, rgba(221,44,27,.55) 58%, rgba(221,44,27,0) 78%);
+}
+#korn {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 3;
+  opacity: .16;
+  mix-blend-mode: screen;
+}
+main {
+  position: relative;
+  z-index: 1;
+  max-width: 52rem;
+  margin: 0 auto;
+  padding: 6vh 6vw 10vh;
+}
 .eyebrow {
-  font-family: system-ui, sans-serif;
-  font-size: .8rem;
-  letter-spacing: .14em;
+  font-size: .78rem;
+  font-weight: 700;
+  letter-spacing: .22em;
   text-transform: uppercase;
-  color: #9a8f96;
-  margin: 0 0 1rem;
+  opacity: .85;
+  margin: 0 0 .4rem;
 }
 h1 {
-  font-size: clamp(2rem, 6vw, 3.2rem);
-  font-weight: 400;
-  line-height: 1.15;
-  text-wrap: balance;
-  margin: 0 0 1.4rem;
-  text-shadow: 0 0 50px rgba(212,112,91,.3);
+  /* Wordmark as part of the motif: full width, heavy, slightly cropped feel */
+  font-size: clamp(3.2rem, 12vw, 8.5rem);
+  font-weight: 900;
+  letter-spacing: -.035em;
+  line-height: .92;
+  margin: 0 0 2.2rem -0.05em;
+  text-transform: none;
 }
 .intro {
-  font-family: system-ui, sans-serif;
-  font-size: 1.15rem;
+  font-size: 1.1rem;
   line-height: 1.7;
-  color: #d8d2bd;
-  margin: 0 0 1rem;
-  max-width: 40rem;
+  max-width: 36rem;
+  margin: 0 0 .9rem;
 }
 .modell {
-  font-family: system-ui, sans-serif;
-  font-size: 1rem;
+  font-size: .98rem;
   line-height: 1.7;
-  color: #9a8f96;
-  margin: 0 0 3.2rem;
-  max-width: 40rem;
+  max-width: 36rem;
+  opacity: .82;
+  margin: 0 0 4rem;
 }
-.modell b { color: #d8d2bd; font-weight: 600; }
+.modell b { font-weight: 800; }
 h2.abschnitt {
-  font-family: system-ui, sans-serif;
-  font-size: .8rem;
-  letter-spacing: .14em;
+  font-size: .78rem;
+  font-weight: 700;
+  letter-spacing: .22em;
   text-transform: uppercase;
-  color: #9a8f96;
-  font-weight: 600;
-  margin: 0 0 1.2rem;
+  opacity: .85;
+  margin: 0 0 1.4rem;
 }
-a.karte {
+.projekt { margin: 0 0 3.4rem; }
+.projekt h3 {
+  font-size: clamp(1.9rem, 5vw, 3rem);
+  font-weight: 900;
+  letter-spacing: -.02em;
+  line-height: 1;
+  margin: 0 0 .55rem;
+}
+.projekt .was {
+  font-size: .98rem;
+  line-height: 1.65;
+  max-width: 36rem;
+  opacity: .88;
+  margin: 0 0 1.1rem;
+}
+.gestalten { display: flex; flex-wrap: wrap; gap: .8rem; }
+a.gestalt {
   display: block;
+  min-height: 44px;
+  padding: .8rem 1.2rem .85rem;
+  border: 2px solid rgba(239,234,226,.55);
+  color: var(--weiss);
   text-decoration: none;
-  color: #efe9d6;
-  background: #1d1318;
-  border: 1px solid #3d2c34;
-  border-radius: 1rem;
-  padding: 1.9rem 2.2rem 2rem;
-  margin: 0 0 1.5rem;
-  transition: border-color .3s, box-shadow .3s;
+  font-size: .95rem;
+  line-height: 1.45;
+  max-width: 21rem;
+  transition: background .25s, border-color .25s;
 }
-a.karte:hover, a.karte:focus-visible {
-  border-color: var(--c1);
-  box-shadow: 0 0 40px var(--halo);
+a.gestalt b {
+  display: block;
+  font-weight: 800;
+  font-size: 1.05rem;
+  letter-spacing: -.01em;
+}
+a.gestalt span { opacity: .8; }
+a.gestalt:hover, a.gestalt:focus-visible {
+  background: rgba(239,234,226,.14);
+  border-color: var(--weiss);
   outline: none;
 }
-.karte h3 {
-  font-size: clamp(1.5rem, 3.5vw, 2rem);
-  font-weight: 400;
-  margin: 0 0 .3rem;
-  text-shadow: 0 0 30px var(--halo);
-}
-.karte .was {
-  font-family: system-ui, sans-serif;
-  font-size: 1.02rem;
-  line-height: 1.65;
-  color: #b9aeb4;
-  margin: .5rem 0 0;
-}
-.karte .linse {
-  font-family: system-ui, sans-serif;
-  font-size: .92rem;
-  line-height: 1.6;
-  color: #9a8f96;
-  margin: 1rem 0 0;
-  padding-top: .9rem;
-  border-top: 1px dashed #3d2c34;
-}
-.karte .linse b { color: var(--c1); font-weight: 600; }
+a.gestalt.tag { border-style: solid; }
+a.gestalt.nacht { border-style: dashed; }
 footer {
-  margin-top: 3.5rem;
-  font-family: system-ui, sans-serif;
-  font-size: .9rem;
-  color: #6b5f66;
+  font-size: .85rem;
   line-height: 1.7;
+  opacity: .7;
+  max-width: 36rem;
 }
 </style>
 
+<canvas id="sonne"></canvas>
+<div id="schleier"></div>
+<canvas id="korn"></canvas>
+
 <main>
   <p class="eyebrow">Projekt most</p>
-  <h1>Ein UI, viele Gestalten.</h1>
+  <h1>Ein UI,<br>viele Gestalten.</h1>
   <p class="intro">Wir bauen ein einziges, generalisiertes User Interface für Wissen, das in jedem Zustand ankommt, auch sehr bekifft. Pro Projekt bekommt es eine eigene Gestalt, die aus der Domäne des Projekts abgeleitet wird.</p>
-  <p class="modell">Das Modell dahinter ist immer gleich, vier Dinge werden gezeigt: <b>Einheiten</b> (das Wissen, antippbar, ein Wort, ein Satz), <b>Fluss</b> (die Zeit oder der Prozess), <b>Regeln</b> (was steuert) und <b>Lücken</b> (was fehlt, obwohl es gebraucht wird). Nur das Gewand wechselt.</p>
+  <p class="modell">Das Modell dahinter ist immer gleich, vier Dinge werden gezeigt, <b>Einheiten</b> (das Wissen, antippbar, ein Wort, ein Satz), <b>Fluss</b> (die Zeit oder der Prozess), <b>Regeln</b> (was steuert) und <b>Lücken</b> (was fehlt, obwohl es gebraucht wird). Nur das Gewand wechselt. Jedes Gewand gibt es bei Tag (Helio, rot, laut, flächig) und bei Nacht (dunkel, leise, tief).</p>
 
   <h2 class="abschnitt">Die Projekte</h2>
 
-  <a class="karte" style="--c1:#e8b34c; --halo:rgba(232,179,76,.22)" href="mhdbdb-tests.html">
+  <section class="projekt">
     <h3>MHDBDB</h3>
-    <p class="was">Eine Website über mittelhochdeutsche Wörter. Gezeigt werden ihre 31 Wächter-Tests: Einheiten sind die Tests, der Fluss ist der Prüfablauf jedes Tests, Lücken gäbe es, wenn ein Bereich unbewacht wäre.</p>
-    <p class="linse"><b>Gestalt: Nachtgarten.</b> Aus der Domäne abgeleitet, alte Texte liegen wie ein Garten in der Nacht, und die Tests sind die Lichter, die über ihn wachen.</p>
-  </a>
+    <p class="was">Eine Website über mittelhochdeutsche Wörter. Gezeigt werden ihre 31 Wächter-Tests in sechs Kategorien, jeder Test ein Wort, ein Satz, ein Prüfablauf.</p>
+    <div class="gestalten">
+      <a class="gestalt tag" href="helio-mhdbdb.html"><b>Helio</b> <span>Tagseite, die Tests als Frequenzbänder einer Sonne.</span></a>
+      <a class="gestalt nacht" href="mhdbdb-tests.html"><b>Nachtgarten</b> <span>Nachtseite, die Tests als wachende Lichter im Garten.</span></a>
+    </div>
+  </section>
 
-  <a class="karte" style="--c1:#d4705b; --halo:rgba(212,112,91,.22)" href="promptotyping-organismus.html">
+  <section class="projekt">
     <h3>Promptotyping</h3>
-    <p class="was">Eine Forschungsmethode mit dreizehn Wissensdokumenten. Einheiten sind die Dokumente, der Fluss ist die Projektzeit durch Journal und Plan, Regeln sind die Agenten-Anweisungen, Lücken die fehlenden Dokumente.</p>
-    <p class="linse"><b>Gestalt: Organismus.</b> Körper-Linse, Organe, Zeitader, Nervenfäden, Geisterorgane, für biologisch Denkende.</p>
-  </a>
+    <p class="was">Eine Forschungsmethode mit dreizehn Wissensdokumenten. Einheiten sind die Dokumente, der Fluss ist die Projektzeit, Regeln sind die Agenten-Anweisungen, Lücken die fehlenden Dokumente.</p>
+    <div class="gestalten">
+      <a class="gestalt tag" href="helio-promptotyping.html"><b>Helio</b> <span>Tagseite, die Dokumente als Bänder der Sonnenscheibe.</span></a>
+      <a class="gestalt nacht" href="promptotyping-workflow.html"><b>Werkstrecke</b> <span>Die wörtliche Gestalt, Forschungsdaten fließen durch die Dokumente zu den Artefakten.</span></a>
+      <a class="gestalt nacht" href="promptotyping-organismus.html"><b>Organismus</b> <span>Körper-Linse, Organe, Zeitader, Geisterorgane.</span></a>
+    </div>
+  </section>
 
-  <a class="karte" style="--c1:#e8b34c; --halo:rgba(232,179,76,.22)" href="promptotyping-workflow.html">
-    <h3>Promptotyping · zweite Gestalt</h3>
-    <p class="was">Dieselben dreizehn Dokumente, dieselben vier Elemente, andere Linse.</p>
-    <p class="linse"><b>Gestalt: Workflow.</b> Die wörtliche Gestalt nach unserer Linsenregel, keine Metapher; Forschungsdaten fließen von links durch die Dokumente als Becken zu den Artefakten rechts, die Agenten-Anweisungen sind eine Schleuse, fehlende Dokumente lassen den Strom versickern.</p>
-  </a>
-
-  <a class="karte" style="--c1:#8fb083; --halo:rgba(143,176,131,.22)" href="promptotyping-organismus.html#most">
+  <section class="projekt">
     <h3>most</h3>
     <p class="was">Dieses Projekt selbst, das UI für jeden Zustand. Zwei Wissensdokumente existieren, vier fehlen, das Projekt ist jung und löchrig.</p>
-    <p class="linse"><b>Gestalt: Organismus, Exemplar most.</b> Dieselbe Körper-Linse wie Promptotyping, als direkter Vergleich, ein gesunder Körper neben einem, der noch fast nur aus Geisterorganen besteht.</p>
-  </a>
+    <div class="gestalten">
+      <a class="gestalt nacht" href="promptotyping-organismus.html#most"><b>Organismus, Exemplar most</b> <span>Dieselbe Körper-Linse, ein Körper fast nur aus Geisterorganen.</span></a>
+    </div>
+  </section>
 
   <footer>
-    Jede Karte nennt zuerst das Projekt, dann seine Gestalt. Das Modell, die Linsenregel, die Personas und alle Entscheidungen stehen im knowledge-Ordner des Repos.
+    Jede Karte nennt zuerst das Projekt, dann seine Gestalten. Das Modell, die Linsenregel, das Helio-Design und alle Entscheidungen stehen im knowledge-Ordner des Repos.
   </footer>
 </main>
+
+<script>
+// Deterministic LCG, no Math.random per project convention.
+let seed = 20260808;
+function rnd() { seed = seed * 16807 % 2147483647; return seed / 2147483647; }
+const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+// Banded sun with wave interruptions, mirrored below the horizon (design.md motif).
+const sc = document.getElementById('sonne'), sx = sc.getContext('2d');
+function sonne() {
+  const w = sc.width = innerWidth * devicePixelRatio;
+  const h = sc.height = innerHeight * devicePixelRatio;
+  sx.clearRect(0, 0, w, h);
+  const cx = w * .72, hy = h * .78, r = Math.min(w, h) * .52;
+  sx.fillStyle = 'rgba(239,234,226,.5)';
+  seed = 20260808;
+  const bands = 14;
+  for (let i = 0; i < bands; i++) {
+    const y0 = hy - r + (i / bands) * r;
+    const bh = (r / bands) * (.38 + .34 * rnd());
+    const half = Math.sqrt(Math.max(0, r * r - Math.pow(hy - y0 - bh / 2, 2)));
+    if (half <= 0) continue;
+    // band with a wavy top edge, the interruption carries the character
+    sx.beginPath();
+    const amp = bh * (.4 + rnd() * .9), ph = rnd() * 7, fr = 2 + rnd() * 3;
+    for (let x = cx - half; x <= cx + half; x += 6) {
+      const t = (x - cx + half) / (2 * half);
+      const y = y0 + Math.sin(t * fr * Math.PI * 2 + ph) * amp * Math.sin(t * Math.PI);
+      x === cx - half ? sx.moveTo(x, y) : sx.lineTo(x, y);
+    }
+    sx.lineTo(cx + half, y0 + bh);
+    sx.lineTo(cx - half, y0 + bh);
+    sx.closePath();
+    sx.fill();
+  }
+  // mirror below horizon: denser, fainter bands (compression as depth)
+  sx.fillStyle = 'rgba(239,234,226,.22)';
+  for (let i = 0; i < 10; i++) {
+    const y0 = hy + 8 * devicePixelRatio + i * (10 + i * 3) * devicePixelRatio * .6;
+    if (y0 > h) break;
+    const half = Math.sqrt(Math.max(0, r * r - Math.pow(y0 - hy, 2) * 2.4));
+    if (half <= 0) break;
+    sx.fillRect(cx - half, y0, half * 2, Math.max(1.5, (4 - i * .35) * devicePixelRatio * .5));
+  }
+}
+
+// Living monochrome grain over everything.
+const kc = document.getElementById('korn'), kx = kc.getContext('2d');
+function korn() {
+  const w = kc.width = Math.floor(innerWidth / 3);
+  const h = kc.height = Math.floor(innerHeight / 3);
+  const img = kx.createImageData(w, h);
+  for (let i = 0; i < img.data.length; i += 4) {
+    const v = rnd() * 255;
+    img.data[i] = img.data[i + 1] = img.data[i + 2] = v;
+    img.data[i + 3] = 255;
+  }
+  kx.putImageData(img, 0, 0);
+}
+function alles() { sonne(); korn(); }
+alles();
+addEventListener('resize', alles);
+if (!still) setInterval(korn, 420); // grain lives at a low rate
+</script>

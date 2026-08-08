@@ -1,0 +1,474 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Promptotyping · Helio</title>
+<style>
+/* Helio: strictly two colors. Ground red, motif off-white, mid-tones only via alpha and grain. */
+:root {
+  --grund: #dd2c1b;
+  --hell: #efeae2;
+}
+* { box-sizing: border-box; }
+html { overflow-x: hidden; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: linear-gradient(180deg, #d81e12 0%, #e8402a 100%);
+  background-attachment: fixed;
+  color: var(--hell);
+  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  overflow-x: hidden;
+  -webkit-text-size-adjust: 100%;
+}
+.nur-sr {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+
+#buehne { position: relative; width: 100%; }
+#motiv { position: absolute; inset: 0; width: 100%; height: 100%; }
+#griffe { position: absolute; inset: 0; }
+
+/* Grain binds ground, motif and type into one printed surface. */
+#korn {
+  position: fixed; inset: 0; width: 100%; height: 100%;
+  pointer-events: none; z-index: 90;
+}
+
+/* quiet text: small, calm, same color */
+.still {
+  font-family: ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, monospace;
+  font-size: .72rem;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  line-height: 1.7;
+}
+#kopf {
+  position: absolute; top: 1.4rem; left: 4vw; right: 4vw;
+  display: flex; justify-content: space-between; gap: 2rem;
+  pointer-events: none; z-index: 4;
+}
+#kopf .marke { opacity: .85; }
+#legende { text-align: right; opacity: .8; }
+#legende span { display: block; white-space: nowrap; }
+#unterzeile {
+  display: block; margin: .5rem 0 0; max-width: 34ch;
+  opacity: .8; text-transform: none; letter-spacing: .04em; font-size: .74rem;
+}
+
+/* Hitboxes: static, never smaller than 44px, invisible until focused. */
+.band {
+  position: absolute;
+  background: none; border: 0; padding: 0; margin: 0;
+  cursor: pointer;
+  color: var(--hell);
+  display: block;
+}
+.band:focus-visible { outline: 2px solid var(--hell); outline-offset: -2px; }
+
+/* Focus view */
+#fokus {
+  position: fixed; inset: 0; z-index: 60;
+  display: none; flex-direction: column; justify-content: center;
+  padding: 8vh 6vw 10vh;
+  background: linear-gradient(180deg, #d81e12 0%, #e8402a 100%);
+  overflow: hidden;
+}
+#fokus.offen { display: flex; }
+#wort {
+  font-size: 6rem;
+  font-weight: 900;
+  letter-spacing: -.045em;
+  line-height: .84;
+  margin: 0 0 1.6rem;
+  margin-left: -.06em;
+  text-transform: uppercase;
+}
+#frage {
+  font-size: clamp(1.15rem, 3vw, 1.8rem);
+  font-weight: 600; line-height: 1.3;
+  letter-spacing: -.01em;
+  margin: 0 0 1rem; max-width: 26ch; text-wrap: balance;
+}
+#satz {
+  font-size: clamp(.98rem, 1.9vw, 1.15rem);
+  line-height: 1.55; margin: 0 0 1.8rem; max-width: 48ch;
+}
+#zahlen { margin: 0 0 .7rem; opacity: .85; }
+#diagnose {
+  margin: 0; max-width: 46ch; font-size: .84rem; line-height: 1.6;
+  letter-spacing: .02em; text-transform: none; opacity: .95;
+  border-top: 1px solid rgba(239, 234, 226, .45);
+  padding-top: .7rem;
+}
+#zurueck {
+  position: absolute; top: 1.4rem; right: 4vw;
+  min-height: 44px; padding: .6rem 1.1rem;
+  background: none; color: var(--hell);
+  border: 1px solid rgba(239, 234, 226, .55);
+  cursor: pointer;
+}
+#steuerung {
+  position: absolute; bottom: 1.4rem; left: 6vw; right: 6vw;
+  opacity: .72; pointer-events: none;
+}
+#zurueck:focus-visible, #fokus:focus-visible { outline: 2px solid var(--hell); outline-offset: 3px; }
+
+@media (max-width: 620px) {
+  #legende { display: none; }
+  #unterzeile { font-size: .72rem; }
+}
+</style>
+
+<h1 class="nur-sr">Promptotyping, die Wissensbasis als Sonnenscheibe</h1>
+
+<div id="buehne">
+  <canvas id="motiv" aria-hidden="true"></canvas>
+
+  <div id="kopf" class="still">
+    <span class="marke">Helio · Promptotyping
+      <span id="unterzeile" class="still">Jedes Band ein Wissensdokument. Am Horizont treffen sich Scheibe und Spiegelung, dort liegt die Zeit des Projekts.</span>
+    </span>
+    <span id="legende">
+      <span>Bandstärke · Umfang</span>
+      <span>Horizont · Zeit</span>
+      <span>Schnitt · Regeln</span>
+      <span>Lücke · fehlt</span>
+    </span>
+  </div>
+
+  <div id="griffe"></div>
+
+</div>
+
+<div id="fokus" role="dialog" aria-modal="true" aria-labelledby="wort" tabindex="-1">
+  <p id="wort"></p>
+  <p id="frage"></p>
+  <p id="satz"></p>
+  <p id="zahlen" class="still"></p>
+  <p id="diagnose" class="still"></p>
+  <button id="zurueck" class="still" type="button">Zurück (Esc)</button>
+  <p id="steuerung" class="still">Pfeiltasten wechseln das Dokument</p>
+</div>
+
+<canvas id="korn" aria-hidden="true"></canvas>
+
+<script>
+/* Data taken verbatim from promptotyping-organismus.html, specimen "Promptotyping".
+   art: organ = declarative knowledge, vene = time-carrying process doc,
+   nerv = rule doc that governs the others; geist = triggered but missing.
+   reihe = band position top to bottom; null means the doc is the cut, not a band. */
+const DOKUMENTE = [
+  { wort: 'Wo', frage: 'Was liegt hier, und wie lese ich es?', satz: 'Der Wegweiser durch die dreizehn Wissensdokumente, mit dem Begriffslexikon.', datei: 'INDEX.md', zeilen: 108, status: 'complete', schnitt: 'Aufschneiden, wenn ein Dokument nicht gefunden oder ein Begriff falsch verwendet wird.', art: 'organ', reihe: 0 },
+  { wort: 'Warum', frage: 'Was ist dieses Projekt, für wen, mit welchem Ziel?', satz: 'Die Charta der Methode, Forschungsdaten werden durch Context Engineering zu Forschungsartefakten.', datei: 'project.md', zeilen: 102, status: 'complete', schnitt: 'Aufschneiden, wenn der Output inhaltlich falsch ist oder der Projektkontext unklar.', art: 'organ', reihe: 1 },
+  { wort: 'Was', frage: 'Was soll das System tun, und warum?', satz: 'Anforderungen, Epics und Entscheidungen der Methoden-Website.', datei: 'specification.md', zeilen: 315, status: 'complete', schnitt: 'Aufschneiden, wenn ein Akzeptanzkriterium ignoriert oder eine alte Entscheidung neu aufgemacht wird.', art: 'organ', reihe: 2 },
+  { wort: 'Wie', frage: 'Wie ist es technisch realisiert?', satz: 'Die statische Site und wie ihre Teile zusammenstecken.', datei: 'architecture.md', zeilen: 181, status: 'complete', schnitt: 'Aufschneiden bei falschen Annahmen über Komponenten und Datenfluss.', art: 'organ', reihe: 3 },
+  { wort: 'Gestalt', frage: 'Wie sieht es aus, wie verhält es sich ästhetisch?', satz: 'Gestaltungsregeln und die ästhetische Haltung des Projekts.', datei: 'design.md', zeilen: 233, status: 'complete', schnitt: 'Aufschneiden bei UI-Inkonsistenz oder Designsystem-Bruch.', art: 'organ', reihe: 4 },
+  { wort: 'Stoff', frage: 'Welches fachliche Wissen trägt das Projekt?', satz: 'Das Paper, sein kanonisches Wissensdokument und zwei Video-Skripten, zusammen fast dreitausend Zeilen.', datei: 'paper.md +3', zeilen: 2826, status: 'draft', schnitt: 'Aufschneiden, wenn eine Fachregel oder die Argumentation des Papers verletzt wird.', art: 'organ', reihe: 5 },
+  { wort: 'Daten', frage: 'Was ist das verarbeitete Substrat?', satz: 'Das Repo trägt einen data-Ordner, aber kein Dokument beschreibt ihn. Der Trigger ist erfüllt, das Organ fehlt.', datei: 'data.md fehlt', zeilen: null, status: 'geist', schnitt: 'Anlegen, bevor Datenfelder verwechselt oder Beispiele falsch zitiert werden.', art: 'organ', geist: true, reihe: 6 },
+  { wort: 'Beweis', frage: 'Halten die eigenen Claims einer Prüfung stand?', satz: 'Adversariale Prüfung der empirischen Behauptungen für das Paper.', datei: 'verification.md', zeilen: 183, status: 'active', schnitt: 'Aufschneiden, wenn ein außenwirksamer Claim unbelegt ist.', art: 'organ', reihe: 7 },
+  { wort: 'Prüfung', frage: 'Was wird garantiert, und wie wird es geprüft?', satz: 'Es gibt Werkzeuge, aber keine beschriebenen Garantien. Der Trigger ist erfüllt, das Organ fehlt.', datei: 'testing.md fehlt', zeilen: null, status: 'geist', schnitt: 'Anlegen, bevor eine Garantie unklar wird.', art: 'organ', geist: true, reihe: 8 },
+  { wort: 'Stand', frage: 'Was ist der Stand zum Stichtag, für draußen?', satz: 'Der Bericht des ZfdG-Einreichungs-Durchgangs, ein eingefrorener Moment.', datei: 'report.md', zeilen: 113, status: 'snapshot', schnitt: 'Aufschneiden, wenn der kommunizierte Stand veraltet wirkt.', art: 'organ', reihe: 9 },
+  { wort: 'Woher', frage: 'Wie sind wir hierhin gekommen?', satz: '867 Zeilen Projektgedächtnis, rückwärts gelesen die ganze Geschichte.', datei: 'journal.md', zeilen: 867, status: 'active', schnitt: 'Aufschneiden bei unklarer Entscheidungslogik und wiederholten Sackgassen.', art: 'vene', hinweis: '← rückwärts', reihe: 10 },
+  { wort: 'Wohin', frage: 'Wohin geht es, in welcher Reihenfolge?', satz: 'Die Vorwärtsrichtung, Phasen und nächste Schritte.', datei: 'plan.md', zeilen: 152, status: 'active', schnitt: 'Aufschneiden, wenn der nächste Schritt nicht erkennbar ist.', art: 'vene', hinweis: 'vorwärts →', reihe: 11 },
+  { wort: 'Regeln', frage: 'Wie soll der Agent sich verhalten?', satz: 'Die Verhaltensregeln im Repo-Root, sie feuern in alles hinein, was gebaut wird.', datei: 'CLAUDE.md', zeilen: null, status: 'active', schnitt: 'Aufschneiden bei Stilbruch oder ignorierten Verboten.', art: 'nerv', reihe: null },
+];
+
+const BAENDER = DOKUMENTE.filter(d => d.reihe !== null).sort((a, b) => a.reihe - b.reihe);
+const REGEL = DOKUMENTE.find(d => d.art === 'nerv');
+const REIHENFOLGE = BAENDER.concat([REGEL]);
+
+const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const buehne = document.getElementById('buehne');
+const griffe = document.getElementById('griffe');
+const motiv = document.getElementById('motiv');
+const mx = motiv.getContext('2d');
+
+/* Deterministic noise, never Math.random: the print grain must be reproducible. */
+let saat = 20260808;
+function zuf() { saat = (saat * 16807) % 2147483647; return saat / 2147483647; }
+
+/* Band ink height carries the volume of a document, sqrt of line count. */
+function tinte(d) {
+  if (d.geist) return 0;
+  const w = Math.sqrt(d.zeilen || 100);
+  return 5 + Math.max(0, Math.min(1, (w - 10) / 43)) * 30;
+}
+/* Wave amplitude carries the state: what still moves, moves visibly. */
+const AMPL = { complete: 2.5, active: 7, draft: 10, snapshot: 1, geist: 0 };
+
+let W = 0, H = 0, dpr = 1, mass = null, phase = 0, aktiv = -1;
+
+function messen() {
+  dpr = Math.min(2, devicePixelRatio || 1);
+  W = buehne.clientWidth;
+  H = Math.max(innerHeight, 870);
+  buehne.style.height = H + 'px';
+  motiv.width = Math.round(W * dpr);
+  motiv.height = Math.round(H * dpr);
+  motiv.style.width = W + 'px';
+  motiv.style.height = H + 'px';
+  mx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+  const horizont = H * 0.755;
+  const oben = H * 0.145;
+  const platz = horizont - oben;
+  const roh = BAENDER.map(d => Math.max(44, tinte(d) + 18));
+  const summe = roh.reduce((a, b) => a + b, 0);
+  const f = platz / summe;
+  let y = oben;
+  const reihen = BAENDER.map((d, i) => {
+    const fach = roh[i] * f;
+    const h = tinte(d);
+    const r = { d, fachOben: y, fachHoehe: fach, h, y: y + (fach - h) / 2 };
+    y += fach;
+    return r;
+  });
+  const R = platz / 1.6;
+  /* on narrow viewports the disc is squashed instead of cut away entirely,
+     so its curvature stays readable while the hitboxes keep their height */
+  const rx = Math.min(R, W * 0.47);
+  mass = { horizont, oben, platz, reihen, R, rx, cx: W * 0.5, cy: horizont - 0.6 * R };
+  griffeBauen();
+  malen();
+}
+
+function halbBreite(y) {
+  const dy = (y - mass.cy) / mass.R;
+  const q = 1 - dy * dy;
+  return q > 0 ? mass.rx * Math.sqrt(q) : 0;
+}
+
+/* The rule doc is the one disturbance running through every band. */
+function schnittX(y) {
+  return W * 0.655 + 34 * Math.sin(y * 0.0062 + phase * 0.5) + 12 * Math.sin(y * 0.017 - phase * 0.3);
+}
+
+function bandPfad(g, y0, h, ampl, k, ph, x1, x2) {
+  g.beginPath();
+  for (let x = x1; x <= x2; x += 4) {
+    const yy = y0 + ampl * Math.sin(x * k + ph);
+    x === x1 ? g.moveTo(x, yy) : g.lineTo(x, yy);
+  }
+  for (let x = x2; x >= x1; x -= 4) {
+    g.lineTo(x, y0 + h + ampl * Math.sin(x * k + ph + 1.1));
+  }
+  g.closePath();
+}
+
+function malen() {
+  if (!mass) return;
+  mx.clearRect(0, 0, W, H);
+  const { reihen, R, rx, cx, cy, horizont } = mass;
+
+  /* the disc, built only from horizontal bands clipped to its outline */
+  mx.save();
+  mx.beginPath();
+  mx.ellipse(cx, cy, rx, R, 0, 0, Math.PI * 2);
+  mx.clip();
+  reihen.forEach((r, i) => {
+    const d = r.d;
+    const hb = halbBreite(r.y + r.h / 2) + 6;
+    const x1 = Math.max(-10, cx - hb), x2 = Math.min(W + 10, cx + hb);
+    const ampl = AMPL[d.status] ?? 4;
+    const k = (d.art === 'vene' ? 0.0055 : 0.011) * (1 + i * 0.03);
+    const ph = i * 1.7 + phase;
+    if (d.geist) {
+      /* the gap: the band is simply absent, the red ground stays open.
+         Sparse ticks keep the empty slot findable. */
+      mx.globalAlpha = aktiv === i ? 0.5 : 0.3;
+      mx.fillStyle = '#efeae2';
+      for (let x = x1; x < x2; x += 30) mx.fillRect(x, r.y + 8, 9, 2);
+      mx.globalAlpha = 1;
+      return;
+    }
+    mx.globalAlpha = aktiv === i ? 1 : (d.art === 'vene' ? 0.95 : 0.86);
+    mx.fillStyle = '#efeae2';
+    bandPfad(mx, r.y, r.h, ampl, k, ph, x1, x2);
+    mx.fill();
+    mx.globalAlpha = 1;
+  });
+  mx.restore();
+
+  /* the reflection: same order, compressed spacing, density as depth */
+  reihen.forEach((r, i) => {
+    const d = r.d;
+    if (d.geist) return;
+    const abstand = horizont - (r.y + r.h / 2);
+    const yr = horizont + abstand * 0.42;
+    if (yr > H + 40) return;
+    const hr = Math.max(1.5, r.h * 0.6);
+    const tiefe = 1 - Math.min(1, abstand / mass.platz);
+    const grad = mx.createLinearGradient(cx - W * 0.62, 0, cx + W * 0.62, 0);
+    const a = 0.16 + tiefe * 0.62;
+    grad.addColorStop(0, 'rgba(239,234,226,0)');
+    grad.addColorStop(0.5, 'rgba(239,234,226,' + a.toFixed(3) + ')');
+    grad.addColorStop(1, 'rgba(239,234,226,0)');
+    mx.fillStyle = grad;
+    const ampl = (AMPL[d.status] ?? 4) * 1.6 + 2;
+    const k = 0.009 + i * 0.0006;
+    const ph = -i * 1.7 - phase * 1.4;
+    /* broken into segments: water, not glass */
+    let x = -10;
+    while (x < W + 10) {
+      const luecke = Math.sin(x * 0.021 + i * 2.3) > 0.82;
+      const bis = Math.min(W + 10, x + 26);
+      if (!luecke) { bandPfad(mx, yr, hr, ampl, k, ph, x, bis); mx.fill(); }
+      x = bis;
+    }
+  });
+
+  /* the cut of the rules, carved out of everything above and below the horizon */
+  mx.save();
+  mx.globalCompositeOperation = 'destination-out';
+  mx.beginPath();
+  for (let y = mass.oben - 20; y <= H + 20; y += 6) mx.lineTo(schnittX(y) - 13, y);
+  for (let y = H + 20; y >= mass.oben - 20; y -= 6) mx.lineTo(schnittX(y) + 13, y);
+  mx.closePath();
+  mx.fill();
+  mx.restore();
+
+  /* quiet labels, also xor: red where they cross a band, off-white on the open ground */
+  mx.save();
+  mx.globalCompositeOperation = 'xor';
+  mx.fillStyle = '#efeae2';
+  mx.textBaseline = 'middle';
+  mx.textAlign = 'left';
+  if ('letterSpacing' in mx) mx.letterSpacing = '0.14em';
+  const spalte = Math.round(W * 0.045);
+  reihen.forEach(r => {
+    const d = r.d;
+    const ym = Math.round(r.fachOben + r.fachHoehe / 2);
+    /* the label hugs the left edge of the disc, so the column follows its curve */
+    const lx = Math.round(Math.max(spalte, cx - halbBreite(r.y + r.h / 2) - 170));
+    mx.font = '700 12px ui-monospace, monospace';
+    mx.fillText(d.wort.toUpperCase(), lx, ym - 8);
+    mx.font = '400 11px ui-monospace, monospace';
+    mx.fillText(d.hinweis ? d.datei + '   ' + d.hinweis : d.datei, lx, ym + 8);
+  });
+  const ry = mass.oben + 130;
+  mx.translate(schnittX(ry), ry);
+  mx.rotate(Math.PI / 2);
+  mx.font = '700 12px ui-monospace, monospace';
+  mx.fillText('REGELN   CLAUDE.md', 0, 0);
+  mx.restore();
+
+  /* the word is part of the motif: xor knocks it out of the bands and prints it on the ground */
+  mx.save();
+  mx.globalCompositeOperation = 'xor';
+  mx.fillStyle = '#efeae2';
+  if ('letterSpacing' in mx) mx.letterSpacing = '-0.045em';
+  let groesse = 200;
+  mx.font = '900 ' + groesse + 'px system-ui, sans-serif';
+  const text = 'PROMPTOTYPING';
+  const breit = mx.measureText(text).width;
+  groesse = groesse * (W * 1.12) / breit;
+  mx.font = '900 ' + groesse + 'px system-ui, sans-serif';
+  mx.textBaseline = 'alphabetic';
+  mx.fillText(text, -W * 0.06, H - H * 0.055);
+  mx.restore();
+}
+
+/* Hitboxes are static and at least 44px high, independent of the moving waves. */
+function griffeBauen() {
+  griffe.innerHTML = '';
+  mass.reihen.forEach((r, i) => {
+    const d = r.d;
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'band' + (d.geist ? ' leer' : '');
+    const oben = Math.max(0, r.fachOben);
+    b.style.cssText = 'left:0;width:100%;top:' + oben + 'px;height:' + Math.max(44, r.fachHoehe) + 'px';
+    b.setAttribute('aria-label', d.wort + ', ' + d.datei + ', ' + (d.geist ? 'fehlt' : d.status));
+    b.addEventListener('click', () => oeffnen(REIHENFOLGE.indexOf(d)));
+    b.addEventListener('pointerenter', () => { aktiv = i; malen(); });
+    b.addEventListener('pointerleave', () => { aktiv = -1; malen(); });
+    b.addEventListener('focus', () => { aktiv = i; malen(); });
+    b.addEventListener('blur', () => { aktiv = -1; malen(); });
+    griffe.appendChild(b);
+  });
+  /* the rule doc gets its own hitbox: the vertical cut */
+  const r = document.createElement('button');
+  r.type = 'button';
+  r.className = 'band';
+  const xm = W * 0.655;
+  r.style.cssText = 'left:' + (xm - 26) + 'px;width:52px;top:' + mass.oben + 'px;height:' + (H - mass.oben) + 'px';
+  r.setAttribute('aria-label', REGEL.wort + ', ' + REGEL.datei + ', schneidet durch alle Bänder');
+  r.addEventListener('click', () => oeffnen(REIHENFOLGE.indexOf(REGEL)));
+  griffe.appendChild(r);
+}
+
+/* Focus view: one word, one question, one sentence, the numbers. */
+const fokus = document.getElementById('fokus');
+let letzterGriff = null, jetzt = -1;
+
+function oeffnen(i) {
+  jetzt = i;
+  const d = REIHENFOLGE[i];
+  if (!fokus.classList.contains('offen')) letzterGriff = document.activeElement;
+  const wortEl = document.getElementById('wort');
+  wortEl.textContent = d.wort;
+  /* the word is scaled radically: it fills the width, whatever its length */
+  kcx.font = '900 100px system-ui, sans-serif';
+  const ziel = innerWidth * 0.9;
+  const roh = kcx.measureText(d.wort.toUpperCase()).width;
+  wortEl.style.fontSize = Math.min(100 * ziel / roh, innerHeight * 0.3) + 'px';
+  document.getElementById('frage').textContent = d.frage;
+  document.getElementById('satz').textContent = d.satz;
+  document.getElementById('zahlen').textContent =
+    [d.datei, d.zeilen ? d.zeilen + ' Zeilen' : null, d.geist ? null : d.status].filter(Boolean).join(' · ');
+  document.getElementById('diagnose').textContent = d.schnitt;
+  fokus.classList.add('offen');
+  fokus.focus();
+}
+function schliessen() {
+  fokus.classList.remove('offen');
+  if (letzterGriff) letzterGriff.focus();
+}
+document.getElementById('zurueck').addEventListener('click', schliessen);
+addEventListener('keydown', e => {
+  if (!fokus.classList.contains('offen')) return;
+  if (e.key === 'Escape') { schliessen(); }
+  else if (e.key === 'ArrowDown' || e.key === 'ArrowRight') { e.preventDefault(); oeffnen((jetzt + 1) % REIHENFOLGE.length); }
+  else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') { e.preventDefault(); oeffnen((jetzt - 1 + REIHENFOLGE.length) % REIHENFOLGE.length); }
+});
+
+/* Monochrome grain over the whole surface, generated from the seeded LCG. */
+const korn = document.getElementById('korn');
+const kx = korn.getContext('2d');
+const KACHEL = 140;
+const kachel = document.createElement('canvas');
+kachel.width = kachel.height = KACHEL;
+const kcx = kachel.getContext('2d');
+
+function kornBauen() {
+  const bild = kcx.createImageData(KACHEL, KACHEL);
+  const p = bild.data;
+  for (let i = 0; i < p.length; i += 4) {
+    const v = zuf();
+    if (v < 0.5) { p[i] = 239; p[i + 1] = 234; p[i + 2] = 226; }
+    else { p[i] = 216; p[i + 1] = 30; p[i + 2] = 18; }
+    p[i + 3] = zuf() * 62;
+  }
+  kcx.putImageData(bild, 0, 0);
+}
+function kornMalen() {
+  korn.width = innerWidth;
+  korn.height = innerHeight;
+  kx.fillStyle = kx.createPattern(kachel, 'repeat');
+  kx.fillRect(0, 0, korn.width, korn.height);
+}
+
+let letzterKorn = 0;
+function schlag(t) {
+  phase += 0.0022;
+  malen();
+  if (t - letzterKorn > 240) { kornBauen(); kornMalen(); letzterKorn = t; }
+  requestAnimationFrame(schlag);
+}
+
+addEventListener('resize', () => { messen(); kornMalen(); });
+messen();
+kornBauen();
+kornMalen();
+if (!still) requestAnimationFrame(schlag);
+</script>
