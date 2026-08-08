@@ -1,0 +1,113 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>most · Übersicht</title>
+<style>
+/* Single-theme by design: the project's night. All colors explicit. */
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: #150d11;
+  color: #efe9d6;
+  font-family: Georgia, 'Iowan Old Style', serif;
+  padding: 7vh 6vw 8vh;
+}
+main { max-width: 46rem; margin: 0 auto; }
+.eyebrow {
+  font-family: system-ui, sans-serif;
+  font-size: .8rem;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: #9a8f96;
+  margin: 0 0 1rem;
+}
+h1 {
+  font-size: clamp(2rem, 6vw, 3.2rem);
+  font-weight: 400;
+  line-height: 1.15;
+  text-wrap: balance;
+  margin: 0 0 1.4rem;
+  text-shadow: 0 0 50px rgba(212,112,91,.3);
+}
+.intro {
+  font-family: system-ui, sans-serif;
+  font-size: 1.15rem;
+  line-height: 1.7;
+  color: #d8d2bd;
+  margin: 0 0 3.5rem;
+  max-width: 40rem;
+}
+a.karte {
+  display: block;
+  text-decoration: none;
+  color: #efe9d6;
+  background: #1d1318;
+  border: 1px solid #3d2c34;
+  border-radius: 1rem;
+  padding: 2rem 2.2rem 2.1rem;
+  margin: 0 0 1.6rem;
+  transition: border-color .3s, box-shadow .3s;
+}
+a.karte:hover, a.karte:focus-visible {
+  border-color: var(--c1);
+  box-shadow: 0 0 40px var(--halo);
+  outline: none;
+}
+.karte .nummer {
+  font-family: ui-monospace, monospace;
+  font-size: .78rem;
+  color: var(--c1);
+  letter-spacing: .1em;
+}
+.karte h2 {
+  font-size: clamp(1.5rem, 3.5vw, 2rem);
+  font-weight: 400;
+  margin: .5rem 0 .9rem;
+  text-shadow: 0 0 30px var(--halo);
+}
+.karte p {
+  font-family: system-ui, sans-serif;
+  font-size: 1.05rem;
+  line-height: 1.65;
+  color: #b9aeb4;
+  margin: 0;
+}
+.karte .siehst {
+  margin-top: 1rem;
+  font-size: .95rem;
+  color: #9a8f96;
+}
+.karte .siehst b { color: #d8d2bd; font-weight: 600; }
+footer {
+  margin-top: 4rem;
+  font-family: system-ui, sans-serif;
+  font-size: .9rem;
+  color: #6b5f66;
+  line-height: 1.7;
+}
+footer a { color: #9a8f96; }
+</style>
+
+<main>
+  <p class="eyebrow">Projekt most</p>
+  <h1>Wissen, das in jedem Zustand ankommt.</h1>
+  <p class="intro">Wir bauen User Interfaces, die Wissen so zeigen, dass sie auch für sehr bekiffte Menschen funktionieren, weil sie dann für alle funktionieren. Ein Bild pro Gedanke, ein Tipp pro Schritt, nichts geht kaputt. Zwei Interfaces sind fertig, jede Karte führt dich hin.</p>
+
+  <a class="karte" style="--c1:#e8b34c; --halo:rgba(232,179,76,.25)" href="mhdbdb-tests.html">
+    <span class="nummer">INTERFACE 1</span>
+    <h2>Der Nachtgarten</h2>
+    <p>Die MHDBDB ist eine Website über mittelhochdeutsche Wörter, und 31 automatische Tests passen auf, dass sie funktioniert. Der Nachtgarten zeigt diese Tests als leuchtende Zellen in sechs Räumen.</p>
+    <p class="siehst"><b>Was du siehst:</b> sechs Kugeln, ihre Kerne sind die Tests. Antippen öffnet den Raum, jedes Licht ist ein Test mit einem Wort, ein zweiter Tipp gibt dir den Satz dazu und die Ader, durch die der Test fließt.</p>
+  </a>
+
+  <a class="karte" style="--c1:#d4705b; --halo:rgba(212,112,91,.25)" href="promptotyping-organismus.html">
+    <span class="nummer">INTERFACE 2</span>
+    <h2>Der Organismus</h2>
+    <p>Jedes gute Projekt hat einen Ordner voller Wissensdokumente, warum es das Projekt gibt, was gebaut wird, wie, und was schon passiert ist. Der Organismus malt diesen Ordner als Körper.</p>
+    <p class="siehst"><b>Was du siehst:</b> jede Zelle ein Dokument, die rote Ader ist die Zeit des Projekts, feine Fäden sind die Regeln, und blasse gestrichelte Kreise sind Dokumente, die fehlen, obwohl man sie bräuchte. Oben kannst du zwischen zwei Projekten wechseln, einem gesunden und einem löchrigen.</p>
+  </a>
+
+  <footer>
+    Beide Interfaces folgen denselben Prinzipien, eine Idee pro Screen, das UI hält den Zustand, Fadenverlust kostet nichts. Die Prinzipien, Personas und Entscheidungen stehen im knowledge-Ordner des Repos. Online-Fassungen: <a href="https://claude.ai/code/artifact/8b1478d6-9515-4447-b368-385b7133197d">Nachtgarten</a> · <a href="https://claude.ai/code/artifact/d6fd9c73-f8bd-419a-a45a-8a1b50439e1e">Organismus</a>
+  </footer>
+</main>
