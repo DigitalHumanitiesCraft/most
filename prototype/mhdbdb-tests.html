@@ -1,254 +1,269 @@
-<title>MHDBDB, verständlich</title>
+<title>MHDBDB · Nachtgarten</title>
 <style>
-:root {
-  --bg: #f3f2ec;
-  --surface: #fbfaf6;
-  --ink: #232a20;
-  --muted: #6b7261;
-  --accent: #a33b2e;
-  --soft: #4c6b45;
-  --line: #d9d7cb;
-  --chip: #ecebe2;
-}
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --bg: #1a1f18;
-    --surface: #232a20;
-    --ink: #e8e6da;
-    --muted: #9aa18f;
-    --accent: #d4705b;
-    --soft: #8fb083;
-    --line: #3a4235;
-    --chip: #2c342a;
-  }
-}
-:root[data-theme="dark"] {
-  --bg: #1a1f18;
-  --surface: #232a20;
-  --ink: #e8e6da;
-  --muted: #9aa18f;
-  --accent: #d4705b;
-  --soft: #8fb083;
-  --line: #3a4235;
-  --chip: #2c342a;
-}
+/* Single-theme by design: an illuminated night garden. All colors explicit. */
+* { box-sizing: border-box; }
+html, body { height: 100%; }
 body {
-  background: var(--bg);
-  color: var(--ink);
-  font-family: system-ui, -apple-system, sans-serif;
-  font-size: 1.15rem;
-  line-height: 1.75;
   margin: 0;
-  padding: 2.5rem 1.25rem 5rem;
-}
-main { max-width: 40rem; margin: 0 auto; }
-.eyebrow {
-  font-size: .78rem;
-  letter-spacing: .14em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin: 0 0 .8rem;
-}
-h1 {
-  font-family: Georgia, 'Iowan Old Style', 'Times New Roman', serif;
-  font-size: clamp(1.9rem, 5vw, 2.6rem);
-  line-height: 1.2;
-  text-wrap: balance;
-  margin: 0 0 1.2rem;
-  font-weight: 500;
-}
-.intro { color: var(--ink); margin: 0 0 .8rem; }
-.calm { color: var(--muted); font-size: 1rem; margin: 0 0 2.2rem; }
-.toggle-row {
-  display: flex;
-  align-items: center;
-  gap: .75rem;
-  margin: 0 0 2rem;
-  flex-wrap: wrap;
-}
-.toggle-label { font-size: .95rem; color: var(--muted); }
-button#dichte {
-  font: inherit;
-  font-size: .95rem;
-  background: var(--surface);
-  color: var(--ink);
-  border: 1.5px solid var(--line);
-  border-radius: 2rem;
-  padding: .35rem 1.1rem;
-  cursor: pointer;
-}
-button#dichte:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-details {
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: .75rem;
-  margin: 0 0 1rem;
-  overflow: hidden;
-}
-details[open] { border-color: var(--soft); }
-summary {
-  cursor: pointer;
-  padding: 1.1rem 1.25rem;
-  list-style: none;
-  display: flex;
-  gap: .85rem;
-  align-items: baseline;
-}
-summary::-webkit-details-marker { display: none; }
-summary:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
-.mark { font-size: 1.3rem; }
-.frage {
+  background: #10140d;
+  color: #efe9d6;
   font-family: Georgia, 'Iowan Old Style', serif;
-  font-size: 1.25rem;
-  line-height: 1.35;
+  overflow: hidden;
+  -webkit-user-select: none;
+  user-select: none;
 }
-.anzahl { margin-left: auto; font-size: .85rem; color: var(--muted); white-space: nowrap; }
-.inhalt { padding: 0 1.25rem 1.2rem; border-top: 1px solid var(--line); }
-.inhalt > p { margin: 1rem 0; }
-.inhalt ul { margin: 0; padding: 0; list-style: none; }
-.inhalt li {
-  padding: .55rem 0;
-  border-bottom: 1px dashed var(--line);
+canvas#glow {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
 }
-.inhalt li:last-child { border-bottom: none; }
-.spec {
-  display: none;
-  font-family: ui-monospace, monospace;
-  font-size: .78rem;
-  color: var(--accent);
-  background: var(--chip);
-  border-radius: .4rem;
-  padding: .1rem .5rem;
-  margin-left: .4rem;
-  white-space: nowrap;
+/* ---------- home ---------- */
+#home {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  display: block;
 }
-body.genau .spec { display: inline-block; }
-.vault {
-  margin-top: 3rem;
-  padding-top: 1.5rem;
-  border-top: 3px solid var(--accent);
-}
-.vault h2 {
-  font-family: Georgia, serif;
-  font-size: 1.35rem;
-  font-weight: 500;
-  margin: 0 0 .8rem;
-}
-footer {
-  margin-top: 3rem;
-  color: var(--muted);
-  font-size: .95rem;
+#home header {
+  position: absolute;
+  top: 6vh;
+  width: 100%;
   text-align: center;
+  pointer-events: none;
+}
+#home h1 {
+  font-size: clamp(2rem, 6vw, 3.4rem);
+  font-weight: 400;
+  margin: 0;
+  letter-spacing: .04em;
+  text-shadow: 0 0 40px rgba(232,179,76,.35);
+}
+#home .sub {
+  color: #9aa18f;
+  font-size: clamp(.95rem, 2.2vw, 1.15rem);
+  margin-top: .5rem;
+  font-family: system-ui, sans-serif;
+}
+.orb {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: .2em;
+  color: #efe9d6;
+  font-family: Georgia, serif;
+  background: radial-gradient(circle at 38% 32%, var(--c1), var(--c2) 70%);
+  box-shadow: 0 0 60px var(--halo), inset 0 0 30px rgba(0,0,0,.35);
+  animation: floaty 7s ease-in-out infinite;
+  transition: transform .4s ease;
+}
+.orb:hover, .orb:focus-visible { transform: translate(-50%, -50%) scale(1.07); outline: none; }
+.orb:focus-visible { box-shadow: 0 0 0 3px #efe9d6, 0 0 60px var(--halo); }
+.orb .ico { font-size: calc(var(--d) * .32); line-height: 1; filter: drop-shadow(0 0 12px rgba(0,0,0,.5)); }
+.orb .wort { font-size: calc(var(--d) * .13); letter-spacing: .05em; text-shadow: 0 1px 6px rgba(0,0,0,.6); }
+@keyframes floaty {
+  0%, 100% { margin-top: 0; }
+  50% { margin-top: -14px; }
+}
+.orb:nth-child(odd) { animation-duration: 9s; animation-delay: -3s; }
+/* ---------- room ---------- */
+#room {
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  cursor: pointer;
+  padding: 8vh 6vw;
+  background: radial-gradient(ellipse at 50% 110%, var(--halo, rgba(232,179,76,.2)), transparent 60%);
+}
+#room.offen { display: flex; }
+#room .wo {
+  position: absolute;
+  top: 5vh;
+  font-family: system-ui, sans-serif;
+  font-size: 1rem;
+  color: #9aa18f;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+#fakt {
+  font-size: clamp(2rem, 6.5vw, 4rem);
+  line-height: 1.25;
+  max-width: 18ch;
+  text-wrap: balance;
+  margin: 0;
+  text-shadow: 0 0 60px var(--halo, rgba(232,179,76,.4));
+  animation: auftauchen .9s ease both;
+}
+@keyframes auftauchen {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: none; }
+}
+#punkte {
+  position: absolute;
+  bottom: 9vh;
+  display: flex;
+  gap: 1rem;
+}
+#punkte i {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #3a4235;
+  box-shadow: none;
+  transition: background .4s, box-shadow .4s;
+}
+#punkte i.jetzt { background: var(--c1, #e8b34c); box-shadow: 0 0 14px var(--c1, #e8b34c); }
+#hinweis {
+  position: absolute;
+  bottom: 4vh;
+  font-family: system-ui, sans-serif;
+  font-size: .85rem;
+  color: #6b7261;
+}
+#zu {
+  position: absolute;
+  top: 4vh;
+  right: 5vw;
+  font-size: 2rem;
+  color: #9aa18f;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: Georgia, serif;
+}
+#zu:focus-visible { outline: 2px solid #efe9d6; border-radius: 50%; }
+@media (prefers-reduced-motion: reduce) {
+  .orb { animation: none; }
+  #fakt { animation: none; }
 }
 </style>
 
-<main>
-  <p class="eyebrow">most · Prototyp 1 · lesbar in jedem Zustand</p>
-  <h1>Die MHDBDB, so dass du sie jetzt verstehst.</h1>
-  <p class="intro">Die MHDBDB ist eine Website über mittelhochdeutsche Wörter. Man kann dort Wörter suchen, alte Texte lesen und nachschlagen, was ein Wort bedeutet.</p>
-  <p class="intro">31 automatische Tests passen auf, dass alles funktioniert. Diese Seite zeigt dir, was sie bewachen. Sechs Räume. Einer nach dem anderen.</p>
-  <p class="calm">Du kannst hier nichts kaputt machen. Wenn du den Faden verlierst, ist das okay, jeder Raum erklärt sich selbst.</p>
+<canvas id="glow"></canvas>
 
-  <div class="toggle-row">
-    <span class="toggle-label">Wie viel willst du sehen?</span>
-    <button id="dichte" aria-pressed="false">einfach → genau</button>
-  </div>
+<div id="home">
+  <header>
+    <h1>Die MHDBDB</h1>
+    <p class="sub">Ein Garten aus alten Wörtern. 31 Lichter passen auf.</p>
+  </header>
+</div>
 
-  <details name="raum">
-    <summary><span class="mark">🔍</span><span class="frage">Findest du das Wort, das du meinst?</span><span class="anzahl">9 Tests</span></summary>
-    <div class="inhalt">
-      <p>Mittelhochdeutsch schreibt man komisch, brôt hat ein Dach überm o. Die Suche versteht dich trotzdem, auch wenn du einfach brot tippst.</p>
-      <ul>
-        <li>Die Suche findet bekannte Wörter und rät bei Fast-Treffern das nächstliegende. <span class="spec">search-engine</span></li>
-        <li>Sonderzeichen wie ô oder æ werden vor jeder Suche vereinfacht, überall gleich. <span class="spec">search-normalization</span></li>
-        <li>Alle sechs Sucharten liefern echte Ergebnisse, Autoren, Werke, Wörter, Begriffe, Gattungen, Namen. <span class="spec">search-with-corpus</span></li>
-        <li>Markiert wird genau dein Wort, keine Wörter, die es nur enthalten. <span class="spec">lemma-matching</span></li>
-        <li>Du kannst nach Wortteilen suchen, wein findet die Wein-Zusammensetzungen. <span class="spec">word-component-search</span></li>
-        <li>Die Nähe-Suche misst den Abstand zwischen Wörtern richtig. <span class="spec">proximity-and-resolution</span></li>
-        <li>Zwei Wörter im selben Vers finden geht, minne und herze. <span class="spec">multi-lemma-verse</span></li>
-        <li>Gibt es ein Wort doppelt, wählt die Seite das häufigere und du kannst wechseln. <span class="spec">cooccurrence-ranking</span></li>
-        <li>Springst du von einer Liste in die Suche, kommt genau dein Wort an. <span class="spec">lemma-occurrence-handoff</span></li>
-      </ul>
-    </div>
-  </details>
-
-  <details name="raum">
-    <summary><span class="mark">📖</span><span class="frage">Kannst du die alten Texte lesen, ohne dich zu verlaufen?</span><span class="anzahl">3 Tests</span></summary>
-    <div class="inhalt">
-      <p>Es gibt einen Lesemodus für die 667 Texte des Korpus.</p>
-      <ul>
-        <li>Der Text ist schön formatiert und dein gesuchtes Wort leuchtet farbig, mit Springen von Treffer zu Treffer. <span class="spec">reading-view</span></li>
-        <li>Die Wortpositionen stimmen überall überein, egal welcher Teil des Systems zählt. <span class="spec">position-parity</span></li>
-        <li>Ein schon gelesener Text ist sofort wieder da, ohne neu zu laden. <span class="spec">tei-caching</span></li>
-      </ul>
-    </div>
-  </details>
-
-  <details name="raum">
-    <summary><span class="mark">📚</span><span class="frage">Steht da, was das Wort bedeutet?</span><span class="anzahl">3 Tests</span></summary>
-    <div class="inhalt">
-      <p>Jedes Wort hat ein Zuhause, und alles ist miteinander verknüpft.</p>
-      <ul>
-        <li>Jedes Wort hat eine eigene Seite mit Fundstellen und Links in andere Wörterbücher. <span class="spec">lemma-page</span></li>
-        <li>Das Wörterbuch blättert sich von A bis Z, und jede Stelle hat eine merkbare Adresse. <span class="spec">woerterbuch</span></li>
-        <li>Vom Werk zum Autor, vom Wort zum Begriff, die Querverweise halten. <span class="spec">cross-reference-test</span></li>
-      </ul>
-    </div>
-  </details>
-
-  <details name="raum">
-    <summary><span class="mark">🧪</span><span class="frage">Was können die Forscher-Spielsachen?</span><span class="anzahl">5 Tests</span></summary>
-    <div class="inhalt">
-      <p>Spezialwerkzeuge für Leute, die tiefer graben.</p>
-      <ul>
-        <li>Ein Reimwörterbuch, gân reimt auf begân, muot auf guot. <span class="spec">rhyme-dictionary</span></li>
-        <li>Eine Statistik darüber, wie Verse enden. <span class="spec">verse-ending-profile</span></li>
-        <li>Wie Figuren in den Geschichten genannt werden, mit Belegstellen. <span class="spec">naming-explorer</span></li>
-        <li>Wörter, die im ganzen Korpus nur ein einziges Mal vorkommen. <span class="spec">hapax-legomena</span></li>
-        <li>Welche Begriffe wo vorkommen, ohne dass die Seite bei riesigen Mengen einfriert. <span class="spec">concept-distribution</span></li>
-      </ul>
-    </div>
-  </details>
-
-  <details name="raum">
-    <summary><span class="mark">📋</span><span class="frage">Bleibt die Trefferliste handhabbar?</span><span class="anzahl">1 Test</span></summary>
-    <div class="inhalt">
-      <ul>
-        <li>Treffer gibt es als Liste oder Tabelle, sortierbar, als CSV mitnehmbar, und die Seite merkt sich deine Wahl. <span class="spec">results-table</span></li>
-      </ul>
-    </div>
-  </details>
-
-  <details name="raum">
-    <summary><span class="mark">🧱</span><span class="frage">Fällt nichts um, wenn man draufsteigt?</span><span class="anzahl">10 Tests</span></summary>
-    <div class="inhalt">
-      <p>Das Fundament, unsichtbar solange es hält.</p>
-      <ul>
-        <li>Die Startseite lädt ohne Fehler und die Suche geht sofort. <span class="spec">main-site</span></li>
-        <li>Geht etwas schief, Netz weg oder Datei kaputt, kommt eine Meldung und die Seite lebt weiter. <span class="spec">error-handling</span></li>
-        <li>Alle 667 Texte laden zuverlässig. <span class="spec">corpus</span> <span class="spec">playground-corpus</span></li>
-        <li>Der Datenbereich lädt seine Register schnell und vollständig. <span class="spec">playground</span> <span class="spec">playground-authority-index</span></li>
-        <li>Menü und Fußzeile funktionieren auf jeder Unterseite. <span class="spec">site-chrome</span></li>
-        <li>Keine fremden Server, alle Bausteine liegen bei der Seite selbst. <span class="spec">vendor</span></li>
-        <li>Auch auf Handy und Tablet bedienbar. <span class="spec">visual-mobile-test</span></li>
-        <li>Die zwei Sprachwelten des Systems, Python und JavaScript, vereinfachen Wörter exakt gleich. <span class="spec">normalization-parity</span></li>
-      </ul>
-    </div>
-  </details>
-
-  <section class="vault">
-    <h2>Und was weiß der Vault dazu?</h2>
-    <p>Wenig. Der Obsidian-Vault hat kein eigenes MHDBDB-Wissensdokument, das Wissen über die Seite lebt im Repo selbst. Unser Projekt <strong>most</strong> hat dafür schon zwei Wissensdokumente, eines mit Idee, Prinzipien und Personas, eines mit der Empirie, wie bekiffte Menschen wirklich kommunizieren.</p>
-  </section>
-
-  <footer>Diese Seite ist Prototyp 1 des Projekts most, Wissen so zeigen, dass es in jedem Zustand ankommt.</footer>
-</main>
+<div id="room" aria-live="polite">
+  <span class="wo" id="wo"></span>
+  <button id="zu" aria-label="zurück zum Garten">✕</button>
+  <p id="fakt"></p>
+  <div id="punkte"></div>
+  <span id="hinweis">tippen für den nächsten Gedanken</span>
+</div>
 
 <script>
-const knopf = document.getElementById('dichte');
-knopf.addEventListener('click', () => {
-  const genau = document.body.classList.toggle('genau');
-  knopf.setAttribute('aria-pressed', String(genau));
-  knopf.textContent = genau ? 'genau → einfach' : 'einfach → genau';
+const ROOMS = [
+  { wort: 'Suchen', ico: '🔍', c1: '#e8b34c', c2: '#7a5a1e', halo: 'rgba(232,179,76,.45)', x: 26, y: 40, tests: 9,
+    fakten: ['Du tippst brot.\nSie findet brôt.', 'Sechs Sucharten.\nAlle liefern.', 'wein findet\nalle Weinwörter.', 'minne und herze\nim selben Vers.', 'Ein Wort doppelt?\nSie nimmt das häufigere.'] },
+  { wort: 'Lesen', ico: '📖', c1: '#8fb083', c2: '#39543a', halo: 'rgba(143,176,131,.4)', x: 72, y: 34, tests: 3,
+    fakten: ['667 alte Texte.', 'Dein Wort leuchtet\nim Text.', 'Gelesenes bleibt.\nSofort wieder da.'] },
+  { wort: 'Bedeutung', ico: '📚', c1: '#d9c184', c2: '#6e5c2c', halo: 'rgba(217,193,132,.4)', x: 50, y: 62, tests: 3,
+    fakten: ['Jedes Wort\nhat ein Zuhause.', 'Blättern\nvon A bis Z.', 'Alles ist\nverbunden.'] },
+  { wort: 'Spielsachen', ico: '🎲', c1: '#c88bb0', c2: '#5d3a52', halo: 'rgba(200,139,176,.35)', x: 22, y: 74, tests: 5,
+    fakten: ['gân reimt\nauf begân.', 'Wie enden Verse?\nEs zählt mit.', 'Wie heißen\ndie Figuren wirklich?', 'Wörter, die nur\neinmal existieren.'] },
+  { wort: 'Treffer', ico: '📋', c1: '#a9b7c6', c2: '#46525e', halo: 'rgba(169,183,198,.3)', x: 84, y: 66, tests: 1,
+    fakten: ['Liste oder Tabelle.\nDeine Wahl bleibt.'] },
+  { wort: 'Fundament', ico: '🧱', c1: '#d4705b', c2: '#6e3126', halo: 'rgba(212,112,91,.4)', x: 55, y: 22, tests: 10,
+    fakten: ['Fehler?\nEine Meldung. Kein Absturz.', 'Keine fremden Server.', 'Auch am Handy.', 'Zwei Zähler,\nexakt gleiches Ergebnis.'] },
+];
+
+const home = document.getElementById('home');
+const room = document.getElementById('room');
+const fakt = document.getElementById('fakt');
+const punkte = document.getElementById('punkte');
+const wo = document.getElementById('wo');
+let aktiv = null, idx = 0;
+
+for (const r of ROOMS) {
+  const d = Math.round(90 + r.tests * 9);
+  const b = document.createElement('button');
+  b.className = 'orb';
+  b.style.cssText = `--c1:${r.c1};--c2:${r.c2};--halo:${r.halo};--d:${d}px;width:${d}px;height:${d}px;left:${r.x}%;top:${r.y}%`;
+  b.innerHTML = `<span class="ico">${r.ico}</span><span class="wort">${r.wort}</span>`;
+  b.addEventListener('click', () => oeffnen(r));
+  home.appendChild(b);
+}
+
+function oeffnen(r) {
+  aktiv = r; idx = 0;
+  room.style.setProperty('--c1', r.c1);
+  room.style.setProperty('--halo', r.halo);
+  wo.textContent = `${r.ico} ${r.wort} · ${r.tests} Lichter`;
+  punkte.innerHTML = r.fakten.map(() => '<i></i>').join('');
+  room.classList.add('offen');
+  home.style.display = 'none';
+  zeigen();
+}
+function zeigen() {
+  fakt.style.animation = 'none';
+  void fakt.offsetWidth;
+  fakt.style.animation = '';
+  fakt.textContent = aktiv.fakten[idx];
+  [...punkte.children].forEach((p, i) => p.classList.toggle('jetzt', i === idx));
+}
+function weiter() {
+  idx++;
+  if (idx >= aktiv.fakten.length) return schliessen();
+  zeigen();
+}
+function schliessen() {
+  room.classList.remove('offen');
+  home.style.display = 'block';
+  aktiv = null;
+}
+room.addEventListener('click', e => { if (e.target.id !== 'zu') weiter(); });
+document.getElementById('zu').addEventListener('click', schliessen);
+addEventListener('keydown', e => {
+  if (!aktiv) return;
+  if (e.key === 'Escape') schliessen();
+  if (e.key === ' ' || e.key === 'Enter' || e.key === 'ArrowRight') weiter();
 });
+
+/* fireflies: one light per test file, drifting slowly */
+const cv = document.getElementById('glow');
+const cx = cv.getContext('2d');
+const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+let W, H;
+function messen() { W = cv.width = innerWidth; H = cv.height = innerHeight; }
+messen(); addEventListener('resize', messen);
+const flies = [];
+let seed = 7;
+function rnd() { seed = (seed * 16807) % 2147483647; return seed / 2147483647; }
+for (const r of ROOMS) for (let i = 0; i < r.tests; i++) {
+  flies.push({ x: rnd() * 1, y: rnd() * 1, p: rnd() * Math.PI * 2, v: .00012 + rnd() * .0002, c: r.c1 });
+}
+function malen(t) {
+  cx.clearRect(0, 0, W, H);
+  for (const f of flies) {
+    const dx = still ? 0 : Math.sin(t * f.v + f.p) * .04;
+    const dy = still ? 0 : Math.cos(t * f.v * .8 + f.p) * .04;
+    const glow = still ? .5 : .35 + .35 * Math.sin(t * .001 + f.p * 5);
+    const x = (f.x + dx) * W, y = (f.y + dy) * H;
+    const g = cx.createRadialGradient(x, y, 0, x, y, 9);
+    g.addColorStop(0, f.c);
+    g.addColorStop(1, 'rgba(0,0,0,0)');
+    cx.globalAlpha = glow;
+    cx.fillStyle = g;
+    cx.beginPath(); cx.arc(x, y, 9, 0, 7); cx.fill();
+  }
+  cx.globalAlpha = 1;
+  if (!still) requestAnimationFrame(malen);
+}
+requestAnimationFrame(malen);
 </script>
