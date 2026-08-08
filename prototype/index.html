@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>most · Übersicht</title>
+<title>most · Projekte</title>
 <style>
 /* Single-theme by design: the project's night. All colors explicit. */
 * { box-sizing: border-box; }
@@ -34,8 +34,26 @@ h1 {
   font-size: 1.15rem;
   line-height: 1.7;
   color: #d8d2bd;
-  margin: 0 0 3.5rem;
+  margin: 0 0 1rem;
   max-width: 40rem;
+}
+.modell {
+  font-family: system-ui, sans-serif;
+  font-size: 1rem;
+  line-height: 1.7;
+  color: #9a8f96;
+  margin: 0 0 3.2rem;
+  max-width: 40rem;
+}
+.modell b { color: #d8d2bd; font-weight: 600; }
+h2.abschnitt {
+  font-family: system-ui, sans-serif;
+  font-size: .8rem;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: #9a8f96;
+  font-weight: 600;
+  margin: 0 0 1.2rem;
 }
 a.karte {
   display: block;
@@ -44,8 +62,8 @@ a.karte {
   background: #1d1318;
   border: 1px solid #3d2c34;
   border-radius: 1rem;
-  padding: 2rem 2.2rem 2.1rem;
-  margin: 0 0 1.6rem;
+  padding: 1.9rem 2.2rem 2rem;
+  margin: 0 0 1.5rem;
   transition: border-color .3s, box-shadow .3s;
 }
 a.karte:hover, a.karte:focus-visible {
@@ -53,61 +71,65 @@ a.karte:hover, a.karte:focus-visible {
   box-shadow: 0 0 40px var(--halo);
   outline: none;
 }
-.karte .nummer {
-  font-family: ui-monospace, monospace;
-  font-size: .78rem;
-  color: var(--c1);
-  letter-spacing: .1em;
-}
-.karte h2 {
+.karte h3 {
   font-size: clamp(1.5rem, 3.5vw, 2rem);
   font-weight: 400;
-  margin: .5rem 0 .9rem;
+  margin: 0 0 .3rem;
   text-shadow: 0 0 30px var(--halo);
 }
-.karte p {
+.karte .was {
   font-family: system-ui, sans-serif;
-  font-size: 1.05rem;
+  font-size: 1.02rem;
   line-height: 1.65;
   color: #b9aeb4;
-  margin: 0;
+  margin: .5rem 0 0;
 }
-.karte .siehst {
-  margin-top: 1rem;
-  font-size: .95rem;
+.karte .linse {
+  font-family: system-ui, sans-serif;
+  font-size: .92rem;
+  line-height: 1.6;
   color: #9a8f96;
+  margin: 1rem 0 0;
+  padding-top: .9rem;
+  border-top: 1px dashed #3d2c34;
 }
-.karte .siehst b { color: #d8d2bd; font-weight: 600; }
+.karte .linse b { color: var(--c1); font-weight: 600; }
 footer {
-  margin-top: 4rem;
+  margin-top: 3.5rem;
   font-family: system-ui, sans-serif;
   font-size: .9rem;
   color: #6b5f66;
   line-height: 1.7;
 }
-footer a { color: #9a8f96; }
 </style>
 
 <main>
   <p class="eyebrow">Projekt most</p>
-  <h1>Wissen, das in jedem Zustand ankommt.</h1>
-  <p class="intro">Wir bauen User Interfaces, die Wissen so zeigen, dass sie auch für sehr bekiffte Menschen funktionieren, weil sie dann für alle funktionieren. Ein Bild pro Gedanke, ein Tipp pro Schritt, nichts geht kaputt. Zwei Interfaces sind fertig, jede Karte führt dich hin.</p>
+  <h1>Ein UI, viele Gestalten.</h1>
+  <p class="intro">Wir bauen ein einziges, generalisiertes User Interface für Wissen, das in jedem Zustand ankommt, auch sehr bekifft. Pro Projekt bekommt es eine eigene Gestalt, die aus der Domäne des Projekts abgeleitet wird.</p>
+  <p class="modell">Das Modell dahinter ist immer gleich, vier Dinge werden gezeigt: <b>Einheiten</b> (das Wissen, antippbar, ein Wort, ein Satz), <b>Fluss</b> (die Zeit oder der Prozess), <b>Regeln</b> (was steuert) und <b>Lücken</b> (was fehlt, obwohl es gebraucht wird). Nur das Gewand wechselt.</p>
 
-  <a class="karte" style="--c1:#e8b34c; --halo:rgba(232,179,76,.25)" href="mhdbdb-tests.html">
-    <span class="nummer">INTERFACE 1</span>
-    <h2>Der Nachtgarten</h2>
-    <p>Die MHDBDB ist eine Website über mittelhochdeutsche Wörter, und 31 automatische Tests passen auf, dass sie funktioniert. Der Nachtgarten zeigt diese Tests als leuchtende Zellen in sechs Räumen.</p>
-    <p class="siehst"><b>Was du siehst:</b> sechs Kugeln, ihre Kerne sind die Tests. Antippen öffnet den Raum, jedes Licht ist ein Test mit einem Wort, ein zweiter Tipp gibt dir den Satz dazu und die Ader, durch die der Test fließt.</p>
+  <h2 class="abschnitt">Die Projekte</h2>
+
+  <a class="karte" style="--c1:#e8b34c; --halo:rgba(232,179,76,.22)" href="mhdbdb-tests.html">
+    <h3>MHDBDB</h3>
+    <p class="was">Eine Website über mittelhochdeutsche Wörter. Gezeigt werden ihre 31 Wächter-Tests: Einheiten sind die Tests, der Fluss ist der Prüfablauf jedes Tests, Lücken gäbe es, wenn ein Bereich unbewacht wäre.</p>
+    <p class="linse"><b>Gestalt: Nachtgarten.</b> Aus der Domäne abgeleitet, alte Texte liegen wie ein Garten in der Nacht, und die Tests sind die Lichter, die über ihn wachen.</p>
   </a>
 
-  <a class="karte" style="--c1:#d4705b; --halo:rgba(212,112,91,.25)" href="promptotyping-organismus.html">
-    <span class="nummer">INTERFACE 2</span>
-    <h2>Der Organismus</h2>
-    <p>Jedes gute Projekt hat einen Ordner voller Wissensdokumente, warum es das Projekt gibt, was gebaut wird, wie, und was schon passiert ist. Der Organismus malt diesen Ordner als Körper.</p>
-    <p class="siehst"><b>Was du siehst:</b> jede Zelle ein Dokument, die rote Ader ist die Zeit des Projekts, feine Fäden sind die Regeln, und blasse gestrichelte Kreise sind Dokumente, die fehlen, obwohl man sie bräuchte. Oben kannst du zwischen zwei Projekten wechseln, einem gesunden und einem löchrigen.</p>
+  <a class="karte" style="--c1:#d4705b; --halo:rgba(212,112,91,.22)" href="promptotyping-organismus.html">
+    <h3>Promptotyping</h3>
+    <p class="was">Eine Forschungsmethode mit dreizehn Wissensdokumenten. Einheiten sind die Dokumente, der Fluss ist die Projektzeit durch Journal und Plan, Regeln sind die Agenten-Anweisungen, Lücken die fehlenden Dokumente.</p>
+    <p class="linse"><b>Gestalt: Organismus.</b> Körper-Linse, Organe, Zeitader, Nervenfäden, Geisterorgane. Nach unserer eigenen Linsenregel stünde der Methode ihre wörtliche Gestalt noch näher, der Workflow von Forschungsdaten zu Artefakten; die steht als nächste Variante aus.</p>
+  </a>
+
+  <a class="karte" style="--c1:#8fb083; --halo:rgba(143,176,131,.22)" href="promptotyping-organismus.html#most">
+    <h3>most</h3>
+    <p class="was">Dieses Projekt selbst, das UI für jeden Zustand. Zwei Wissensdokumente existieren, vier fehlen, das Projekt ist jung und löchrig.</p>
+    <p class="linse"><b>Gestalt: Organismus, Exemplar most.</b> Dieselbe Körper-Linse wie Promptotyping, als direkter Vergleich, ein gesunder Körper neben einem, der noch fast nur aus Geisterorganen besteht.</p>
   </a>
 
   <footer>
-    Beide Interfaces folgen denselben Prinzipien, eine Idee pro Screen, das UI hält den Zustand, Fadenverlust kostet nichts. Die Prinzipien, Personas und Entscheidungen stehen im knowledge-Ordner des Repos.
+    Jede Karte nennt zuerst das Projekt, dann seine Gestalt. Das Modell, die Linsenregel, die Personas und alle Entscheidungen stehen im knowledge-Ordner des Repos.
   </footer>
 </main>
