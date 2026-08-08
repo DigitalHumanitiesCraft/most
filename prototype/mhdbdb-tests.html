@@ -19,33 +19,34 @@ canvas#glow {
   height: 100%;
   z-index: 0;
 }
-/* ---------- home ---------- */
-#home {
+.szene {
   position: fixed;
   inset: 0;
-  z-index: 1;
-  display: block;
+  display: none;
 }
-#home header {
+.szene.offen { display: block; }
+.kopf {
   position: absolute;
-  top: 6vh;
+  top: 5vh;
   width: 100%;
   text-align: center;
   pointer-events: none;
+  z-index: 3;
 }
-#home h1 {
-  font-size: clamp(2rem, 6vw, 3.4rem);
+.kopf h1 {
+  font-size: clamp(1.8rem, 5vw, 3rem);
   font-weight: 400;
   margin: 0;
   letter-spacing: .04em;
   text-shadow: 0 0 40px rgba(232,179,76,.35);
 }
-#home .sub {
+.kopf .sub {
   color: #9aa18f;
-  font-size: clamp(.95rem, 2.2vw, 1.15rem);
-  margin-top: .5rem;
+  font-size: clamp(.9rem, 2vw, 1.1rem);
+  margin-top: .4rem;
   font-family: system-ui, sans-serif;
 }
+/* ---------- garden orbs ---------- */
 .orb {
   position: absolute;
   transform: translate(-50%, -50%);
@@ -73,38 +74,86 @@ canvas#glow {
   50% { margin-top: -14px; }
 }
 .orb:nth-child(odd) { animation-duration: 9s; animation-delay: -3s; }
-/* ---------- room ---------- */
-#room {
-  position: fixed;
+/* ---------- constellation ---------- */
+#stern {
+  background: radial-gradient(ellipse at 50% 115%, var(--halo, rgba(232,179,76,.18)), transparent 60%);
+}
+#konst {
+  position: absolute;
+  inset: 18vh 4vw 8vh;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  align-content: center;
+  gap: 4vh 3.5vw;
+  transition: opacity .5s;
+}
+#stern.fokus #konst { opacity: .18; pointer-events: none; }
+.licht {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #efe9d6;
+  font-family: Georgia, serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .7rem;
+  transition: transform .3s;
+  transform: rotate(var(--tilt, 0deg));
+}
+.licht:hover, .licht:focus-visible { transform: scale(1.12) rotate(0deg); outline: none; }
+.licht .punkt {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 35%, #fff8e0, var(--c1) 55%, transparent 75%);
+  box-shadow: 0 0 22px var(--c1), 0 0 50px var(--halo);
+}
+.licht:focus-visible .punkt { box-shadow: 0 0 0 3px #efe9d6, 0 0 22px var(--c1); }
+.licht .ein-wort {
+  font-size: clamp(1.05rem, 2.4vw, 1.5rem);
+  letter-spacing: .04em;
+  text-shadow: 0 0 20px rgba(0,0,0,.8);
+}
+.licht.gesehen .punkt { opacity: .55; }
+/* ---------- focus overlay ---------- */
+#lupe {
+  position: absolute;
   inset: 0;
-  z-index: 2;
+  z-index: 4;
   display: none;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   text-align: center;
+  padding: 10vh 6vw;
   cursor: pointer;
-  padding: 8vh 6vw;
-  background: radial-gradient(ellipse at 50% 110%, var(--halo, rgba(232,179,76,.2)), transparent 60%);
 }
-#room.offen { display: flex; }
-#room .wo {
-  position: absolute;
-  top: 5vh;
-  font-family: system-ui, sans-serif;
-  font-size: 1rem;
-  color: #9aa18f;
-  letter-spacing: .12em;
-  text-transform: uppercase;
-}
-#fakt {
-  font-size: clamp(2rem, 6.5vw, 4rem);
-  line-height: 1.25;
-  max-width: 18ch;
-  text-wrap: balance;
+#stern.fokus #lupe { display: flex; }
+#gross {
+  font-size: clamp(3rem, 10vw, 6rem);
+  line-height: 1.05;
   margin: 0;
-  text-shadow: 0 0 60px var(--halo, rgba(232,179,76,.4));
-  animation: auftauchen .9s ease both;
+  text-shadow: 0 0 70px var(--c1, rgba(232,179,76,.8));
+  animation: auftauchen .7s ease both;
+}
+#satz {
+  font-size: clamp(1.3rem, 3.4vw, 2rem);
+  line-height: 1.45;
+  max-width: 26ch;
+  text-wrap: balance;
+  margin: 2.2rem 0 0;
+  color: #d8d2bd;
+  animation: auftauchen .7s .15s ease both;
+}
+#spec {
+  margin-top: 2.4rem;
+  font-family: ui-monospace, monospace;
+  font-size: .8rem;
+  color: #6b7261;
+  letter-spacing: .05em;
 }
 @keyframes auftauchen {
   from { opacity: 0; transform: translateY(14px); }
@@ -112,27 +161,34 @@ canvas#glow {
 }
 #punkte {
   position: absolute;
-  bottom: 9vh;
+  bottom: 8vh;
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
-  gap: 1rem;
+  gap: .9rem;
+  z-index: 5;
+  pointer-events: none;
 }
 #punkte i {
-  width: 12px;
-  height: 12px;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
   background: #3a4235;
-  box-shadow: none;
   transition: background .4s, box-shadow .4s;
 }
-#punkte i.jetzt { background: var(--c1, #e8b34c); box-shadow: 0 0 14px var(--c1, #e8b34c); }
-#hinweis {
+#punkte i.jetzt { background: var(--c1, #e8b34c); box-shadow: 0 0 12px var(--c1, #e8b34c); }
+.hinweis {
   position: absolute;
   bottom: 4vh;
+  width: 100%;
+  text-align: center;
   font-family: system-ui, sans-serif;
   font-size: .85rem;
   color: #6b7261;
+  pointer-events: none;
+  z-index: 5;
 }
-#zu {
+.zu {
   position: absolute;
   top: 4vh;
   right: 5vw;
@@ -142,100 +198,168 @@ canvas#glow {
   border: none;
   cursor: pointer;
   font-family: Georgia, serif;
+  z-index: 6;
 }
-#zu:focus-visible { outline: 2px solid #efe9d6; border-radius: 50%; }
+.zu:focus-visible { outline: 2px solid #efe9d6; border-radius: 50%; }
 @media (prefers-reduced-motion: reduce) {
-  .orb { animation: none; }
-  #fakt { animation: none; }
+  .orb, #gross, #satz { animation: none; }
 }
 </style>
 
 <canvas id="glow"></canvas>
 
-<div id="home">
-  <header>
+<div id="garten" class="szene offen">
+  <div class="kopf">
     <h1>Die MHDBDB</h1>
     <p class="sub">Ein Garten aus alten Wörtern. 31 Lichter passen auf.</p>
-  </header>
+  </div>
 </div>
 
-<div id="room" aria-live="polite">
-  <span class="wo" id="wo"></span>
-  <button id="zu" aria-label="zurück zum Garten">✕</button>
-  <p id="fakt"></p>
+<div id="stern" class="szene">
+  <div class="kopf">
+    <h1 id="stern-titel"></h1>
+    <p class="sub">jedes Licht ist ein Test · antippen zum Näherkommen</p>
+  </div>
+  <button class="zu" id="stern-zu" aria-label="zurück zum Garten">✕</button>
+  <div id="konst"></div>
+  <div id="lupe" aria-live="polite">
+    <p id="gross"></p>
+    <p id="satz"></p>
+    <p id="spec"></p>
+  </div>
   <div id="punkte"></div>
-  <span id="hinweis">tippen für den nächsten Gedanken</span>
+  <p class="hinweis" id="stern-hinweis"></p>
 </div>
 
 <script>
 const ROOMS = [
-  { wort: 'Suchen', ico: '🔍', c1: '#e8b34c', c2: '#7a5a1e', halo: 'rgba(232,179,76,.45)', x: 26, y: 40, tests: 9,
-    fakten: ['Du tippst brot.\nSie findet brôt.', 'Sechs Sucharten.\nAlle liefern.', 'wein findet\nalle Weinwörter.', 'minne und herze\nim selben Vers.', 'Ein Wort doppelt?\nSie nimmt das häufigere.'] },
-  { wort: 'Lesen', ico: '📖', c1: '#8fb083', c2: '#39543a', halo: 'rgba(143,176,131,.4)', x: 72, y: 34, tests: 3,
-    fakten: ['667 alte Texte.', 'Dein Wort leuchtet\nim Text.', 'Gelesenes bleibt.\nSofort wieder da.'] },
-  { wort: 'Bedeutung', ico: '📚', c1: '#d9c184', c2: '#6e5c2c', halo: 'rgba(217,193,132,.4)', x: 50, y: 62, tests: 3,
-    fakten: ['Jedes Wort\nhat ein Zuhause.', 'Blättern\nvon A bis Z.', 'Alles ist\nverbunden.'] },
-  { wort: 'Spielsachen', ico: '🎲', c1: '#c88bb0', c2: '#5d3a52', halo: 'rgba(200,139,176,.35)', x: 22, y: 74, tests: 5,
-    fakten: ['gân reimt\nauf begân.', 'Wie enden Verse?\nEs zählt mit.', 'Wie heißen\ndie Figuren wirklich?', 'Wörter, die nur\neinmal existieren.'] },
-  { wort: 'Treffer', ico: '📋', c1: '#a9b7c6', c2: '#46525e', halo: 'rgba(169,183,198,.3)', x: 84, y: 66, tests: 1,
-    fakten: ['Liste oder Tabelle.\nDeine Wahl bleibt.'] },
-  { wort: 'Fundament', ico: '🧱', c1: '#d4705b', c2: '#6e3126', halo: 'rgba(212,112,91,.4)', x: 55, y: 22, tests: 10,
-    fakten: ['Fehler?\nEine Meldung. Kein Absturz.', 'Keine fremden Server.', 'Auch am Handy.', 'Zwei Zähler,\nexakt gleiches Ergebnis.'] },
+  { wort: 'Suchen', ico: '🔍', c1: '#e8b34c', c2: '#7a5a1e', halo: 'rgba(232,179,76,.45)', x: 26, y: 40, tests: [
+    { w: 'Finden', s: 'Die Suche findet dein Wort, auch wenn du nur fast richtig liegst.', f: 'search-engine' },
+    { w: 'Vereinfachen', s: 'ô und æ werden vor jeder Suche zu o und a, überall gleich.', f: 'search-normalization' },
+    { w: 'Sechs Wege', s: 'Autoren, Werke, Wörter, Begriffe, Gattungen, Namen, alle sechs Suchen liefern.', f: 'search-with-corpus' },
+    { w: 'Genau', s: 'Markiert wird genau dein Wort, keine Wörter, die es nur enthalten.', f: 'lemma-matching' },
+    { w: 'Teile', s: 'wein findet alle Wörter, in denen wein steckt.', f: 'word-component-search' },
+    { w: 'Nähe', s: 'Zwei Wörter nah beieinander, der Abstand wird richtig gemessen.', f: 'proximity-and-resolution' },
+    { w: 'Vers', s: 'minne und herze im selben Vers finden.', f: 'multi-lemma-verse' },
+    { w: 'Doppelt', s: 'Gibt es ein Wort zweimal, gewinnt das häufigere, wechseln geht immer.', f: 'cooccurrence-ranking' },
+    { w: 'Übergabe', s: 'Springst du aus einer Liste in die Suche, kommt genau dein Wort an.', f: 'lemma-occurrence-handoff' },
+  ]},
+  { wort: 'Lesen', ico: '📖', c1: '#8fb083', c2: '#39543a', halo: 'rgba(143,176,131,.4)', x: 72, y: 34, tests: [
+    { w: 'Leuchten', s: 'Dein gesuchtes Wort leuchtet farbig im alten Text.', f: 'reading-view' },
+    { w: 'Zählen', s: 'Alle Teile des Systems zählen die Wortpositionen exakt gleich.', f: 'position-parity' },
+    { w: 'Merken', s: 'Ein gelesener Text ist beim zweiten Mal sofort wieder da.', f: 'tei-caching' },
+  ]},
+  { wort: 'Bedeutung', ico: '📚', c1: '#d9c184', c2: '#6e5c2c', halo: 'rgba(217,193,132,.4)', x: 50, y: 62, tests: [
+    { w: 'Zuhause', s: 'Jedes Wort hat eine eigene Seite mit Fundstellen und Links.', f: 'lemma-page' },
+    { w: 'Blättern', s: 'Von A bis Z, und jede Stelle hat eine merkbare Adresse.', f: 'woerterbuch' },
+    { w: 'Fäden', s: 'Vom Werk zum Autor, vom Wort zum Begriff, alles verknüpft.', f: 'cross-reference-test' },
+  ]},
+  { wort: 'Spielsachen', ico: '🎲', c1: '#c88bb0', c2: '#5d3a52', halo: 'rgba(200,139,176,.35)', x: 22, y: 74, tests: [
+    { w: 'Reime', s: 'gân reimt auf begân, muot auf guot.', f: 'rhyme-dictionary' },
+    { w: 'Enden', s: 'Eine Zählung darüber, wie Verse aufhören.', f: 'verse-ending-profile' },
+    { w: 'Namen', s: 'Wie Figuren in den Geschichten genannt werden, mit Belegen.', f: 'naming-explorer' },
+    { w: 'Einmal', s: 'Wörter, die im ganzen Korpus nur ein einziges Mal vorkommen.', f: 'hapax-legomena' },
+    { w: 'Flut', s: 'Auch riesige Begriffsmengen frieren die Seite nicht ein.', f: 'concept-distribution' },
+  ]},
+  { wort: 'Treffer', ico: '📋', c1: '#a9b7c6', c2: '#46525e', halo: 'rgba(169,183,198,.3)', x: 84, y: 66, tests: [
+    { w: 'Tabelle', s: 'Treffer als Liste oder Tabelle, sortierbar, mitnehmbar, gemerkt.', f: 'results-table' },
+  ]},
+  { wort: 'Fundament', ico: '🧱', c1: '#d4705b', c2: '#6e3126', halo: 'rgba(212,112,91,.4)', x: 55, y: 22, tests: [
+    { w: 'Start', s: 'Die Startseite lädt ohne Fehler, die Suche geht sofort.', f: 'main-site' },
+    { w: 'Fangen', s: 'Geht etwas schief, kommt eine Meldung, die Seite lebt weiter.', f: 'error-handling' },
+    { w: 'Laden', s: 'Der Korpus mit allen Texten lädt zuverlässig.', f: 'corpus' },
+    { w: '667', s: 'Alle 667 Texte kommen wirklich an.', f: 'playground-corpus' },
+    { w: 'Werkstatt', s: 'Der Datenbereich startet mit allen Bausteinen.', f: 'playground' },
+    { w: 'Register', s: 'Die großen Register laden schnell und vollständig.', f: 'playground-authority-index' },
+    { w: 'Rahmen', s: 'Menü und Fußzeile funktionieren auf jeder Unterseite.', f: 'site-chrome' },
+    { w: 'Daheim', s: 'Keine fremden Server, alle Bausteine liegen bei der Seite.', f: 'vendor' },
+    { w: 'Handy', s: 'Auch auf Handy und Tablet gut bedienbar.', f: 'visual-mobile-test' },
+    { w: 'Gleich', s: 'Python und JavaScript vereinfachen Wörter exakt gleich.', f: 'normalization-parity' },
+  ]},
 ];
 
-const home = document.getElementById('home');
-const room = document.getElementById('room');
-const fakt = document.getElementById('fakt');
+const garten = document.getElementById('garten');
+const stern = document.getElementById('stern');
+const konst = document.getElementById('konst');
 const punkte = document.getElementById('punkte');
-const wo = document.getElementById('wo');
-let aktiv = null, idx = 0;
+let raum = null, idx = -1;
+
+let seed = 7;
+function rnd() { seed = (seed * 16807) % 2147483647; return seed / 2147483647; }
 
 for (const r of ROOMS) {
-  const d = Math.round(90 + r.tests * 9);
+  const d = Math.round(90 + r.tests.length * 9);
   const b = document.createElement('button');
   b.className = 'orb';
   b.style.cssText = `--c1:${r.c1};--c2:${r.c2};--halo:${r.halo};--d:${d}px;width:${d}px;height:${d}px;left:${r.x}%;top:${r.y}%`;
   b.innerHTML = `<span class="ico">${r.ico}</span><span class="wort">${r.wort}</span>`;
-  b.addEventListener('click', () => oeffnen(r));
-  home.appendChild(b);
+  b.addEventListener('click', () => raumOeffnen(r));
+  garten.appendChild(b);
 }
 
-function oeffnen(r) {
-  aktiv = r; idx = 0;
-  room.style.setProperty('--c1', r.c1);
-  room.style.setProperty('--halo', r.halo);
-  wo.textContent = `${r.ico} ${r.wort} · ${r.tests} Lichter`;
-  punkte.innerHTML = r.fakten.map(() => '<i></i>').join('');
-  room.classList.add('offen');
-  home.style.display = 'none';
-  zeigen();
+function raumOeffnen(r) {
+  raum = r; idx = -1;
+  stern.style.setProperty('--c1', r.c1);
+  stern.style.setProperty('--halo', r.halo);
+  document.getElementById('stern-titel').textContent = `${r.ico} ${r.wort}`;
+  document.getElementById('stern-hinweis').textContent = `${r.tests.length} ${r.tests.length === 1 ? 'Licht' : 'Lichter'}`;
+  konst.innerHTML = '';
+  r.tests.forEach((t, i) => {
+    const b = document.createElement('button');
+    b.className = 'licht';
+    b.style.setProperty('--tilt', (rnd() * 6 - 3).toFixed(1) + 'deg');
+    b.style.setProperty('--c1', r.c1);
+    b.style.setProperty('--halo', r.halo);
+    b.innerHTML = `<span class="punkt"></span><span class="ein-wort">${t.w}</span>`;
+    b.addEventListener('click', () => fokus(i));
+    konst.appendChild(b);
+  });
+  punkte.innerHTML = r.tests.map(() => '<i></i>').join('');
+  punkte.style.display = 'none';
+  stern.classList.remove('fokus');
+  stern.classList.add('offen');
+  garten.classList.remove('offen');
 }
-function zeigen() {
-  fakt.style.animation = 'none';
-  void fakt.offsetWidth;
-  fakt.style.animation = '';
-  fakt.textContent = aktiv.fakten[idx];
-  [...punkte.children].forEach((p, i) => p.classList.toggle('jetzt', i === idx));
+function fokus(i) {
+  idx = i;
+  const t = raum.tests[i];
+  stern.classList.add('fokus');
+  punkte.style.display = 'flex';
+  const gross = document.getElementById('gross');
+  const satz = document.getElementById('satz');
+  for (const el of [gross, satz]) { el.style.animation = 'none'; void el.offsetWidth; el.style.animation = ''; }
+  gross.textContent = t.w;
+  satz.textContent = t.s;
+  document.getElementById('spec').textContent = t.f + '.spec.js';
+  [...punkte.children].forEach((p, k) => p.classList.toggle('jetzt', k === i));
+  konst.children[i].classList.add('gesehen');
+  document.getElementById('stern-hinweis').textContent = 'tippen für das nächste Licht';
 }
-function weiter() {
-  idx++;
-  if (idx >= aktiv.fakten.length) return schliessen();
-  zeigen();
+function fokusZu() {
+  stern.classList.remove('fokus');
+  punkte.style.display = 'none';
+  idx = -1;
+  document.getElementById('stern-hinweis').textContent = `${raum.tests.length} ${raum.tests.length === 1 ? 'Licht' : 'Lichter'}`;
 }
-function schliessen() {
-  room.classList.remove('offen');
-  home.style.display = 'block';
-  aktiv = null;
-}
-room.addEventListener('click', e => { if (e.target.id !== 'zu') weiter(); });
-document.getElementById('zu').addEventListener('click', schliessen);
+document.getElementById('lupe').addEventListener('click', () => {
+  if (idx + 1 < raum.tests.length) fokus(idx + 1); else fokusZu();
+});
+document.getElementById('stern-zu').addEventListener('click', () => {
+  if (stern.classList.contains('fokus')) return fokusZu();
+  stern.classList.remove('offen');
+  garten.classList.add('offen');
+  raum = null;
+});
 addEventListener('keydown', e => {
-  if (!aktiv) return;
-  if (e.key === 'Escape') schliessen();
-  if (e.key === ' ' || e.key === 'Enter' || e.key === 'ArrowRight') weiter();
+  if (!raum) return;
+  if (e.key === 'Escape') document.getElementById('stern-zu').click();
+  if (idx >= 0 && (e.key === ' ' || e.key === 'Enter' || e.key === 'ArrowRight')) {
+    if (idx + 1 < raum.tests.length) fokus(idx + 1); else fokusZu();
+  }
+  if (idx > 0 && e.key === 'ArrowLeft') fokus(idx - 1);
 });
 
-/* fireflies: one light per test file, drifting slowly */
+/* fireflies: one light per test, drifting slowly */
 const cv = document.getElementById('glow');
 const cx = cv.getContext('2d');
 const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -243,10 +367,8 @@ let W, H;
 function messen() { W = cv.width = innerWidth; H = cv.height = innerHeight; }
 messen(); addEventListener('resize', messen);
 const flies = [];
-let seed = 7;
-function rnd() { seed = (seed * 16807) % 2147483647; return seed / 2147483647; }
-for (const r of ROOMS) for (let i = 0; i < r.tests; i++) {
-  flies.push({ x: rnd() * 1, y: rnd() * 1, p: rnd() * Math.PI * 2, v: .00012 + rnd() * .0002, c: r.c1 });
+for (const r of ROOMS) for (const t of r.tests) {
+  flies.push({ x: rnd(), y: rnd(), p: rnd() * Math.PI * 2, v: .00012 + rnd() * .0002, c: r.c1 });
 }
 function malen(t) {
   cx.clearRect(0, 0, W, H);
