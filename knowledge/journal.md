@@ -6,6 +6,12 @@ updated: 2026-08-08
 
 # Journal, rückwärts lesen
 
+## 2026-08-08, zweite Session: Helio als Leitästhetik, echter Testlauf
+
+**Richtungsentscheidung.** Das Team hat `himmel.html` verworfen ("das braucht wirklich niemand") und Helio zur Leitästhetik erklärt; `helio-mhdbdb.html` ist die Referenz-Gestalt, die ausgearbeitet wird. Festgehalten in design.md und plan.md; die Überseite führt nicht mehr in den Himmel, bei Promptotyping ist die Helio-Scheibe der Standardpfad geworden.
+
+**Echter Testlauf als Datenquelle (Plan-Punkt 1).** Die vollständige Playwright-Suite der MHDBDB lief lokal; das Ergebnis war real rot, gefallen sind ausschließlich die beiden Paritäts-Specs `position-parity` und `normalization-parity` (Python gegen JavaScript), alle übrigen 29 Spec-Dateien grün. `scripts/testlauf-ingest.mjs` aggregiert den JSON-Report pro Spec-Datei nach `prototype/daten/testlauf.json`. `helio-mhdbdb.html` lädt die Datei per fetch; ohne Datei behauptet die Seite weiterhin nichts. Codierung im Band, ein gefallener Test reißt sein Band am Ort seiner Störung, flaky kerbt, komplett übersprungen wird durchscheinend; sobald Laufdaten da sind, darf der dekorative Sinus-Pinch Bänder nur noch ausdünnen, nie mehr trennen, damit der Riss eindeutig Fehler bedeutet. Status steht zusätzlich als Text in Untertitel, Zeilen, Kategorien und Fokus (nie Bedeutung über Form allein). Browser-verifiziert über alle drei Ansichten.
+
 ## 2026-08-08, Gründungssession
 
 Alles Folgende entstand in einer einzigen Session des Teams (zwei Personen, selbst im Zielzustand) mit dem Assistenten. Reihenfolge rückwärts.

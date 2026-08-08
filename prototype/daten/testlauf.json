@@ -1,0 +1,230 @@
+{
+  "lauf": {
+    "start": "2026-08-08T19:18:06.137Z",
+    "dauerSek": 336,
+    "gesamt": 284,
+    "bestanden": 277,
+    "gefallen": 7,
+    "flaky": 0,
+    "uebersprungen": 0
+  },
+  "specs": {
+    "concept-distribution": {
+      "gesamt": 4,
+      "bestanden": 4,
+      "gefallen": 0,
+      "flaky": 0,
+      "uebersprungen": 0
+    },
+    "cooccurrence-ranking": {
+      "gesamt": 7,
+      "bestanden": 7,
+      "gefallen": 0,
+      "flaky": 0,
+      "uebersprungen": 0
+    },
+    "corpus": {
+      "gesamt": 5,
+      "bestanden": 5,
+      "gefallen": 0,
+      "flaky": 0,
+      "uebersprungen": 0
+    },
+    "cross-reference-test": {
+      "gesamt": 4,
+      "bestanden": 4,
+      "gefallen": 0,
+      "flaky": 0,
+      "uebersprungen": 0
+    },
+    "error-handling": {
+      "gesamt": 4,
+      "bestanden": 4,
+      "gefallen": 0,
+      "flaky": 0,
+      "uebersprungen": 0
+    },
+    "hapax-legomena": {
+      "gesamt": 10,
+      "bestanden": 10,
+      "gefallen": 0,
+      "flaky": 0,
+      "uebersprungen": 0
+    },
+    "lemma-matching": {
+      "gesamt": 3,
+      "bestanden": 3,
+      "gefallen": 0,
+      "flaky": 0,
+      "uebersprungen": 0
+    },
+    "lemma-occurrence-handoff": {
+      "gesamt": 13,
+      "bestanden": 13,
+      "gefallen": 0,
+      "flaky": 0,
+      "uebersprungen": 0
+    },
+    "lemma-page": {
+      "gesamt": 18,
+      "bestanden": 18,
+      "gefallen": 0,
+      "flaky": 0,
+      "uebersprungen": 0
+    },
+    "main-site": {
+      "gesamt": 14,
+      "bestanden": 14,
+      "gefallen": 0,
+      "flaky": 0,
+      "uebersprungen": 0
+    },
+    "multi-lemma-verse": {
+      "gesamt": 2,
+      "bestanden": 2,
+      "gefallen": 0,
+      "flaky": 0,
+      "uebersprungen": 0
+    },
+    "naming-explorer": {
+      "gesamt": 7,
+      "bestanden": 7,
+      "gefallen": 0,
+      "flaky": 0,
+      "uebersprungen": 0
+    },
+    "normalization-parity": {
+      "gesamt": 6,
+      "bestanden": 4,
+      "gefallen": 2,
+      "flaky": 0,
+      "uebersprungen": 0
+    },
+    "playground-authority-index": {
+      "gesamt": 7,
+      "bestanden": 7,
+      "gefallen": 0,
+      "flaky": 0,
+      "uebersprungen": 0
+    },
+    "playground-corpus": {
+      "gesamt": 5,
+      "bestanden": 5,
+      "gefallen": 0,
+      "flaky": 0,
+      "uebersprungen": 0
+    },
+    "playground": {
+      "gesamt": 3,
+      "bestanden": 3,
+      "gefallen": 0,
+      "flaky": 0,
+      "uebersprungen": 0
+    },
+    "position-parity": {
+      "gesamt": 6,
+      "bestanden": 1,
+      "gefallen": 5,
+      "flaky": 0,
+      "uebersprungen": 0
+    },
+    "proximity-and-resolution": {
+      "gesamt": 16,
+      "bestanden": 16,
+      "gefallen": 0,
+      "flaky": 0,
+      "uebersprungen": 0
+    },
+    "reading-view": {
+      "gesamt": 29,
+      "bestanden": 29,
+      "gefallen": 0,
+      "flaky": 0,
+      "uebersprungen": 0
+    },
+    "results-table": {
+      "gesamt": 14,
+      "bestanden": 14,
+      "gefallen": 0,
+      "flaky": 0,
+      "uebersprungen": 0
+    },
+    "rhyme-dictionary": {
+      "gesamt": 4,
+      "bestanden": 4,
+      "gefallen": 0,
+      "flaky": 0,
+      "uebersprungen": 0
+    },
+    "search-engine": {
+      "gesamt": 13,
+      "bestanden": 13,
+      "gefallen": 0,
+      "flaky": 0,
+      "uebersprungen": 0
+    },
+    "search-normalization": {
+      "gesamt": 14,
+      "bestanden": 14,
+      "gefallen": 0,
+      "flaky": 0,
+      "uebersprungen": 0
+    },
+    "search-with-corpus": {
+      "gesamt": 13,
+      "bestanden": 13,
+      "gefallen": 0,
+      "flaky": 0,
+      "uebersprungen": 0
+    },
+    "site-chrome": {
+      "gesamt": 5,
+      "bestanden": 5,
+      "gefallen": 0,
+      "flaky": 0,
+      "uebersprungen": 0
+    },
+    "tei-caching": {
+      "gesamt": 7,
+      "bestanden": 7,
+      "gefallen": 0,
+      "flaky": 0,
+      "uebersprungen": 0
+    },
+    "vendor": {
+      "gesamt": 7,
+      "bestanden": 7,
+      "gefallen": 0,
+      "flaky": 0,
+      "uebersprungen": 0
+    },
+    "verse-ending-profile": {
+      "gesamt": 3,
+      "bestanden": 3,
+      "gefallen": 0,
+      "flaky": 0,
+      "uebersprungen": 0
+    },
+    "visual-mobile-test": {
+      "gesamt": 9,
+      "bestanden": 9,
+      "gefallen": 0,
+      "flaky": 0,
+      "uebersprungen": 0
+    },
+    "woerterbuch": {
+      "gesamt": 6,
+      "bestanden": 6,
+      "gefallen": 0,
+      "flaky": 0,
+      "uebersprungen": 0
+    },
+    "word-component-search": {
+      "gesamt": 26,
+      "bestanden": 26,
+      "gefallen": 0,
+      "flaky": 0,
+      "uebersprungen": 0
+    }
+  }
+}

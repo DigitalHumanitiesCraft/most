@@ -6,6 +6,8 @@ updated: 2026-08-08
 
 # Design, User-Interface-Ästhetik "Helio"
 
+Team-Entscheidung 2026-08-08, Helio ist die Leitästhetik des Projekts. `helio-mhdbdb.html` ist die Referenz-Gestalt, an der sich alle weiteren Ansichten ausrichten; sie wird ausgearbeitet und verbessert. Die Himmels-Übersicht (`himmel.html`, Nachtwelt) ist als eigenständige Gestalt verworfen ("das braucht niemand") und wird nicht weiterentwickelt.
+
 Ausgearbeitet aus dem Artwork der Band The Helio Sequence (Spotify-Künstlerseite, Screenshots vom 2026-08-08). Das Dokument destilliert die Ästhetik in ein anwendbares Designsystem und hält fest, wie sie zu den Designprinzipien von most passt. Es beschreibt eine zweite Gestalt neben dem Nachtgarten-Thema; beide sind Linsen im Sinne von [projekt.md](projekt.md), Abschnitt Metaphern-Linsen.
 
 ## Das Motiv

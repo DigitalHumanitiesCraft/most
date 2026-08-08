@@ -303,6 +303,31 @@ const STEPS = {
   'normalization-parity': ['gleiche Wörter', 'beide vereinfachen', 'Gleichheit prüfen'],
 };
 
+/* ---------- real test run ----------
+   daten/testlauf.json is written by scripts/testlauf-ingest.mjs from the
+   Playwright JSON report. Without the file no view claims any state; with it,
+   a failed spec tears its band at the very spot of its swell, a flaky one
+   gets a notch. Two inks stay two inks: the break carries the meaning. */
+let LAUF = null;
+function stand(f) { return LAUF ? (LAUF.specs[f] || null) : null; }
+function riss(st) { return st ? (st.gefallen ? 2.6 : st.flaky ? .9 : 0) : 0; }
+function standWort(st) {
+  if (!st) return '';
+  if (st.gefallen) return st.gefallen + ' von ' + st.gesamt + ' gefallen';
+  if (st.flaky) return 'bestanden, ' + st.flaky + ' erst im zweiten Versuch';
+  if (st.uebersprungen === st.gesamt) return 'übersprungen';
+  return st.gesamt === 1 ? 'bestanden' : 'alle ' + st.gesamt + ' bestanden';
+}
+function laufDatum() {
+  return LAUF && LAUF.lauf.start
+    ? new Date(LAUF.lauf.start).toLocaleDateString('de-AT', { day: 'numeric', month: 'long' })
+    : '';
+}
+fetch('daten/testlauf.json')
+  .then(r => (r.ok ? r.json() : null))
+  .then(d => { if (d) { LAUF = d; laufAnzeigen(); } })
+  .catch(() => {});
+
 const WEISS = '239,234,226';
 const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const ZEIT_FEST = 41000; /* frozen frame for reduced motion, a fully valid still */
@@ -526,10 +551,12 @@ function zeichnen(t) {
       const dicke = Math.max(2.5, schritt * (n > 5 ? .52 : .44));
       const heiss = gi === aktiv;
       const bulges = raum.tests.map(tt => sig(tt.f));
+      const staende = raum.tests.map(tt => stand(tt.f));
       for (let k = 0; k < n; k++) {
         const y = y0 + schritt * (k + .5);
+        const st = staende[k];
         band(g, y, dicke, {
-          alpha: heiss ? 1 : .88,
+          alpha: (heiss ? 1 : .88) * (st && st.uebersprungen === st.gesamt ? .4 : 1),
           spanne,
           welle: w,
           stoer: (x, y2) => {
@@ -539,8 +566,12 @@ function zeichnen(t) {
             const px = a + bw * s.pos;
             const sw = bw * s.br * 2.4;
             const d = (x - px) / sw;
+            const dr = (x - px) / (sw * .42);
+            /* with run data only a real failure may sever the band, the decorative
+               pinch just thins it; without data the old full pinch stays */
             return s.amp * dicke * (heiss ? 1.5 : .9) * Math.exp(-d * d)
-                 - dicke * .55 * Math.pow(Math.max(0, Math.sin(x * .0026 + t * .00003 + s.ph)), 6);
+                 - dicke * (LAUF ? .38 : .55) * Math.pow(Math.max(0, Math.sin(x * .0026 + t * .00003 + s.ph)), 6)
+                 - riss(st) * dicke * Math.exp(-dr * dr);
           },
         });
       }
@@ -559,17 +590,20 @@ function zeichnen(t) {
       const h = r.y1 - r.y0;
       const dicke = Math.max(4, h * .34);
       const heiss = i === aktiv;
+      const st = stand(tt.f);
       const [a, b] = spanne();
       const px = a + (b - a) * s.pos;
       const sw = (b - a) * s.br * 2.6;
       band(g, r.y0 + h / 2, dicke, {
-        alpha: heiss ? 1 : .84,
+        alpha: (heiss ? 1 : .84) * (st && st.uebersprungen === st.gesamt ? .4 : 1),
         spanne,
         welle: w,
         stoer: (x) => {
           const d = (x - px) / sw;
+          const dr = (x - px) / (sw * .42);
           return s.amp * dicke * (heiss ? 2.1 : 1.25) * Math.exp(-d * d)
-               - dicke * .6 * Math.pow(Math.max(0, Math.sin(x * .0024 + t * .000028 + s.ph)), 6);
+               - dicke * (LAUF ? .4 : .6) * Math.pow(Math.max(0, Math.sin(x * .0024 + t * .000028 + s.ph)), 6)
+               - riss(st) * dicke * Math.exp(-dr * dr);
         },
       });
       /* denser echo below each band: density as depth */
@@ -581,6 +615,7 @@ function zeichnen(t) {
     /* focus: the field goes quiet so the word can carry the screen alone */
     const w = wellen(t, .003, 8, .00004);
     const s = aktTest ? sig(aktTest.f) : { pos: .5, amp: 1, br: .07, ph: 0 };
+    const st = aktTest ? stand(aktTest.f) : null;
     for (let i = 0; i < 16; i++) {
       const y = H * (i + .5) / 16;
       const dicke = 4 + i * .9;
@@ -591,7 +626,9 @@ function zeichnen(t) {
         stoer: (x) => {
           const px = W * s.pos, sw = W * s.br * 3;
           const d = (x - px) / sw;
-          return s.amp * dicke * .8 * Math.exp(-d * d);
+          const dr = (x - px) / (sw * .38);
+          return s.amp * dicke * .8 * Math.exp(-d * d)
+               - riss(st) * dicke * Math.exp(-dr * dr);
         },
       });
     }
@@ -639,20 +676,52 @@ ROOMS.forEach((r, i) => {
   katReihen.appendChild(b);
 });
 
+/* Once the run data is there, the words say what the bands already show. */
+function laufAnzeigen() {
+  const l = LAUF.lauf;
+  document.querySelector('#uebersicht .kopf .still').textContent =
+    'Sechs Bänder, 31 Prüfungen. Lauf vom ' + laufDatum() + ': ' +
+    (l.gefallen ? l.gefallen + ' von ' + l.gesamt + ' Tests gefallen, Risse im Band.'
+                : 'alle ' + l.gesamt + ' Tests bestanden.');
+  ROOMS.forEach((r, i) => {
+    const kaputt = r.tests.filter(tt => { const st = stand(tt.f); return st && st.gefallen; }).length;
+    const b = katReihen.children[i];
+    const zusatz = kaputt ? ' · ' + kaputt + ' gerissen' : '';
+    b.querySelector('.zahl').textContent = zahlwort(r.tests.length) + zusatz;
+    b.setAttribute('aria-label', r.wort + ', ' + zahlwort(r.tests.length) +
+      (kaputt ? ', ' + kaputt + ' davon gefallen' : ', alle bestanden') + ', Band öffnen');
+  });
+  neuZeichnen();
+}
+
 const testReihen = document.getElementById('test-reihen');
 function raumOeffnen(i) {
   aktRaum = ROOMS[i];
   document.getElementById('kat-wort').textContent = aktRaum.wort;
+  const kaputt = LAUF
+    ? aktRaum.tests.filter(tt => { const st = stand(tt.f); return st && st.gefallen; }).length
+    : 0;
   document.getElementById('kat-still').textContent =
-    zahlwort(aktRaum.tests.length) + ' als Störungen im Band. Antippen für den einzelnen Test.';
+    zahlwort(aktRaum.tests.length) + ' als Störungen im Band. ' +
+    (LAUF ? (kaputt ? (kaputt === 1 ? 'Eine ist gefallen, ihr Band reißt.' : kaputt + ' sind gefallen, ihre Bänder reißen.')
+                    : 'Alle bestanden.') + ' ' : '') +
+    'Antippen für den einzelnen Test.';
   testReihen.innerHTML = '';
   aktRaum.tests.forEach((t, k) => {
     const b = document.createElement('button');
     b.type = 'button';
     b.className = 'reihe';
-    b.setAttribute('aria-label', 'Test ' + (k + 1) + ' von ' + aktRaum.tests.length + ': ' + t.w);
+    const stT = stand(t.f);
+    b.setAttribute('aria-label', 'Test ' + (k + 1) + ' von ' + aktRaum.tests.length + ': ' + t.w +
+      (stT ? ', ' + standWort(stT) : ''));
     b.innerHTML = '<span class="spalte"><span class="wort"></span></span>';
     b.querySelector('.wort').textContent = t.w;
+    if (stT && (stT.gefallen || stT.flaky || stT.uebersprungen === stT.gesamt)) {
+      const z = document.createElement('span');
+      z.className = 'zahl';
+      z.textContent = standWort(stT);
+      b.querySelector('.spalte').appendChild(z);
+    }
     b.addEventListener('click', () => fokus(k));
     b.addEventListener('pointerenter', () => { aktiv = k; if (still) neuZeichnen(); });
     b.addEventListener('pointerleave', () => { aktiv = -1; if (still) neuZeichnen(); });
@@ -683,7 +752,9 @@ function fokus(k) {
     li.append(bal, tx);
     stufenListe.appendChild(li);
   });
-  document.getElementById('fok-spec').textContent = aktTest.f + '.spec.js';
+  const stF = stand(aktTest.f);
+  document.getElementById('fok-spec').textContent = aktTest.f + '.spec.js' +
+    (stF ? ' · ' + standWort(stF) + ' · Lauf vom ' + laufDatum() : '');
   document.getElementById('fok-hinweis').textContent =
     aktRaum.wort + ' · Test ' + (k + 1) + ' von ' + aktRaum.tests.length + ' · Pfeiltasten weiter, Esc zurück';
   document.getElementById('fok-vor').disabled = k === 0;
