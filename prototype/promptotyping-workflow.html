@@ -1,0 +1,620 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Promptotyping · Werkstrecke</title>
+<style>
+/* Single-theme by design: workshop night. All colors explicit. */
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: #150d11;
+  color: #efe9d6;
+  font-family: Georgia, 'Iowan Old Style', serif;
+  user-select: none;
+  overflow-x: hidden;
+}
+header {
+  padding: 4.5vh 6vw 0;
+  text-align: center;
+}
+header h1 {
+  font-size: clamp(1.7rem, 4.5vw, 2.7rem);
+  font-weight: 400;
+  margin: 0;
+  letter-spacing: .04em;
+  text-shadow: 0 0 40px rgba(232,179,76,.28);
+}
+header .sub {
+  font-family: system-ui, sans-serif;
+  font-size: clamp(.9rem, 2vw, 1.05rem);
+  color: #9a8f96;
+  margin: .5rem 0 0;
+  line-height: 1.6;
+}
+#strecke { position: relative; margin: 0 auto; }
+#strom { position: absolute; inset: 0; width: 100%; height: 100%; }
+.station {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #efe9d6;
+  font-family: Georgia, serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .1rem;
+  /* padding keeps every hitbox well past 44px even for the small glyphs */
+  padding: 14px 16px;
+  min-width: 62px;
+  min-height: 62px;
+  max-width: 11rem;
+  text-align: center;
+  transition: filter .3s;
+}
+.station:hover, .station:focus-visible { filter: brightness(1.3); outline: none; }
+.station:focus-visible canvas { outline: 2px solid #efe9d6; outline-offset: 5px; border-radius: 12px; }
+.station .wort { font-size: clamp(1rem, 2.1vw, 1.35rem); letter-spacing: .04em; text-shadow: 0 1px 8px rgba(0,0,0,.85); }
+.station .datei { font-family: ui-monospace, monospace; font-size: .7rem; color: #9a8f96; }
+.station.geist .wort { color: #9a8f96; font-style: italic; }
+.station.schleuse .wort { color: #d4705b; }
+.station.rand .wort {
+  font-family: system-ui, sans-serif;
+  font-size: clamp(.8rem, 1.7vw, .95rem);
+  letter-spacing: .13em;
+  text-transform: uppercase;
+  color: #b9aeb4;
+}
+#legende {
+  padding: 0 6vw 6vh;
+  text-align: center;
+  font-family: system-ui, sans-serif;
+  font-size: .88rem;
+  line-height: 1.9;
+  color: #b9aeb4;
+}
+#legende b { color: #efe9d6; font-weight: 600; }
+#lupe {
+  position: fixed;
+  inset: 0;
+  z-index: 5;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 8vh 6vw;
+  cursor: pointer;
+  background: rgba(21, 13, 17, .94);
+}
+#lupe.offen { display: flex; }
+#gross {
+  font-size: clamp(3rem, 9vw, 5.5rem);
+  line-height: 1.05;
+  margin: 0;
+  text-shadow: 0 0 70px var(--c1, rgba(232,179,76,.7));
+  animation: auftauchen .6s ease both;
+}
+#frage {
+  font-size: clamp(1.35rem, 3.2vw, 2rem);
+  line-height: 1.4;
+  max-width: 30ch;
+  text-wrap: balance;
+  margin: 1.8rem 0 0;
+  animation: auftauchen .6s .12s ease both;
+}
+#satz {
+  font-family: system-ui, sans-serif;
+  font-size: clamp(1rem, 2.2vw, 1.2rem);
+  line-height: 1.6;
+  max-width: 52ch;
+  margin: 1.6rem 0 0;
+  color: #b9aeb4;
+  animation: auftauchen .6s .22s ease both;
+}
+#zahlen {
+  font-family: ui-monospace, monospace;
+  font-size: .85rem;
+  color: #9a8f96;
+  margin-top: 2.2rem;
+  letter-spacing: .04em;
+}
+#eingriff {
+  font-family: system-ui, sans-serif;
+  font-size: .92rem;
+  color: #d4705b;
+  margin-top: 1rem;
+  max-width: 50ch;
+}
+#lupe .hinweis { position: absolute; bottom: 4vh; font-family: system-ui, sans-serif; font-size: .85rem; color: #6b5f66; }
+@keyframes auftauchen {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #gross, #frage, #satz { animation: none; }
+}
+</style>
+
+<header>
+  <h1>Promptotyping</h1>
+  <p class="sub">Die Werkstrecke. Links liegen die Forschungsdaten, rechts stehen die Artefakte, dazwischen arbeitet das Wissen.</p>
+</header>
+
+<div id="strecke">
+  <canvas id="strom"></canvas>
+</div>
+
+<p id="legende">
+  <b>Strom</b> Daten werden zu Artefakten · <b>Becken</b> ein Wissensdokument, seine Schichten sind sein Umfang<br>
+  <b>rote Schleuse</b> die Regeln, sie stellen den Fluss · <b>helle Winkel</b> die Projektzeit, rückwärts das Journal, vorwärts der Plan<br>
+  <b>gestrichelt</b> hier fehlt ein Dokument, der Strom versickert
+</p>
+
+<div id="lupe" aria-live="polite">
+  <p id="gross"></p>
+  <p id="frage"></p>
+  <p id="satz"></p>
+  <p id="zahlen"></p>
+  <p id="eingriff"></p>
+  <span class="hinweis">irgendwo tippen zum Zurückkehren</span>
+</div>
+
+<script>
+/* Literal lens: the Promptotyping workflow itself.
+   t = position along the flow (0 raw data ... 1 artifact), s = lateral offset from the stream.
+   art: rand = the two ends of the strecke, becken = knowledge document,
+   schleuse = agent rules governing the flow, zeit = process document on the time axis. */
+const STATIONEN = [
+  { wort: 'Forschungsdaten', kurz: 'Quelle', datei: 'data/', zeilen: null, status: 'Quelle', art: 'rand',
+    frage: 'Womit fängt alles an?',
+    satz: 'Am linken Ende liegt das Material, Quellen, Korpora, Tabellen, alles noch ungedeutet.',
+    eingriff: 'Von hier fließt jede Aussage los. Was hier nicht liegt, kann rechts nicht herauskommen.',
+    t: 0, s: 0, g: 1 },
+
+  { wort: 'Warum', datei: 'project.md', zeilen: 102, status: 'vollständig', art: 'becken',
+    frage: 'Was ist dieses Projekt, für wen, mit welchem Ziel?',
+    satz: 'Das erste Becken der Strecke, die Charta der Methode. Forschungsdaten werden durch Context Engineering zu Forschungsartefakten.',
+    eingriff: 'Öffnen, wenn der Output inhaltlich falsch läuft oder der Projektkontext unklar ist.',
+    t: .07, s: .95, g: 1.1 },
+
+  { wort: 'Regeln', datei: 'CLAUDE.md', zeilen: 122, status: 'aktiv', art: 'schleuse',
+    frage: 'Wie soll der Agent sich verhalten?',
+    satz: 'Die Schleuse gleich hinter der Quelle. Sie steht vor allem, was danach kommt, und stellt, wie hoch der Strom in jedes Becken einläuft.',
+    eingriff: 'Öffnen bei Stilbruch oder ignorierten Verboten, das Wasser steht dann falsch.',
+    t: .14, s: -1.05, g: .95 },
+
+  { wort: 'Wo', datei: 'INDEX.md', zeilen: 108, status: 'vollständig', art: 'becken',
+    frage: 'Was liegt hier, und wie lese ich es?',
+    satz: 'Der Wegweiser über die ganze Strecke, mit dem Begriffslexikon.',
+    eingriff: 'Öffnen, wenn ein Dokument nicht gefunden oder ein Begriff falsch verwendet wird.',
+    t: .19, s: .9, g: .85 },
+
+  { wort: 'Daten', datei: 'data.md fehlt', zeilen: null, status: 'fehlt', art: 'becken', geist: true,
+    frage: 'Was ist das verarbeitete Substrat?',
+    satz: 'Das Repo trägt einen data-Ordner, aber kein Dokument beschreibt ihn. Genau hier, kurz hinter der Quelle, läuft der Strom in den Boden.',
+    eingriff: 'Anlegen, bevor Datenfelder verwechselt oder Beispiele falsch zitiert werden.',
+    t: .26, s: -.85, g: .9 },
+
+  { wort: 'Was', datei: 'specification.md', zeilen: 315, status: 'vollständig', art: 'becken',
+    frage: 'Was soll das System tun, und warum?',
+    satz: 'Anforderungen, Epics und Entscheidungen der Methoden-Website, das breiteste Becken der oberen Strecke.',
+    eingriff: 'Öffnen, wenn ein Akzeptanzkriterium ignoriert oder eine alte Entscheidung neu aufgemacht wird.',
+    t: .33, s: .88, g: 1.2 },
+
+  { wort: 'Wie', datei: 'architecture.md', zeilen: 181, status: 'vollständig', art: 'becken',
+    frage: 'Wie ist es technisch realisiert?',
+    satz: 'Die statische Site und wie ihre Teile zusammenstecken.',
+    eingriff: 'Öffnen bei falschen Annahmen über Komponenten und Datenfluss.',
+    t: .41, s: -.88, g: 1 },
+
+  { wort: 'Gestalt', datei: 'design.md', zeilen: 233, status: 'vollständig', art: 'becken',
+    frage: 'Wie sieht es aus, wie verhält es sich ästhetisch?',
+    satz: 'Gestaltungsregeln und die ästhetische Haltung des Projekts.',
+    eingriff: 'Öffnen bei UI-Inkonsistenz oder Designsystem-Bruch.',
+    t: .48, s: .92, g: 1 },
+
+  { wort: 'Woher', datei: 'journal.md', zeilen: 867, status: 'aktiv', art: 'zeit', richtung: -1,
+    frage: 'Wie sind wir hierhin gekommen?',
+    satz: 'Das Projektgedächtnis liegt gegen die Strömung. Man liest es rückwärts und kommt dabei die ganze Strecke zurück.',
+    eingriff: 'Öffnen bei unklarer Entscheidungslogik und wiederholten Sackgassen.',
+    t: .56, s: -.95, g: 1.15 },
+
+  { wort: 'Wohin', datei: 'plan.md', zeilen: 152, status: 'aktiv', art: 'zeit', richtung: 1,
+    frage: 'Wohin geht es, in welcher Reihenfolge?',
+    satz: 'Die Vorwärtsrichtung, Phasen und nächste Schritte, mit der Strömung gelesen.',
+    eingriff: 'Öffnen, wenn der nächste Schritt nicht erkennbar ist.',
+    t: .63, s: .9, g: .9 },
+
+  { wort: 'Prüfung', datei: 'testing.md fehlt', zeilen: null, status: 'fehlt', art: 'becken', geist: true,
+    frage: 'Was wird garantiert, und wie wird es geprüft?',
+    satz: 'Es gibt Werkzeuge, aber keine beschriebenen Garantien. Kurz vor der Mündung fehlt dem Strom hier ein Bett.',
+    eingriff: 'Anlegen, bevor eine Garantie unklar wird.',
+    t: .70, s: -.9, g: .9 },
+
+  { wort: 'Beweis', datei: 'verification.md', zeilen: 183, status: 'in Arbeit', art: 'becken',
+    frage: 'Halten die eigenen Claims einer Prüfung stand?',
+    satz: 'Adversariale Prüfung der empirischen Behauptungen für das Paper, das letzte Sieb vor dem Artefakt.',
+    eingriff: 'Öffnen, wenn ein außenwirksamer Claim unbelegt ist.',
+    t: .77, s: .86, g: 1 },
+
+  { wort: 'Stoff', datei: 'paper.md +3', zeilen: 2826, status: 'Entwurf', art: 'becken',
+    frage: 'Welches fachliche Wissen trägt das Projekt?',
+    satz: 'Das Paper, sein kanonisches Wissensdokument und zwei Video-Skripten, das mit Abstand tiefste Becken der Strecke.',
+    eingriff: 'Öffnen, wenn eine Fachregel oder die Argumentation des Papers verletzt wird.',
+    t: .85, s: -.92, g: 1.4 },
+
+  { wort: 'Stand', datei: 'report.md', zeilen: 113, status: 'Momentaufnahme', art: 'becken',
+    frage: 'Was ist der Stand zum Stichtag, für draußen?',
+    satz: 'Der Bericht des ZfdG-Einreichungs-Durchgangs, ein eingefrorener Moment kurz vor der Mündung.',
+    eingriff: 'Öffnen, wenn der kommunizierte Stand veraltet wirkt.',
+    t: .92, s: .86, g: .85 },
+
+  { wort: 'Forschungsartefakte', kurz: 'Artefakte', datei: 'Paper · Website · Video', zeilen: null, status: 'Ergebnis', art: 'rand', farben: ['#e8b34c', '#7a5a1c'],
+    frage: 'Was kommt am rechten Ende heraus?',
+    satz: 'Alles, was die Strecke verlässt, Paper, Website, Video, jedes Stück auf die Daten am linken Ende zurückführbar.',
+    eingriff: 'Was hier ankommt, ohne ein Becken durchlaufen zu haben, ist ungedeckt.',
+    t: 1, s: 0, g: 1 },
+];
+
+const FARBEN = {
+  becken: ['#e8b34c', '#7a5a1c'],
+  zeit:   ['#efe9d6', '#6b5f66'],
+  schleuse: ['#d4705b', '#6e2438'],
+  rand:   ['#8fb083', '#3c5238'],
+};
+
+/* deterministic LCG, same family as the sibling files */
+let seed = 23;
+function rnd() { seed = (seed * 16807) % 2147483647; return seed / 2147483647; }
+function neuerLauf(s) { seed = s; }
+
+const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const strecke = document.getElementById('strecke');
+const cv = document.getElementById('strom');
+const cx = cv.getContext('2d');
+const lupe = document.getElementById('lupe');
+
+let quer, SW, SH, lenA, lenC, padA, crossMid, crossAmp, crossOff;
+
+function wobble(t) {
+  return Math.sin(t * 5.2 + 1.1) * .62 + Math.sin(t * 11.4 + 2.3) * .26 + Math.sin(t * 2.1) * .12;
+}
+/* one mapping for both orientations: flow runs along x when wide, along y when narrow */
+function ort(t, s) {
+  const a = padA + t * (lenA - 2 * padA);
+  const c = crossMid + wobble(t) * crossAmp + (s || 0) * crossOff;
+  return quer ? { x: a, y: c } : { x: c, y: a };
+}
+
+/* how much water still runs at t: 0 inside a gap, 1 on intact ground */
+const luecken = STATIONEN.filter(o => o.geist).map(o => o.t);
+function fluss(t) {
+  let f = 1;
+  for (const l of luecken) {
+    const d = Math.abs(t - l) / .055;
+    if (d < 1) f = Math.min(f, d * d);
+  }
+  return f;
+}
+
+function messen() {
+  quer = innerWidth > 820;
+  SW = strecke.clientWidth || document.documentElement.clientWidth;
+  const kopf = document.querySelector('header').offsetHeight;
+  const fuss = document.getElementById('legende').offsetHeight;
+  SH = quer
+    ? Math.max(420, innerHeight - kopf - fuss - 20)
+    : Math.max(innerHeight - kopf - fuss, STATIONEN.length * 96);
+  strecke.style.height = SH + 'px';
+  const dpr = Math.min(2, devicePixelRatio || 1);
+  cv.width = SW * dpr; cv.height = SH * dpr;
+  cx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  lenA = quer ? SW : SH;
+  lenC = quer ? SH : SW;
+  padA = lenA * .085;
+  crossMid = lenC * .5;
+  crossAmp = lenC * .10;
+  crossOff = lenC * (quer ? .25 : .19);
+  grund = null;
+  stellen();
+  malen();
+}
+
+/* --- station glyph: a settling basin, its strata are the document's lines --- */
+function becken(size, o) {
+  const dpr = 2;
+  const c = document.createElement('canvas');
+  c.width = c.height = size * dpr;
+  c.style.width = c.style.height = size + 'px';
+  const g = c.getContext('2d');
+  g.scale(dpr, dpr);
+  const m = size / 2, r = size * .38;
+  const [c1, c2] = o.farben || FARBEN[o.art];
+  const p1 = rnd() * 7, p2 = rnd() * 7;
+  const rand = () => {
+    g.beginPath();
+    for (let i = 0; i <= 80; i++) {
+      const a = i / 80 * Math.PI * 2;
+      const w = r * (1 + .10 * Math.sin(3 * a + p1) + .055 * Math.sin(7 * a + p2));
+      const x = m + Math.cos(a) * w, y = m + Math.sin(a) * w * .82;
+      i ? g.lineTo(x, y) : g.moveTo(x, y);
+    }
+    g.closePath();
+  };
+  if (o.geist) {
+    /* an empty pit: dashed rim, water seeping out below */
+    rand();
+    g.setLineDash([5, 6]); g.lineWidth = 1.5;
+    g.strokeStyle = 'rgba(154,143,150,.75)';
+    g.stroke();
+    g.setLineDash([]);
+    g.fillStyle = 'rgba(154,143,150,.45)';
+    for (let i = 0; i < 7; i++) {
+      const x = m + (rnd() - .5) * r * 1.3, y = m + r * (.5 + rnd() * .8);
+      g.beginPath(); g.arc(x, y, 1.1 + rnd() * .9, 0, 7); g.fill();
+    }
+    return c;
+  }
+  rand();
+  const grad = g.createLinearGradient(0, m - r, 0, m + r);
+  grad.addColorStop(0, '#fdf3ec');
+  grad.addColorStop(.4, c1);
+  grad.addColorStop(1, c2);
+  g.save();
+  g.shadowColor = c1; g.shadowBlur = size * .18;
+  g.fillStyle = grad; g.fill();
+  g.restore();
+  /* strata: sediment layers, count grows with the document's size */
+  g.save();
+  rand(); g.clip();
+  const schichten = o.zeilen ? Math.max(2, Math.min(9, Math.round(Math.sqrt(o.zeilen) / 5))) : 2;
+  for (let i = 1; i <= schichten; i++) {
+    const y = m - r * .72 + (i / (schichten + 1)) * r * 1.5;
+    g.beginPath();
+    for (let x = m - r * 1.2; x <= m + r * 1.2; x += 3) {
+      const yy = y + Math.sin((x + i * 9) * .18 + p1) * 1.4;
+      x === m - r * 1.2 ? g.moveTo(x, yy) : g.lineTo(x, yy);
+    }
+    g.lineWidth = 1; g.strokeStyle = 'rgba(21,13,17,.34)';
+    g.stroke();
+  }
+  g.restore();
+  rand();
+  g.lineWidth = 1.5; g.strokeStyle = c2; g.stroke();
+  if (o.art === 'schleuse') {
+    /* gate teeth across the basin: the rules stand in the water */
+    g.strokeStyle = '#efe9d6'; g.lineWidth = 1.6;
+    for (let i = -2; i <= 2; i++) {
+      const x = m + i * r * .38;
+      g.beginPath(); g.moveTo(x, m - r * .62); g.lineTo(x, m + r * .62); g.stroke();
+    }
+  }
+  return c;
+}
+
+function stellen() {
+  [...strecke.querySelectorAll('.station')].forEach(e => e.remove());
+  neuerLauf(23);
+  for (const o of STATIONEN) {
+    const b = document.createElement('button');
+    b.className = 'station' + (o.geist ? ' geist' : '') + (o.art === 'schleuse' ? ' schleuse' : '') + (o.art === 'rand' ? ' rand' : '');
+    const p = ort(o.t, o.s);
+    b.style.left = p.x + 'px';
+    b.style.top = p.y + 'px';
+    const size = Math.round((o.art === 'rand' ? 44 : 68) * o.g * (quer ? 1 : .88));
+    b.appendChild(becken(size, o));
+    const w = document.createElement('span');
+    w.className = 'wort';
+    w.textContent = o.kurz || o.wort;
+    const d = document.createElement('span');
+    d.className = 'datei'; d.textContent = o.datei;
+    b.append(w, d);
+    b.addEventListener('click', () => oeffnen(o));
+    strecke.appendChild(b);
+  }
+}
+
+/* --- the stream itself --- */
+const STRAENGE = 5;
+function strangPunkt(t, k) {
+  const off = (k - (STRAENGE - 1) / 2) * .038 * lenC * (1 + .35 * Math.sin(t * 9 + k));
+  return ort(t, off / crossOff);
+}
+
+function stromMalen(cx) {
+  const von = FARBEN.rand[0], nach = FARBEN.becken[0];
+  const a0 = ort(0, 0), a1 = ort(1, 0);
+  const grad = cx.createLinearGradient(a0.x, a0.y, a1.x, a1.y);
+  grad.addColorStop(0, von);
+  grad.addColorStop(.5, '#c9a86a');
+  grad.addColorStop(1, nach);
+  for (let k = 0; k < STRAENGE; k++) {
+    const mitte = 1 - Math.abs(k - (STRAENGE - 1) / 2) / ((STRAENGE - 1) / 2);
+    for (let t = 0; t < 1; t += .006) {
+      const f = fluss(t + .003);
+      /* below the ground water level the strand breaks up into seepage */
+      if (f < .45 && rnd() > f * 1.8) continue;
+      const p = strangPunkt(t, k), q = strangPunkt(Math.min(1, t + .007), k);
+      cx.beginPath();
+      cx.moveTo(p.x, p.y); cx.lineTo(q.x, q.y);
+      cx.strokeStyle = grad;
+      cx.globalAlpha = (.16 + mitte * .34) * (.25 + f * .75);
+      cx.lineWidth = (1.4 + mitte * 5.2) * (.35 + f * .65);
+      cx.lineCap = 'round';
+      cx.stroke();
+    }
+  }
+  cx.globalAlpha = 1;
+}
+
+/* sediment banks: grain volume follows the documents that lie there */
+function sedimentMalen(cx) {
+  for (const o of STATIONEN) {
+    if (o.geist || !o.zeilen) continue;
+    const n = Math.min(90, 14 + Math.round(Math.sqrt(o.zeilen) * 1.5));
+    for (let i = 0; i < n; i++) {
+      const t = o.t + (rnd() - .5) * .075;
+      const s = o.s * (.24 + rnd() * .62);
+      const p = ort(Math.max(0, Math.min(1, t)), s);
+      const r = .7 + rnd() * 1.7;
+      cx.beginPath();
+      cx.arc(p.x + (rnd() - .5) * 14, p.y + (rnd() - .5) * 14, r, 0, 7);
+      cx.fillStyle = 'rgba(232,179,76,' + (.05 + rnd() * .16).toFixed(3) + ')';
+      cx.fill();
+    }
+  }
+}
+
+/* the feeder from each basin down into the stream */
+function zulaufMalen(cx) {
+  for (const o of STATIONEN) {
+    if (o.art === 'rand') continue;
+    const a = ort(o.t, o.s), b = ort(o.t, 0);
+    cx.beginPath();
+    cx.moveTo(a.x, a.y);
+    cx.quadraticCurveTo((a.x + b.x) / 2 + (b.y - a.y) * .12, (a.y + b.y) / 2 + (a.x - b.x) * .12, b.x, b.y);
+    if (o.geist) { cx.setLineDash([3, 6]); cx.strokeStyle = 'rgba(154,143,150,.45)'; cx.lineWidth = 1.2; }
+    else if (o.art === 'schleuse') { cx.strokeStyle = 'rgba(212,112,91,.6)'; cx.lineWidth = 2.4; }
+    else { cx.strokeStyle = 'rgba(232,179,76,.3)'; cx.lineWidth = 1.6; }
+    cx.stroke();
+    cx.setLineDash([]);
+  }
+}
+
+/* the gate: a bar across the whole stream, plus threads into everything it governs */
+function schleuseMalen(cx) {
+  const s = STATIONEN.find(o => o.art === 'schleuse');
+  if (!s) return;
+  const a = ort(s.t, -1.25), b = ort(s.t, 1.25);
+  cx.beginPath(); cx.moveTo(a.x, a.y); cx.lineTo(b.x, b.y);
+  cx.strokeStyle = 'rgba(212,112,91,.55)'; cx.lineWidth = 3; cx.stroke();
+  for (let i = 0; i <= 8; i++) {
+    const u = i / 8;
+    const x = a.x + (b.x - a.x) * u, y = a.y + (b.y - a.y) * u;
+    const dx = (b.y - a.y), dy = -(b.x - a.x);
+    const L = Math.hypot(dx, dy) || 1;
+    cx.beginPath();
+    cx.moveTo(x - dx / L * 9, y - dy / L * 9);
+    cx.lineTo(x + dx / L * 9, y + dy / L * 9);
+    cx.strokeStyle = 'rgba(212,112,91,.4)'; cx.lineWidth = 1.4; cx.stroke();
+  }
+  cx.setLineDash([2, 6]);
+  cx.strokeStyle = 'rgba(212,112,91,.22)'; cx.lineWidth = 1.1;
+  const p0 = ort(s.t, s.s);
+  for (const o of STATIONEN) {
+    if (o === s || o.geist || o.art === 'rand') continue;
+    const p = ort(o.t, o.s);
+    cx.beginPath();
+    cx.moveTo(p0.x, p0.y);
+    cx.quadraticCurveTo((p0.x + p.x) / 2, (p0.y + p.y) / 2 - lenC * .09, p.x, p.y);
+    cx.stroke();
+  }
+  cx.setLineDash([]);
+}
+
+/* the time axis: chevrons against the current at the journal, with it at the plan */
+function zeitMalen(cx) {
+  for (const o of STATIONEN.filter(o => o.art === 'zeit')) {
+    for (let i = -3; i <= 3; i++) {
+      const t = Math.max(.01, Math.min(.99, o.t + i * .022));
+      const p = ort(t, o.s * .42);
+      const q = ort(Math.min(1, t + .012), o.s * .42);
+      const dx = (q.x - p.x) * o.richtung, dy = (q.y - p.y) * o.richtung;
+      const L = Math.hypot(dx, dy) || 1;
+      const ux = dx / L, uy = dy / L, nx = -uy, ny = ux;
+      const k = 7;
+      cx.beginPath();
+      cx.moveTo(p.x - ux * k + nx * k, p.y - uy * k + ny * k);
+      cx.lineTo(p.x + ux * k * .6, p.y + uy * k * .6);
+      cx.lineTo(p.x - ux * k - nx * k, p.y - uy * k - ny * k);
+      cx.strokeStyle = 'rgba(239,233,214,' + (.4 - Math.abs(i) * .07).toFixed(2) + ')';
+      cx.lineWidth = 1.6; cx.lineJoin = 'round';
+      cx.stroke();
+    }
+  }
+}
+
+/* drifting glints, seeded once and then simply carried downstream */
+const TREIB = [];
+function treibSetzen() {
+  TREIB.length = 0;
+  for (let i = 0; i < 46; i++) {
+    TREIB.push({ t: rnd(), k: Math.floor(rnd() * STRAENGE), v: .0011 + rnd() * .0016, l: .012 + rnd() * .02 });
+  }
+}
+function treibMalen(cx) {
+  for (const g of TREIB) {
+    const f = fluss(g.t);
+    const p = strangPunkt(g.t, g.k), q = strangPunkt(Math.min(1, g.t + g.l), g.k);
+    cx.beginPath(); cx.moveTo(p.x, p.y); cx.lineTo(q.x, q.y);
+    cx.strokeStyle = 'rgba(253,243,236,' + (.42 * f * f).toFixed(3) + ')';
+    cx.lineWidth = 1.8; cx.lineCap = 'round';
+    cx.stroke();
+  }
+}
+function treibRuecken() {
+  for (const g of TREIB) {
+    g.t += g.v * (.4 + fluss(g.t) * .9);
+    if (g.t > 1) g.t -= 1;
+  }
+}
+
+/* the streambed never changes, so it is painted once into an offscreen layer
+   and only the drifting glints are redrawn per frame */
+let grund = null;
+function grundMalen() {
+  grund = document.createElement('canvas');
+  grund.width = cv.width; grund.height = cv.height;
+  const g = grund.getContext('2d');
+  const dpr = Math.min(2, devicePixelRatio || 1);
+  g.setTransform(dpr, 0, 0, dpr, 0, 0);
+  neuerLauf(101);
+  sedimentMalen(g);
+  stromMalen(g);
+  zulaufMalen(g);
+  schleuseMalen(g);
+  zeitMalen(g);
+}
+
+function malen() {
+  if (!grund) grundMalen();
+  cx.clearRect(0, 0, SW, SH);
+  cx.drawImage(grund, 0, 0, SW, SH);
+  treibMalen(cx);
+}
+
+function tick() {
+  treibRuecken();
+  malen();
+  requestAnimationFrame(tick);
+}
+
+/* --- focus view --- */
+function oeffnen(o) {
+  const [c1] = o.farben || FARBEN[o.art];
+  lupe.style.setProperty('--c1', c1);
+  document.getElementById('gross').textContent = o.wort;
+  document.getElementById('frage').textContent = o.frage;
+  document.getElementById('satz').textContent = o.satz;
+  document.getElementById('zahlen').textContent =
+    [o.datei, o.zeilen ? o.zeilen + ' Zeilen' : null, o.status,
+     'Strecke ' + Math.round(o.t * 100) + '%'].filter(Boolean).join(' · ');
+  document.getElementById('eingriff').textContent = o.eingriff;
+  for (const el of ['gross', 'frage', 'satz'].map(id => document.getElementById(id))) {
+    el.style.animation = 'none'; void el.offsetWidth; el.style.animation = '';
+  }
+  lupe.classList.add('offen');
+}
+lupe.addEventListener('click', () => lupe.classList.remove('offen'));
+addEventListener('keydown', e => { if (e.key === 'Escape') lupe.classList.remove('offen'); });
+
+let messTimer;
+addEventListener('resize', () => { clearTimeout(messTimer); messTimer = setTimeout(messen, 120); });
+
+messen();
+neuerLauf(7);
+treibSetzen();
+if (!still) tick();
+</script>

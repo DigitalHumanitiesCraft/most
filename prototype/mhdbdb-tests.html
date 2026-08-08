@@ -43,7 +43,7 @@ canvas#glow {
   text-shadow: 0 0 40px rgba(232,179,76,.35);
 }
 .kopf .sub {
-  color: #9aa18f;
+  color: #b7bda8;
   font-size: clamp(.9rem, 2vw, 1.1rem);
   margin-top: .4rem;
   font-family: system-ui, sans-serif;
@@ -61,54 +61,72 @@ canvas#glow {
   color: #efe9d6;
   font-family: Georgia, serif;
   background: none;
-  animation: floaty 7s ease-in-out infinite;
+  padding: .4rem;
   transition: transform .4s ease;
+  /* the drifting happens on the drawing only, the hitbox stays put */
 }
+.orb canvas { animation: floaty 7s ease-in-out infinite; }
 .orb:hover, .orb:focus-visible { transform: translate(-50%, -50%) scale(1.07); outline: none; }
 .orb:focus-visible canvas { outline: 2px solid #efe9d6; outline-offset: 4px; border-radius: 50%; }
 .orb .wort { font-size: clamp(1rem, 2.2vw, 1.35rem); letter-spacing: .05em; text-shadow: 0 1px 6px rgba(0,0,0,.6); }
-.orb .zahl { font-family: system-ui, sans-serif; font-size: .78rem; color: #9a8f96; letter-spacing: .08em; }
+.orb .zahl { font-family: system-ui, sans-serif; font-size: .78rem; color: #b0a3aa; letter-spacing: .08em; }
 @keyframes floaty {
-  0%, 100% { margin-top: 0; }
-  50% { margin-top: -14px; }
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
 }
-.orb:nth-child(odd) { animation-duration: 9s; animation-delay: -3s; }
+.orb:nth-child(odd) canvas { animation-duration: 9s; animation-delay: -3s; }
 /* ---------- constellation ---------- */
 #stern {
   background: radial-gradient(ellipse at 50% 115%, var(--halo, rgba(232,179,76,.18)), transparent 60%);
 }
 #konst {
   position: absolute;
-  inset: 18vh 4vw 8vh;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  align-content: center;
-  gap: 4vh 3.5vw;
+  inset: 19vh 5vw 15vh;
+  z-index: 2;
   transition: opacity .5s;
 }
-#stern.fokus #konst { opacity: .18; pointer-events: none; }
+#stern.fokus #konst { opacity: .1; pointer-events: none; }
+/* The button is the hitbox and never moves. Everything that breathes
+   lives in .schweb inside it, so the target stays where the eye aims. */
 .licht {
+  position: absolute;
+  left: var(--px, 50%);
+  top: var(--py, 50%);
+  transform: translate(-50%, -50%);
+  min-width: 44px;
+  min-height: 44px;
+  width: clamp(76px, 10vw, 132px);
+  padding: .55rem .25rem;
   background: none;
   border: none;
   cursor: pointer;
   color: #efe9d6;
   font-family: Georgia, serif;
+}
+.licht:focus-visible { outline: none; }
+.licht .schweb {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: .7rem;
-  transition: transform .3s;
+  gap: .55rem;
   transform: rotate(var(--tilt, 0deg));
+  transition: transform .3s;
+  animation: schweben var(--dur, 8s) ease-in-out infinite;
+  animation-delay: var(--del, 0s);
 }
-.licht:hover, .licht:focus-visible { transform: scale(1.12) rotate(0deg); outline: none; }
+@keyframes schweben {
+  0%, 100% { translate: 0 0; }
+  50% { translate: 0 -9px; }
+}
+.licht:hover .schweb, .licht:focus-visible .schweb { transform: scale(1.12) rotate(0deg); }
 .licht canvas { display: block; }
 .licht:focus-visible canvas { outline: 2px solid #efe9d6; outline-offset: 3px; border-radius: 50%; }
 .licht .ein-wort {
-  font-size: clamp(1.05rem, 2.4vw, 1.5rem);
+  font-size: clamp(.95rem, 1.9vw, 1.3rem);
+  line-height: 1.2;
   letter-spacing: .04em;
-  text-shadow: 0 0 20px rgba(0,0,0,.8);
+  text-shadow: 0 0 20px rgba(0,0,0,.85), 0 1px 4px rgba(0,0,0,.9);
+  overflow-wrap: anywhere;
 }
 .licht.gesehen canvas { opacity: .45; filter: saturate(.4); }
 /* ---------- focus overlay ---------- */
@@ -121,8 +139,10 @@ canvas#glow {
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 10vh 6vw;
+  padding: 12vh 6vw 24vh;
   cursor: pointer;
+  /* scrim: keeps the vein diagram off the dimmed constellation behind it */
+  background: radial-gradient(ellipse at 50% 45%, rgba(21,13,17,.96) 0%, rgba(21,13,17,.92) 55%, rgba(21,13,17,.72) 100%);
 }
 #stern.fokus #lupe { display: flex; }
 #gross {
@@ -141,12 +161,12 @@ canvas#glow {
   color: #d8d2bd;
   animation: auftauchen .7s .15s ease both;
 }
-#ader { margin-top: 1.8rem; max-width: 92vw; animation: auftauchen .7s .3s ease both; }
+#ader { position: relative; z-index: 1; margin-top: 1.8rem; max-width: 92vw; animation: auftauchen .7s .3s ease both; }
 #spec {
   margin-top: 1.2rem;
   font-family: ui-monospace, monospace;
   font-size: .8rem;
-  color: #6b7261;
+  color: #9aa190;
   letter-spacing: .05em;
 }
 @keyframes auftauchen {
@@ -155,30 +175,48 @@ canvas#glow {
 }
 #punkte {
   position: absolute;
-  bottom: 8vh;
+  bottom: 7vh;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
-  gap: .9rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  max-width: 92vw;
+  gap: 0;
   z-index: 5;
   pointer-events: none;
 }
-#punkte i {
+#punkte button {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  background: none;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  pointer-events: auto;
+}
+#punkte button i {
+  display: block;
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background: #3a4235;
-  transition: background .4s, box-shadow .4s;
+  background: #5d6755;
+  transition: background .4s, box-shadow .4s, transform .3s;
 }
-#punkte i.jetzt { background: var(--c1, #e8b34c); box-shadow: 0 0 12px var(--c1, #e8b34c); }
+#punkte button:hover i, #punkte button:focus-visible i { transform: scale(1.5); background: #b7bda8; }
+#punkte button:focus-visible { outline: 2px solid #efe9d6; }
+#punkte button.jetzt i { background: var(--c1, #e8b34c); box-shadow: 0 0 12px var(--c1, #e8b34c); }
 .hinweis {
   position: absolute;
-  bottom: 4vh;
+  bottom: 2.5vh;
   width: 100%;
   text-align: center;
   font-family: system-ui, sans-serif;
-  font-size: .85rem;
-  color: #6b7261;
+  font-size: .9rem;
+  color: #c2c7b3;
   pointer-events: none;
   z-index: 5;
 }
@@ -187,7 +225,7 @@ canvas#glow {
   top: 4vh;
   right: 5vw;
   font-size: 2rem;
-  color: #9aa18f;
+  color: #c2c7b3;
   background: none;
   border: none;
   cursor: pointer;
@@ -196,7 +234,7 @@ canvas#glow {
 }
 .zu:focus-visible { outline: 2px solid #efe9d6; border-radius: 50%; }
 @media (prefers-reduced-motion: reduce) {
-  .orb, #gross, #satz { animation: none; }
+  .orb canvas, .licht .schweb, #gross, #satz, #ader { animation: none; }
 }
 </style>
 
@@ -228,7 +266,7 @@ canvas#glow {
 
 <script>
 const ROOMS = [
-  { wort: 'Suchen', ico: '🔍', c1: '#e8b34c', c2: '#7a5a1e', halo: 'rgba(232,179,76,.45)', x: 26, y: 40, tests: [
+  { wort: 'Suchen', ico: '🔍', c1: '#e8b34c', c2: '#7a5a1e', halo: 'rgba(232,179,76,.45)', x: 21, y: 37, tests: [
     { w: 'Finden', s: 'Die Suche findet dein Wort, auch wenn du nur fast richtig liegst.', f: 'search-engine' },
     { w: 'Vereinfachen', s: 'ô und æ werden vor jeder Suche zu o und a, überall gleich.', f: 'search-normalization' },
     { w: 'Sechs Wege', s: 'Autoren, Werke, Wörter, Begriffe, Gattungen, Namen, alle sechs Suchen liefern.', f: 'search-with-corpus' },
@@ -239,27 +277,27 @@ const ROOMS = [
     { w: 'Doppelt', s: 'Gibt es ein Wort zweimal, gewinnt das häufigere, wechseln geht immer.', f: 'cooccurrence-ranking' },
     { w: 'Übergabe', s: 'Springst du aus einer Liste in die Suche, kommt genau dein Wort an.', f: 'lemma-occurrence-handoff' },
   ]},
-  { wort: 'Lesen', ico: '📖', c1: '#8fb083', c2: '#39543a', halo: 'rgba(143,176,131,.4)', x: 72, y: 34, tests: [
+  { wort: 'Lesen', ico: '📖', c1: '#8fb083', c2: '#39543a', halo: 'rgba(143,176,131,.4)', x: 81, y: 35, tests: [
     { w: 'Leuchten', s: 'Dein gesuchtes Wort leuchtet farbig im alten Text.', f: 'reading-view' },
     { w: 'Zählen', s: 'Alle Teile des Systems zählen die Wortpositionen exakt gleich.', f: 'position-parity' },
     { w: 'Merken', s: 'Ein gelesener Text ist beim zweiten Mal sofort wieder da.', f: 'tei-caching' },
   ]},
-  { wort: 'Bedeutung', ico: '📚', c1: '#d9c184', c2: '#6e5c2c', halo: 'rgba(217,193,132,.4)', x: 50, y: 62, tests: [
+  { wort: 'Bedeutung', ico: '📚', c1: '#d9c184', c2: '#6e5c2c', halo: 'rgba(217,193,132,.4)', x: 58, y: 74, tests: [
     { w: 'Zuhause', s: 'Jedes Wort hat eine eigene Seite mit Fundstellen und Links.', f: 'lemma-page' },
     { w: 'Blättern', s: 'Von A bis Z, und jede Stelle hat eine merkbare Adresse.', f: 'woerterbuch' },
     { w: 'Fäden', s: 'Vom Werk zum Autor, vom Wort zum Begriff, alles verknüpft.', f: 'cross-reference-test' },
   ]},
-  { wort: 'Spielsachen', ico: '🎲', c1: '#c88bb0', c2: '#5d3a52', halo: 'rgba(200,139,176,.35)', x: 22, y: 74, tests: [
+  { wort: 'Spielsachen', ico: '🎲', c1: '#c88bb0', c2: '#5d3a52', halo: 'rgba(200,139,176,.35)', x: 28, y: 73, tests: [
     { w: 'Reime', s: 'gân reimt auf begân, muot auf guot.', f: 'rhyme-dictionary' },
     { w: 'Enden', s: 'Eine Zählung darüber, wie Verse aufhören.', f: 'verse-ending-profile' },
     { w: 'Namen', s: 'Wie Figuren in den Geschichten genannt werden, mit Belegen.', f: 'naming-explorer' },
     { w: 'Einmal', s: 'Wörter, die im ganzen Korpus nur ein einziges Mal vorkommen.', f: 'hapax-legomena' },
     { w: 'Flut', s: 'Auch riesige Begriffsmengen frieren die Seite nicht ein.', f: 'concept-distribution' },
   ]},
-  { wort: 'Treffer', ico: '📋', c1: '#a9b7c6', c2: '#46525e', halo: 'rgba(169,183,198,.3)', x: 84, y: 66, tests: [
+  { wort: 'Treffer', ico: '📋', c1: '#a9b7c6', c2: '#46525e', halo: 'rgba(169,183,198,.3)', x: 84, y: 71, tests: [
     { w: 'Tabelle', s: 'Treffer als Liste oder Tabelle, sortierbar, mitnehmbar, gemerkt.', f: 'results-table' },
   ]},
-  { wort: 'Fundament', ico: '🧱', c1: '#d4705b', c2: '#6e3126', halo: 'rgba(212,112,91,.4)', x: 55, y: 22, tests: [
+  { wort: 'Fundament', ico: '🧱', c1: '#d4705b', c2: '#6e3126', halo: 'rgba(212,112,91,.4)', x: 51, y: 36, tests: [
     { w: 'Start', s: 'Die Startseite lädt ohne Fehler, die Suche geht sofort.', f: 'main-site' },
     { w: 'Fangen', s: 'Geht etwas schief, kommt eine Meldung, die Seite lebt weiter.', f: 'error-handling' },
     { w: 'Laden', s: 'Der Korpus mit allen Texten lädt zuverlässig.', f: 'corpus' },
@@ -423,6 +461,26 @@ for (const r of ROOMS) {
   garten.appendChild(b);
 }
 
+/* Constellation layout: a jittered grid. The grid guarantees the hitboxes
+   never overlap, the seeded jitter breaks up the row. */
+function konstellation(n) {
+  const cols = Math.min(n, Math.ceil(Math.sqrt(n * 1.7)));
+  const rows = Math.ceil(n / cols);
+  const cw = 100 / cols, ch = 100 / rows;
+  const jx = cw * .17, jy = ch * .15;
+  const out = [];
+  for (let i = 0; i < n; i++) {
+    const row = Math.floor(i / cols), col = i % cols;
+    const inRow = Math.min(cols, n - row * cols);
+    const shift = (cols - inRow) / 2;
+    out.push({
+      x: (col + shift + .5) * cw + (rnd() * 2 - 1) * jx,
+      y: (row + .5) * ch + (rnd() * 2 - 1) * jy,
+    });
+  }
+  return out;
+}
+
 function raumOeffnen(r) {
   raum = r; idx = -1;
   stern.style.setProperty('--c1', r.c1);
@@ -430,20 +488,38 @@ function raumOeffnen(r) {
   document.getElementById('stern-titel').textContent = r.wort;
   document.getElementById('stern-hinweis').textContent = `${r.tests.length} ${r.tests.length === 1 ? 'Licht' : 'Lichter'}`;
   konst.innerHTML = '';
+  const orte = konstellation(r.tests.length);
   r.tests.forEach((t, i) => {
     const b = document.createElement('button');
     b.className = 'licht';
-    b.style.setProperty('--tilt', (rnd() * 6 - 3).toFixed(1) + 'deg');
-    b.appendChild(zelle(38, r.c1, r.c2, 1));
+    b.type = 'button';
+    b.style.setProperty('--px', orte[i].x.toFixed(2) + '%');
+    b.style.setProperty('--py', orte[i].y.toFixed(2) + '%');
+    const s = document.createElement('span');
+    s.className = 'schweb';
+    s.style.setProperty('--tilt', (rnd() * 6 - 3).toFixed(1) + 'deg');
+    s.style.setProperty('--dur', (7 + rnd() * 4).toFixed(1) + 's');
+    s.style.setProperty('--del', (-rnd() * 6).toFixed(1) + 's');
+    s.appendChild(zelle(38, r.c1, r.c2, 1));
     const w = document.createElement('span');
     w.className = 'ein-wort'; w.textContent = t.w;
-    b.appendChild(w);
+    s.appendChild(w);
+    b.appendChild(s);
     b.addEventListener('click', () => fokus(i));
     konst.appendChild(b);
   });
-  punkte.innerHTML = r.tests.map(() => '<i></i>').join('');
+  punkte.innerHTML = '';
+  r.tests.forEach((t, i) => {
+    const p = document.createElement('button');
+    p.type = 'button';
+    p.setAttribute('aria-label', `Licht ${i + 1} von ${r.tests.length}: ${t.w}`);
+    p.appendChild(document.createElement('i'));
+    p.addEventListener('click', () => fokus(i));
+    punkte.appendChild(p);
+  });
   punkte.style.display = 'none';
   stern.classList.remove('fokus');
+  konst.inert = false;
   stern.classList.add('offen');
   garten.classList.remove('offen');
 }
@@ -451,6 +527,7 @@ function fokus(i) {
   idx = i;
   const t = raum.tests[i];
   stern.classList.add('fokus');
+  konst.inert = true;
   punkte.style.display = 'flex';
   const gross = document.getElementById('gross');
   const satz = document.getElementById('satz');
@@ -459,12 +536,16 @@ function fokus(i) {
   satz.textContent = t.s;
   aderMalen(STEPS[t.f] || ['öffnen', 'handeln', 'prüfen'], raum.c1, raum.c2);
   document.getElementById('spec').textContent = t.f + '.spec.js';
-  [...punkte.children].forEach((p, k) => p.classList.toggle('jetzt', k === i));
+  [...punkte.children].forEach((p, k) => {
+    p.classList.toggle('jetzt', k === i);
+    if (k === i) p.setAttribute('aria-current', 'true'); else p.removeAttribute('aria-current');
+  });
   konst.children[i].classList.add('gesehen');
-  document.getElementById('stern-hinweis').textContent = 'tippen für das nächste Licht';
+  document.getElementById('stern-hinweis').textContent = 'tippen für das nächste Licht · Punkte springen direkt · ← →';
 }
 function fokusZu() {
   stern.classList.remove('fokus');
+  konst.inert = false;
   punkte.style.display = 'none';
   idx = -1;
   document.getElementById('stern-hinweis').textContent = `${raum.tests.length} ${raum.tests.length === 1 ? 'Licht' : 'Lichter'}`;
@@ -481,7 +562,9 @@ document.getElementById('stern-zu').addEventListener('click', () => {
 addEventListener('keydown', e => {
   if (!raum) return;
   if (e.key === 'Escape') document.getElementById('stern-zu').click();
-  if (idx >= 0 && (e.key === ' ' || e.key === 'Enter' || e.key === 'ArrowRight')) {
+  /* let a focused button handle its own activation instead of advancing twice */
+  const aufButton = e.target instanceof HTMLButtonElement && (e.key === ' ' || e.key === 'Enter');
+  if (idx >= 0 && !aufButton && (e.key === ' ' || e.key === 'Enter' || e.key === 'ArrowRight')) {
     if (idx + 1 < raum.tests.length) fokus(idx + 1); else fokusZu();
   }
   if (idx > 0 && e.key === 'ArrowLeft') fokus(idx - 1);
