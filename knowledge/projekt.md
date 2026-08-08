@@ -1,3 +1,9 @@
+---
+title: Projektcharta
+status: active
+updated: 2026-08-08
+---
+
 # Projekt most
 
 ## Idee
@@ -28,6 +34,10 @@ Definiert über kognitive Zustandsachsen (Energie, Aufmerksamkeitsspanne, Arbeit
 ## Metaphern-Linsen
 
 Die Visualisierung trennt Struktur von Oberfläche. Die Struktur ist invariant, Wissenseinheiten, ein zeitlicher Fluss, steuernde Regeln, sichtbare Lücken. Die Metapher ist eine austauschbare Linse darüber, Körper (Organ, Ader, Nerv, Geisterorgan) für biologisch Denkende, Netzwerk (Server, API, Route, fehlender Endpoint) für Informatiker, Informationsströme und Kontexte für Informationswissenschaft, Workflow von Forschungsdaten zu Forschungsartefakten für Digital Humanities. Die DH-Linse ist dabei keine Metapher, sondern wörtlich Promptotyping. Die Linsenwahl gehört als Zielgruppen-Entscheidung in den Metaprompt und wird aus dem Kontext des jeweiligen Projekts abgeleitet; Default ist die Linse mit der geringsten metaphorischen Distanz zum Vokabular des Projekts selbst.
+
+## Zielgruppen
+
+Hauptzielgruppen sind Entrepreneurs und kritische Feministinnen; das UI soll beide zusammenführen. Die Helio-Ästhetik (siehe [design.md](design.md)) wurde vom Team als Treffer für genau diese Verbindung bestätigt, betriebswirtschaftliche Klarheit der Datenkanäle und eine künstlerische, körperbildnahe Bildsprache in einem. Bei Linsen- und Gestaltentscheidungen sind beide Gruppen mitzudenken.
 
 ## Methode
 

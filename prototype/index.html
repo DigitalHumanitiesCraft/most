@@ -132,6 +132,21 @@ a.gestalt:hover, a.gestalt:focus-visible {
 }
 a.gestalt.tag { border-style: solid; }
 a.gestalt.nacht { border-style: dashed; }
+details { margin-top: .8rem; }
+details summary {
+  cursor: pointer;
+  font-size: .85rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  opacity: .7;
+  padding: .5rem 0;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+}
+details summary:hover, details summary:focus-visible { opacity: 1; outline: none; }
+details .gestalten { margin-top: .4rem; }
 footer {
   font-size: .85rem;
   line-height: 1.7;
@@ -147,40 +162,58 @@ footer {
 <main>
   <p class="eyebrow">Projekt most</p>
   <h1>Ein UI,<br>viele Gestalten.</h1>
-  <p class="intro">Wir bauen ein einziges, generalisiertes User Interface für Wissen, das in jedem Zustand ankommt, auch sehr bekifft. Pro Projekt bekommt es eine eigene Gestalt, die aus der Domäne des Projekts abgeleitet wird.</p>
-  <p class="modell">Das Modell dahinter ist immer gleich, vier Dinge werden gezeigt, <b>Einheiten</b> (das Wissen, antippbar, ein Wort, ein Satz), <b>Fluss</b> (die Zeit oder der Prozess), <b>Regeln</b> (was steuert) und <b>Lücken</b> (was fehlt, obwohl es gebraucht wird). Nur das Gewand wechselt. Jedes Gewand gibt es bei Tag (Helio, rot, laut, flächig) und bei Nacht (dunkel, leise, tief).</p>
+  <p class="intro">Ein User Interface für Wissen, das in jedem Zustand ankommt. Du musst dir nichts merken. Diese Seite führt dich.</p>
 
-  <h2 class="abschnitt">Die Projekte</h2>
+  <h2 class="abschnitt">Schritt 1 · Schau in den Himmel</h2>
+  <section class="projekt">
+    <p class="was">Drei Projekte, drei Himmelskörper. Wie einer aussieht, ist sein Zustand. Nur schauen, nichts können müssen.</p>
+    <div class="gestalten">
+      <a class="gestalt tag" href="himmel.html"><b>Der Himmel</b> <span>Ein Blick genügt. Von dort kommst du überall hin.</span></a>
+    </div>
+  </section>
+
+  <h2 class="abschnitt">Schritt 2 · Oder geh direkt in ein Projekt</h2>
 
   <section class="projekt">
     <h3>MHDBDB</h3>
-    <p class="was">Eine Website über mittelhochdeutsche Wörter. Gezeigt werden ihre 31 Wächter-Tests in sechs Kategorien, jeder Test ein Wort, ein Satz, ein Prüfablauf.</p>
+    <p class="was">Eine Website über mittelhochdeutsche Wörter, bewacht von 31 Prüfungen.</p>
     <div class="gestalten">
-      <a class="gestalt tag" href="helio-mhdbdb.html"><b>Helio</b> <span>Tagseite, die Tests als Frequenzbänder einer Sonne.</span></a>
-      <a class="gestalt nacht" href="mhdbdb-tests.html"><b>Nachtgarten</b> <span>Nachtseite, die Tests als wachende Lichter im Garten.</span></a>
+      <a class="gestalt tag" href="helio-mhdbdb.html"><b>Hier rein</b> <span>Die Prüfungen als Bänder einer roten Sonne.</span></a>
     </div>
+    <details>
+      <summary>anderes Gewand</summary>
+      <div class="gestalten">
+        <a class="gestalt nacht" href="mhdbdb-tests.html"><b>Nachtgarten</b> <span>Dasselbe als Lichter im nächtlichen Garten.</span></a>
+      </div>
+    </details>
   </section>
 
   <section class="projekt">
     <h3>Promptotyping</h3>
-    <p class="was">Eine Forschungsmethode mit dreizehn Wissensdokumenten. Einheiten sind die Dokumente, der Fluss ist die Projektzeit, Regeln sind die Agenten-Anweisungen, Lücken die fehlenden Dokumente.</p>
+    <p class="was">Unsere Forschungsmethode, dreizehn Wissensdokumente, zwei fehlen.</p>
     <div class="gestalten">
-      <a class="gestalt tag" href="helio-promptotyping.html"><b>Helio</b> <span>Tagseite, die Dokumente als Bänder der Sonnenscheibe.</span></a>
-      <a class="gestalt nacht" href="promptotyping-workflow.html"><b>Werkstrecke</b> <span>Die wörtliche Gestalt, Forschungsdaten fließen durch die Dokumente zu den Artefakten.</span></a>
-      <a class="gestalt nacht" href="promptotyping-organismus.html"><b>Organismus</b> <span>Körper-Linse, Organe, Zeitader, Geisterorgane.</span></a>
+      <a class="gestalt tag" href="promptotyping-planet.html"><b>Hier rein</b> <span>Der Planet, sieben Schichten von der Forschungsfrage bis zum Ring der Prüfungen.</span></a>
     </div>
+    <details>
+      <summary>andere Gewänder</summary>
+      <div class="gestalten">
+        <a class="gestalt nacht" href="promptotyping-workflow.html"><b>Werkstrecke</b> <span>Daten fließen durch die Dokumente zu den Artefakten.</span></a>
+        <a class="gestalt nacht" href="promptotyping-organismus.html"><b>Organismus</b> <span>Die Dokumente als Körper mit Organen.</span></a>
+        <a class="gestalt tag" href="helio-promptotyping.html"><b>Helio</b> <span>Die Dokumente als Bänder der roten Sonnenscheibe.</span></a>
+      </div>
+    </details>
   </section>
 
   <section class="projekt">
     <h3>most</h3>
-    <p class="was">Dieses Projekt selbst, das UI für jeden Zustand. Zwei Wissensdokumente existieren, vier fehlen, das Projekt ist jung und löchrig.</p>
+    <p class="was">Dieses Projekt selbst. Jung und löchrig, das darf man sehen.</p>
     <div class="gestalten">
-      <a class="gestalt nacht" href="promptotyping-organismus.html#most"><b>Organismus, Exemplar most</b> <span>Dieselbe Körper-Linse, ein Körper fast nur aus Geisterorganen.</span></a>
+      <a class="gestalt nacht" href="promptotyping-organismus.html#most"><b>Hier rein</b> <span>Ein Körper, der noch fast nur aus Geisterorganen besteht.</span></a>
     </div>
   </section>
 
   <footer>
-    Jede Karte nennt zuerst das Projekt, dann seine Gestalten. Das Modell, die Linsenregel, das Helio-Design und alle Entscheidungen stehen im knowledge-Ordner des Repos.
+    Verlaufen kostet nichts. Auf jeder Seite steht links oben ein Rückweg hierher, und Escape geht immer eine Ebene zurück. Das Denkmodell hinter allem (Einheiten, Fluss, Regeln, Lücken) steht im knowledge-Ordner.
   </footer>
 </main>
 

@@ -1,3 +1,9 @@
+---
+title: Grounding der Persona-Simulation
+status: complete
+updated: 2026-08-08
+---
+
 # Grounding, Kommunikation unter akuter Cannabis-Wirkung
 
 Empirische Basis für die Persona-Simulationen. Quellen am Ende.

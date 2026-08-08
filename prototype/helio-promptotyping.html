@@ -43,7 +43,8 @@ body {
   line-height: 1.7;
 }
 #kopf {
-  position: absolute; top: 1.4rem; left: 4vw; right: 4vw;
+  /* left offset clears the fixed home link */
+  position: absolute; top: 1.4rem; left: calc(14px + 8.2rem); right: 4vw;
   display: flex; justify-content: space-between; gap: 2rem;
   pointer-events: none; z-index: 4;
 }
@@ -83,16 +84,17 @@ body {
   margin-left: -.06em;
   text-transform: uppercase;
 }
-#frage {
-  font-size: clamp(1.15rem, 3vw, 1.8rem);
-  font-weight: 600; line-height: 1.3;
-  letter-spacing: -.01em;
-  margin: 0 0 1rem; max-width: 26ch; text-wrap: balance;
-}
 #satz {
-  font-size: clamp(.98rem, 1.9vw, 1.15rem);
-  line-height: 1.55; margin: 0 0 1.8rem; max-width: 48ch;
+  font-size: clamp(1.15rem, 2.6vw, 1.6rem);
+  font-weight: 600;
+  line-height: 1.45; margin: 0 0 1.8rem; max-width: 42ch; text-wrap: balance;
 }
+#mini {
+  /* formal miniature: where this band sits in the disc */
+  position: absolute; right: 6vw; bottom: 10vh;
+  width: 170px; height: 170px;
+}
+@media (max-width: 700px) { #mini { display: none; } }
 #zahlen { margin: 0 0 .7rem; opacity: .85; }
 #diagnose {
   margin: 0; max-width: 46ch; font-size: .84rem; line-height: 1.6;
@@ -125,8 +127,8 @@ body {
   <canvas id="motiv" aria-hidden="true"></canvas>
 
   <div id="kopf" class="still">
-    <span class="marke">Helio · Promptotyping
-      <span id="unterzeile" class="still">Jedes Band ein Wissensdokument. Am Horizont treffen sich Scheibe und Spiegelung, dort liegt die Zeit des Projekts.</span>
+    <span class="marke">
+      <span id="unterzeile" class="still">Dreizehn Wissensdokumente als Bänder einer Sonne. Eines antippen.</span>
     </span>
     <span id="legende">
       <span>Bandstärke · Umfang</span>
@@ -142,10 +144,10 @@ body {
 
 <div id="fokus" role="dialog" aria-modal="true" aria-labelledby="wort" tabindex="-1">
   <p id="wort"></p>
-  <p id="frage"></p>
   <p id="satz"></p>
   <p id="zahlen" class="still"></p>
   <p id="diagnose" class="still"></p>
+  <canvas id="mini" width="170" height="170" aria-hidden="true"></canvas>
   <button id="zurueck" class="still" type="button">Zurück (Esc)</button>
   <p id="steuerung" class="still">Pfeiltasten wechseln das Dokument</p>
 </div>
@@ -412,14 +414,47 @@ function oeffnen(i) {
   const ziel = innerWidth * 0.9;
   const roh = kcx.measureText(d.wort.toUpperCase()).width;
   wortEl.style.fontSize = Math.min(100 * ziel / roh, innerHeight * 0.3) + 'px';
-  document.getElementById('frage').textContent = d.frage;
   document.getElementById('satz').textContent = d.satz;
+  miniMalen(d);
   document.getElementById('zahlen').textContent =
     [d.datei, d.zeilen ? d.zeilen + ' Zeilen' : null, d.geist ? null : d.status].filter(Boolean).join(' · ');
   document.getElementById('diagnose').textContent = d.schnitt;
   fokus.classList.add('offen');
   fokus.focus();
 }
+/* Formal miniature in the focus view: the whole disc, the open document's band lit. */
+function miniMalen(d) {
+  const m = document.getElementById('mini');
+  const g = m.getContext('2d');
+  const S = m.width, c = S / 2, r = S * 0.44;
+  g.clearRect(0, 0, S, S);
+  g.save();
+  g.beginPath();
+  g.arc(c, c, r, 0, Math.PI * 2);
+  g.clip();
+  BAENDER.forEach((b, i) => {
+    const y0 = c - r + (i / BAENDER.length) * 2 * r;
+    const h = (2 * r) / BAENDER.length;
+    g.globalAlpha = b === d ? 1 : 0.3;
+    g.fillStyle = '#efeae2';
+    if (b.geist) {
+      for (let x = 0; x < S; x += 14) g.fillRect(x, y0 + h * 0.4, 7, 2);
+    } else {
+      g.fillRect(0, y0 + h * 0.2, S, h * 0.6);
+    }
+  });
+  /* the rule cut, lit when the rules are open */
+  g.globalAlpha = d.art === 'nerv' ? 1 : 0.45;
+  g.globalCompositeOperation = 'destination-out';
+  g.fillRect(S * 0.62, 0, S * 0.07, S);
+  g.restore();
+  g.globalAlpha = 1;
+  if (d.art === 'nerv') {
+    g.fillStyle = '#efeae2';
+    g.fillRect(S * 0.635, c - r, S * 0.04, 2 * r);
+  }
+}
+
 function schliessen() {
   fokus.classList.remove('offen');
   if (letzterGriff) letzterGriff.focus();
@@ -472,3 +507,4 @@ kornBauen();
 kornMalen();
 if (!still) requestAnimationFrame(schlag);
 </script>
+<a href="index.html" style="position:fixed;top:10px;left:14px;z-index:99;font-family:system-ui,sans-serif;font-size:.9rem;font-weight:700;color:#efeae2;text-decoration:none;padding:10px 12px;min-height:44px;display:flex;align-items:center;">&#8592; &#220;bersicht</a>
