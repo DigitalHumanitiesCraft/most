@@ -25,6 +25,10 @@ Definiert über kognitive Zustandsachsen (Energie, Aufmerksamkeitsspanne, Arbeit
 5. CBD "Die Entspannt-Klare", Kontrollgruppe gegen Überanpassung.
 6. Anspannung "Die Vorsichtige", überfordert, braucht Vorhersehbarkeit.
 
+## Metaphern-Linsen
+
+Die Visualisierung trennt Struktur von Oberfläche. Die Struktur ist invariant, Wissenseinheiten, ein zeitlicher Fluss, steuernde Regeln, sichtbare Lücken. Die Metapher ist eine austauschbare Linse darüber, Körper (Organ, Ader, Nerv, Geisterorgan) für biologisch Denkende, Netzwerk (Server, API, Route, fehlender Endpoint) für Informatiker, Informationsströme und Kontexte für Informationswissenschaft, Workflow von Forschungsdaten zu Forschungsartefakten für Digital Humanities. Die DH-Linse ist dabei keine Metapher, sondern wörtlich Promptotyping. Die Linsenwahl gehört als Zielgruppen-Entscheidung in den Metaprompt und wird aus dem Kontext des jeweiligen Projekts abgeleitet; Default ist die Linse mit der geringsten metaphorischen Distanz zum Vokabular des Projekts selbst.
+
 ## Methode
 
 Persona-Simulationssessions. Der Assistent spielt im Chat die jeweilige Persona und führt ein Gespräch mit dem (selbst beeinträchtigten) Team, stellt sich vor und stellt Fragen. Nach jeder Session entsteht ein sachliches Sessiondokument `session-<persona>.md` in diesem Ordner mit Beobachtungen und abgeleiteten UI-Anforderungen. Das Team ist während der Sessions selbst im Zielzustand, die Gespräche sind damit zugleich informelle Nutzertests.
