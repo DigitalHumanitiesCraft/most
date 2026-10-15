@@ -1,12 +1,12 @@
 ---
 title: Wegweiser durch den knowledge-Ordner
 status: complete
-updated: 2026-08-08
+updated: 2026-10-15
 ---
 
 # INDEX, Wegweiser
 
-Der knowledge-Ordner ist der Promptotyping-Vault des Projekts most. Jedes Dokument beantwortet genau eine Frage; wer etwas sucht, geht über diese Tabelle.
+most ist seit dem 15.10.2026 als eigenständiges Vorhaben abgeschlossen. Second Brain übernimmt die begrenzten Gestaltungsansätze und berichteten Entwicklungsbeobachtungen. Der knowledge-Ordner bewahrt den Ausgangsversuch und seine Quellen, Prototypen bleiben lokal erhalten. Jedes Dokument beantwortet genau eine Frage; wer etwas sucht, geht über diese Tabelle.
 
 | Dokument | Frage | Konventionsname |
 |---|---|---|
@@ -17,9 +17,9 @@ Der knowledge-Ordner ist der Promptotyping-Vault des Projekts most. Jedes Dokume
 | [planet.md](planet.md) | Wie wird ein Projekt als Himmelskörper repräsentiert? | Fachdokument |
 | [grounding-kommunikation.md](grounding-kommunikation.md) | Worauf stützt sich die Persona-Simulation empirisch? | Fachdokument |
 | [journal.md](journal.md) | Wie sind wir hierhin gekommen? | journal.md, rückwärts lesen |
-| [plan.md](plan.md) | Was kommt als Nächstes, in welcher Reihenfolge? | plan.md, vorwärts lesen |
+| [plan.md](plan.md) | Was wurde abgeschlossen und was bleibt ungetestetes Ausgangsmaterial? | plan.md |
 
-Die Verhaltensregeln für Agenten stehen in der [CLAUDE.md](../CLAUDE.md) im Repo-Root.
+Die Verhaltensregeln für Agenten stehen in der [CLAUDE.md](../CLAUDE.md) im Repo-Root, der Einstieg für Außenstehende in der [README.md](../README.md).
 
 ## Lese-Heuristik
 
@@ -36,6 +36,6 @@ Die Verhaltensregeln für Agenten stehen in der [CLAUDE.md](../CLAUDE.md) im Rep
 * **Gestalt**, eine konkrete visuelle Ausprägung des generalisierten UI für ein Projekt (Nachtgarten, Organismus, Werkstrecke, Helio, Planet).
 * **Linse**, die Metapher einer Gestalt; austauschbar über der invarianten Struktur, gewählt nach geringster metaphorischer Distanz zum Vokabular des Projekts.
 * **Invarianten**, die vier immer gezeigten Dinge, Einheiten, Fluss, Regeln, Lücken.
-* **Nullte Zoomstufe**, die Ansicht vor aller Interaktion; der Himmel, in dem jedes Projekt als Himmelskörper seinen Zustand zeigt.
+* **Nullte Zoomstufe**, die Ansicht vor aller Interaktion; diese Rolle trägt die geführte Überseite. Die frühere Himmelsansicht über allen Projekten ist verworfen und gelöscht.
 * **Geisterdokument**, ein Dokument, dessen Trigger erfüllt ist, das aber fehlt; wird immer sichtbar gemacht.
 * **Dichteregler**, die zentrale Architekturentscheidung, Informationsdichte einstellbar oder adaptiv zu halten.

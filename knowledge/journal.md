@@ -1,10 +1,30 @@
 ---
 title: Projektgedächtnis
 status: active
-updated: 2026-08-08
+updated: 2026-10-15
 ---
 
 # Journal, rückwärts lesen
+
+## 2026-10-15, Abschluss und Einordnung in Second Brain
+
+Auf Auftrag des Human User wurde der eigenständige Arbeitsstrang beendet. Projektcharta, Spezifikation, Plan und Journal wurden mit der bestehenden Forschungsoberfläche und dem aktuellen Oberflächenmaßstab im Vault verglichen. Second Brain übernimmt in `pruefansicht/knowledge/research.md` die begrenzte Entwicklungserfahrung zum geführten Einstieg, zur Trennung von Daten und visueller Linse und zur sichtbaren Kennzeichnung fehlender Nachweise. Diese Punkte bleiben Gestaltungsansätze beziehungsweise berichtete Beobachtungen.
+
+Die Prototypen, ihr Datenmaterial und das ursprüngliche Versuchsdesign bleiben hier. Bestehende uncommittete Änderungen an Code, Daten und Skripten wurden erhalten. Die im früheren Journal genannten Test- und Browserläufe wurden nicht erneut ausgeführt. Die Verallgemeinerung von hoher kognitiver Last auf alle Nutzenden ist nicht belegt, neue Persona-Simulationen und weitere Varianten wurden nicht beauftragt. Der aktuelle [Plan](plan.md) hebt den bisherigen Ausbauauftrag auf.
+
+## 2026-08-08, dritte Session: Konsolidierung durch Agenten
+
+**Richtung.** Die Entscheidung der zweiten Session wurde durchgezogen. Helio ist die Leitästhetik, die Überseite und alle Standardpfade liegen im Tag, die Nachtgestalten bleiben als alternatives Gewand erreichbar. `himmel.html` ist aus dem Prototyp gelöscht; die nullte Zoomstufe als eigene Seite ist damit Geschichte.
+
+**Engine-Extraktion.** Die drei Tagseiten hatten Farben, Bandzeichner, Kornlogik und Seeded-LCG je für sich. Das liegt jetzt in `prototype/helio.css` (Tokens in `:root`, gemeinsame Komponenten) und `prototype/helio.js` (Canvas-Vermessung, LCG, Schlüssel-Signatur, Kornkacheln, Band, Wellen, Grund, Laden und Statuslogik des Testlaufs). Seitenspezifisches bleibt in der Seite.
+
+**Datenextraktion.** Die eingebetteten Datensätze sind aus den Seiten heraus nach `prototype/daten/` gewandert und werden per fetch geladen. Die Promptotyping-Daten hat `scripts/promptotyping-ingest.mjs` dabei aus dem echten Wissensordner des Repos neu erzeugt, mit `CLAUDE.md` als Regel-Dokument. Der Ingest erfindet nichts, ein Feld ohne Quelle bleibt leer. Damit ist die alte Schuld der pro Seite duplizierten Daten getilgt.
+
+**helio-most.** most bekam seine eigene Tagseite, gespeist aus dem eigenen knowledge-Ordner über denselben Ingest-Weg. Das Projekt zeigt seinen eigenen Wissensstand mit dem Werkzeug, das es baut.
+
+**Nachtgarten-Anbindung.** `mhdbdb-tests.html` liest jetzt ebenfalls die gemeinsame Datenquelle und zeigt den Erfüllungsstand des echten Laufs, damit die Alternative nicht hinter dem Standardpfad zurückbleibt.
+
+**Konvention.** Die Regel "eine selbstständige HTML-Datei ohne externe Ressourcen" ist in der CLAUDE.md im Repo-Root ersetzt worden. Geteilte lokale Geschwisterdateien sind erlaubt und erwünscht, externe Ressourcen bleiben verboten, Daten kommen aus `prototype/daten/*.json` statt als eingebettete Kopie. Der Prototyp braucht deshalb zwingend den lokalen Webserver, weil Module und fetch über `file://` nicht laufen.
 
 ## 2026-08-08, zweite Session: Helio als Leitästhetik, echter Testlauf
 

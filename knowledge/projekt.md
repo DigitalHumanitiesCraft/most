@@ -1,10 +1,12 @@
 ---
 title: Projektcharta
-status: active
-updated: 2026-08-08
+status: complete
+updated: 2026-10-15
 ---
 
 # Projekt most
+
+> Am 15.10.2026 auf Auftrag des Human User als eigenständiges Vorhaben abgeschlossen. Verwertbare Gestaltungsansätze und berichtete Entwicklungsbeobachtungen sind in Second Brain eingeordnet, im lokalen Repository pruefansicht unter knowledge/research.md, Abschnitt Retained design case most. Prototypen und ursprüngliche Fragestellung bleiben hier erhalten. Der folgende Entwurf beschreibt den Ausgangsversuch, ohne seine Wirkung zu bestätigen. [plan.md](plan.md) führt den Abschluss.
 
 ## Idee
 
