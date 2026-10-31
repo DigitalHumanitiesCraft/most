@@ -1,0 +1,320 @@
+{
+  "quelle": "most/knowledge",
+  "dokumente": [
+    {
+      "datei": "architecture.md",
+      "stamm": "architecture",
+      "titel": "Architektur der Prototypen",
+      "zeilen": 67,
+      "status": "active",
+      "auszug": "Alle Seiten liegen in prototype/ und laufen über einen lokalen statischen Webserver (python -m http.server 8642 im prototype-Ordner).",
+      "art": "wissen"
+    },
+    {
+      "datei": "design.md",
+      "stamm": "design",
+      "titel": "Design, Ästhetik Helio",
+      "zeilen": 60,
+      "status": "draft",
+      "auszug": "Team-Entscheidung 2026-08-08, Helio ist die Leitästhetik des Projekts.",
+      "art": "wissen"
+    },
+    {
+      "datei": "grounding-kommunikation.md",
+      "stamm": "grounding-kommunikation",
+      "titel": "Grounding der Persona-Simulation",
+      "zeilen": 37,
+      "status": "complete",
+      "auszug": "Empirische Basis für die Persona-Simulationen.",
+      "art": "wissen"
+    },
+    {
+      "datei": "INDEX.md",
+      "stamm": "INDEX",
+      "titel": "Wegweiser durch den knowledge-Ordner",
+      "zeilen": 41,
+      "status": "complete",
+      "auszug": "Der knowledge-Ordner ist der Promptotyping-Vault des Projekts most.",
+      "art": "wissen"
+    },
+    {
+      "datei": "journal.md",
+      "stamm": "journal",
+      "titel": "Projektgedächtnis",
+      "zeilen": 55,
+      "status": "active",
+      "auszug": "Alles Folgende entstand in einer einzigen Session des Teams (zwei Personen, selbst im Zielzustand) mit dem Assistenten.",
+      "art": "wissen"
+    },
+    {
+      "datei": "plan.md",
+      "stamm": "plan",
+      "titel": "Vorwärtsrichtung",
+      "zeilen": 22,
+      "status": "active",
+      "auszug": "Reihenfolge nach Abhängigkeit, ohne Termine.",
+      "art": "wissen"
+    },
+    {
+      "datei": "planet.md",
+      "stamm": "planet",
+      "titel": "Planet, Schichtenmodell der Projektrepräsentation",
+      "zeilen": 31,
+      "status": "draft",
+      "auszug": "Die ruhende Ansicht eines einzelnen Projekts im generalisierten UI (siehe projekt.md), umgesetzt in promptotyping-planet.html.",
+      "art": "wissen"
+    },
+    {
+      "datei": "projekt.md",
+      "stamm": "projekt",
+      "titel": "Projektcharta",
+      "zeilen": 44,
+      "status": "active",
+      "auszug": "Ein User Interface zur Wissensvermittlung, das auch für stark cannabis-beeinträchtigte Nutzer funktioniert.",
+      "art": "wissen"
+    },
+    {
+      "datei": "specification.md",
+      "stamm": "specification",
+      "titel": "Spezifikation des generalisierten UI",
+      "zeilen": 49,
+      "status": "active",
+      "auszug": "Ableitung aus den Designprinzipien in projekt.md, formuliert als prüfbare Anforderungen.",
+      "art": "wissen"
+    },
+    {
+      "datei": "CLAUDE.md",
+      "stamm": "CLAUDE",
+      "titel": "most, Regeln für Agenten",
+      "zeilen": 24,
+      "status": null,
+      "auszug": "Projektkontext, Ziele und Personas stehen in knowledge/projekt.md; der Wegweiser durch den Vault ist knowledge/INDEX.md.",
+      "art": "regel"
+    }
+  ],
+  "projekt": "most",
+  "rollen": [
+    {
+      "wort": "Warum",
+      "dateien": [
+        "projekt.md"
+      ],
+      "frage": "Was ist dieses Projekt, für wen, mit welchem Ziel?",
+      "satz": "Die Charta, Idee, Designprinzipien, Personas und die Metaphern-Linsen.",
+      "schnitt": "Aufschneiden, wenn der Projektkontext unklar wird oder ein Prinzip gebrochen werden soll.",
+      "art": "organ",
+      "organismus": {
+        "x": 20,
+        "y": 28,
+        "g": 1.1
+      },
+      "datei": "projekt.md",
+      "stamm": "projekt",
+      "zeilen": 44,
+      "status": "active",
+      "titel": "Projektcharta",
+      "geist": false,
+      "teile": 1
+    },
+    {
+      "wort": "Was",
+      "dateien": [
+        "specification.md"
+      ],
+      "frage": "Was soll das UI leisten, woran wird das geprüft?",
+      "satz": "Das generalisierte Modell aus Einheiten, Fluss, Regeln und Lücken, mit Akzeptanzkriterien pro Seite.",
+      "schnitt": "Aufschneiden, bevor eine neue Gestalt ihr Ziel rät.",
+      "art": "organ",
+      "organismus": {
+        "x": 40,
+        "y": 20,
+        "g": 1.2
+      },
+      "datei": "specification.md",
+      "stamm": "specification",
+      "zeilen": 49,
+      "status": "active",
+      "titel": "Spezifikation des generalisierten UI",
+      "geist": false,
+      "teile": 1
+    },
+    {
+      "wort": "Wie",
+      "dateien": [
+        "architecture.md"
+      ],
+      "frage": "Wie sind die Prototypen technisch gebaut?",
+      "satz": "Seitenlandkarte, die beiden Farbwelten, die Zeichentechniken und woher die Daten kommen.",
+      "schnitt": "Aufschneiden bei falschen Annahmen über Seiten, Daten oder Zeichenebenen.",
+      "art": "organ",
+      "organismus": {
+        "x": 60,
+        "y": 30,
+        "g": 1
+      },
+      "datei": "architecture.md",
+      "stamm": "architecture",
+      "zeilen": 67,
+      "status": "active",
+      "titel": "Architektur der Prototypen",
+      "geist": false,
+      "teile": 1
+    },
+    {
+      "wort": "Gestalt",
+      "dateien": [
+        "design.md"
+      ],
+      "frage": "Welche Ästhetik gilt, mit welchen Regeln?",
+      "satz": "Helio als Leitästhetik, zweifarbig, Bänder als einziges Konstruktionsmittel.",
+      "schnitt": "Aufschneiden, bevor eine dritte Farbwelt oder eine fremde Formsprache entsteht.",
+      "art": "organ",
+      "organismus": {
+        "x": 30,
+        "y": 50,
+        "g": 1
+      },
+      "datei": "design.md",
+      "stamm": "design",
+      "zeilen": 60,
+      "status": "draft",
+      "titel": "Design, Ästhetik Helio",
+      "geist": false,
+      "teile": 1
+    },
+    {
+      "wort": "Wo",
+      "dateien": [
+        "INDEX.md"
+      ],
+      "frage": "Was liegt hier, und wie lese ich es?",
+      "satz": "Der Wegweiser durch den knowledge-Ordner, mit Lese-Heuristik und Begriffen.",
+      "schnitt": "Aufschneiden, wenn ein Dokument nicht gefunden oder ein Begriff falsch verwendet wird.",
+      "art": "organ",
+      "organismus": {
+        "x": 12,
+        "y": 70,
+        "g": 0.85
+      },
+      "datei": "INDEX.md",
+      "stamm": "INDEX",
+      "zeilen": 41,
+      "status": "complete",
+      "titel": "Wegweiser durch den knowledge-Ordner",
+      "geist": false,
+      "teile": 1
+    },
+    {
+      "wort": "Stoff",
+      "dateien": [
+        "grounding-kommunikation.md"
+      ],
+      "frage": "Welches fachliche Wissen trägt das Projekt?",
+      "satz": "Die Empirie, wie Menschen unter akuter Wirkung wirklich kommunizieren, mit Quellen.",
+      "schnitt": "Aufschneiden, bevor eine Persona wieder zu glatt spricht.",
+      "art": "organ",
+      "organismus": {
+        "x": 52,
+        "y": 52,
+        "g": 1
+      },
+      "datei": "grounding-kommunikation.md",
+      "stamm": "grounding-kommunikation",
+      "zeilen": 37,
+      "status": "complete",
+      "titel": "Grounding der Persona-Simulation",
+      "geist": false,
+      "teile": 1
+    },
+    {
+      "wort": "Modell",
+      "dateien": [
+        "planet.md"
+      ],
+      "frage": "Wie sieht ein ganzes Projekt aus der Distanz aus?",
+      "satz": "Das Schichtenmodell des Himmelskörpers, vom Kern bis zum Ring der Prüfungen.",
+      "schnitt": "Aufschneiden, wenn eine Schicht ohne planetares Gegenstück behauptet wird.",
+      "art": "organ",
+      "organismus": {
+        "x": 76,
+        "y": 46,
+        "g": 0.95
+      },
+      "datei": "planet.md",
+      "stamm": "planet",
+      "zeilen": 31,
+      "status": "draft",
+      "titel": "Planet, Schichtenmodell der Projektrepräsentation",
+      "geist": false,
+      "teile": 1
+    },
+    {
+      "wort": "Woher",
+      "dateien": [
+        "journal.md"
+      ],
+      "frage": "Wie sind wir hierhin gekommen?",
+      "satz": "Das Projektgedächtnis, rückwärts gelesen die Sitzungen mit ihren Entscheidungen und Sackgassen.",
+      "schnitt": "Aufschneiden bei unklarer Entscheidungslogik und wiederholten Sackgassen.",
+      "art": "vene",
+      "richtung": -1,
+      "organismus": {
+        "x": 38,
+        "y": 76,
+        "g": 1
+      },
+      "datei": "journal.md",
+      "stamm": "journal",
+      "zeilen": 55,
+      "status": "active",
+      "titel": "Projektgedächtnis",
+      "geist": false,
+      "teile": 1
+    },
+    {
+      "wort": "Wohin",
+      "dateien": [
+        "plan.md"
+      ],
+      "frage": "Wohin geht es, in welcher Reihenfolge?",
+      "satz": "Die Vorwärtsrichtung, nach Abhängigkeit geordnet statt nach Termin.",
+      "schnitt": "Aufschneiden, wenn der nächste Schritt nicht erkennbar ist.",
+      "art": "vene",
+      "richtung": 1,
+      "organismus": {
+        "x": 66,
+        "y": 76,
+        "g": 0.9
+      },
+      "datei": "plan.md",
+      "stamm": "plan",
+      "zeilen": 22,
+      "status": "active",
+      "titel": "Vorwärtsrichtung",
+      "geist": false,
+      "teile": 1
+    },
+    {
+      "wort": "Regeln",
+      "dateien": [
+        "CLAUDE.md"
+      ],
+      "frage": "Wie soll der Agent sich verhalten?",
+      "satz": "Die Regeln für jede Prototyp-Seite, sie greifen in alles ein, was gebaut wird.",
+      "schnitt": "Aufschneiden bei Stilbruch oder ignorierten Verboten.",
+      "art": "nerv",
+      "organismus": {
+        "x": 86,
+        "y": 16,
+        "g": 0.9
+      },
+      "datei": "CLAUDE.md",
+      "stamm": "CLAUDE",
+      "zeilen": 24,
+      "status": null,
+      "titel": "most, Regeln für Agenten",
+      "geist": false,
+      "teile": 1
+    }
+  ]
+}

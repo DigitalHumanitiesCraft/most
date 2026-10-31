@@ -1,0 +1,140 @@
+/* Helio, shared surface of the day pages.
+   Two inks only, a red ground and a warm off-white. Every intermediate value
+   comes from transparency or grain, never from a third hue. Raw hex values
+   appear here once, in the token block; components use var(). */
+
+:root {
+  --grund-oben: #d81e12;
+  --grund-unten: #e8402a;
+  --grund: #dd2c1b;
+  --tinte: #efeae2;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--grund);
+  color: var(--tinte);
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  -webkit-text-size-adjust: 100%;
+}
+
+/* Canvas layering: the motif lies under everything, the grain above it, so
+   ground, motif and type read as one printed surface. */
+#motiv, #korn { position: fixed; inset: 0; width: 100%; height: 100%; }
+#motiv { z-index: 0; }
+#korn { z-index: 40; pointer-events: none; mix-blend-mode: normal; }
+
+/* ---------- typography ---------- */
+
+.kopf {
+  position: absolute;
+  top: clamp(1.4rem, 4vh, 3rem);
+  left: 0;
+  right: 0;
+  padding: 0 clamp(.9rem, 3vw, 2.2rem);
+  pointer-events: none;
+  z-index: 12;
+}
+
+.riesig {
+  margin: 0;
+  font-weight: 900;
+  letter-spacing: -.045em;
+  line-height: .84;
+  font-size: clamp(3rem, 15vw, 9.5rem);
+  margin-left: -.055em; /* optical bleed past the left edge */
+  overflow-wrap: anywhere;
+}
+
+/* Small type stays bold and >= 19px: off-white on this red only clears WCAG
+   at the large-text threshold (3:1), so nothing here drops below it. */
+.still {
+  margin: .7rem 0 0;
+  font-weight: 700;
+  font-size: clamp(1.2rem, 1.7vw, 1.4rem);
+  line-height: 1.35;
+  max-width: 34ch;
+  letter-spacing: -.005em;
+}
+
+.hinweis {
+  position: absolute;
+  left: clamp(.9rem, 3vw, 2.2rem);
+  right: clamp(.9rem, 3vw, 2.2rem);
+  bottom: clamp(4.6rem, 8vh, 5.4rem);
+  margin: 0;
+  max-width: none;
+  z-index: 12;
+  pointer-events: none;
+}
+
+/* ---------- rows ---------- */
+
+.reihen { position: absolute; inset: 0; z-index: 11; pointer-events: none; }
+
+/* A row is the hitbox and never moves. Only the band painted beneath it travels. */
+.reihe {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  padding: 0 clamp(.9rem, 3vw, 2.2rem);
+  background: none;
+  border: 0;
+  color: var(--tinte);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  pointer-events: auto;
+}
+.reihe .spalte { display: flex; flex-direction: column; gap: .12em; }
+.reihe .wort {
+  font-weight: 900;
+  letter-spacing: -.03em;
+  line-height: 1;
+  font-size: clamp(1.15rem, 2.6vw, 2.1rem);
+  overflow-wrap: anywhere;
+}
+.reihe .zahl { font-weight: 700; font-size: 1.2rem; line-height: 1; opacity: .82; }
+.reihe:focus-visible { outline: 3px solid var(--tinte); outline-offset: -5px; }
+
+/* ---------- navigation ---------- */
+
+.zurueck {
+  position: absolute;
+  top: clamp(.7rem, 2.4vh, 1.6rem);
+  right: clamp(.7rem, 2.4vw, 1.6rem);
+  width: 56px;
+  height: 56px;
+  z-index: 30;
+  background: none;
+  border: 0;
+  color: var(--tinte);
+  font-family: inherit;
+  font-weight: 900;
+  font-size: 2rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.zurueck:focus-visible { outline: 3px solid var(--tinte); outline-offset: -4px; }
+
+/* the way back to the overview, top left on every page */
+.heim {
+  position: fixed;
+  top: 10px;
+  left: 14px;
+  z-index: 99;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  padding: 10px 12px;
+  font-size: .9rem;
+  font-weight: 700;
+  color: var(--tinte);
+  text-decoration: none;
+}
+.heim:focus-visible { outline: 3px solid var(--tinte); outline-offset: -4px; }

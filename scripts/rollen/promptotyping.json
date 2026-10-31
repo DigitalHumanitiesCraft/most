@@ -1,0 +1,228 @@
+{
+  "projekt": "Promptotyping",
+  "hinweis": "Editorial layer of the night views. Facts (line counts, status, whether a file exists) are filled in by scripts/promptotyping-ingest.mjs from the real folder; this file only says which role a document plays and where it sits in each view. Array order is the planet order, the workflow sorts by t.",
+  "rollen": [
+    {
+      "wort": "Warum",
+      "dateien": ["project.md"],
+      "frage": "Was ist dieses Projekt, für wen, mit welchem Ziel?",
+      "satz": "Die Charta der Methode, Forschungsdaten werden durch Context Engineering zu Forschungsartefakten.",
+      "schnitt": "Aufschneiden, wenn der Output inhaltlich falsch ist oder der Projektkontext unklar.",
+      "art": "organ",
+      "organismus": { "x": 22, "y": 30, "g": 1.1 },
+      "planet": { "schicht": "kern" },
+      "workflow": {
+        "art": "becken", "t": 0.07, "s": 0.95, "g": 1.1,
+        "satz": "Das erste Becken der Strecke, die Charta der Methode. Forschungsdaten werden durch Context Engineering zu Forschungsartefakten.",
+        "eingriff": "Öffnen, wenn der Output inhaltlich falsch läuft oder der Projektkontext unklar ist."
+      }
+    },
+    {
+      "wort": "Was",
+      "dateien": ["specification.md"],
+      "frage": "Was soll das System tun, und warum?",
+      "satz": "Anforderungen, Epics und Entscheidungen der Methoden-Website.",
+      "schnitt": "Aufschneiden, wenn ein Akzeptanzkriterium ignoriert oder eine alte Entscheidung neu aufgemacht wird.",
+      "art": "organ",
+      "organismus": { "x": 38, "y": 22, "g": 1.2 },
+      "planet": { "schicht": "mantel" },
+      "workflow": {
+        "art": "becken", "t": 0.33, "s": 0.88, "g": 1.2,
+        "satz": "Anforderungen, Epics und Entscheidungen der Methoden-Website, das breiteste Becken der oberen Strecke.",
+        "eingriff": "Öffnen, wenn ein Akzeptanzkriterium ignoriert oder eine alte Entscheidung neu aufgemacht wird."
+      }
+    },
+    {
+      "wort": "Wie",
+      "dateien": ["architecture.md"],
+      "frage": "Wie ist es technisch realisiert?",
+      "satz": "Die statische Site und wie ihre Teile zusammenstecken.",
+      "schnitt": "Aufschneiden bei falschen Annahmen über Komponenten und Datenfluss.",
+      "art": "organ",
+      "organismus": { "x": 54, "y": 36, "g": 1 },
+      "planet": { "schicht": "mantel" },
+      "workflow": {
+        "art": "becken", "t": 0.41, "s": -0.88, "g": 1,
+        "satz": "Die statische Site und wie ihre Teile zusammenstecken.",
+        "eingriff": "Öffnen bei falschen Annahmen über Komponenten und Datenfluss."
+      }
+    },
+    {
+      "wort": "Gestalt",
+      "dateien": ["design.md"],
+      "frage": "Wie sieht es aus, wie verhält es sich ästhetisch?",
+      "satz": "Gestaltungsregeln und die ästhetische Haltung des Projekts.",
+      "schnitt": "Aufschneiden bei UI-Inkonsistenz oder Designsystem-Bruch.",
+      "art": "organ",
+      "organismus": { "x": 32, "y": 52, "g": 1 },
+      "planet": { "schicht": "mantel" },
+      "workflow": {
+        "art": "becken", "t": 0.48, "s": 0.92, "g": 1,
+        "satz": "Gestaltungsregeln und die ästhetische Haltung des Projekts.",
+        "eingriff": "Öffnen bei UI-Inkonsistenz oder Designsystem-Bruch."
+      }
+    },
+    {
+      "wort": "Wo",
+      "dateien": ["INDEX.md"],
+      "frage": "Was liegt hier, und wie lese ich es?",
+      "satz": "Der Wegweiser durch die Wissensdokumente, mit dem Begriffslexikon.",
+      "schnitt": "Aufschneiden, wenn ein Dokument nicht gefunden oder ein Begriff falsch verwendet wird.",
+      "art": "organ",
+      "organismus": { "x": 12, "y": 56, "g": 0.85 },
+      "planet": { "schicht": "mantel" },
+      "workflow": {
+        "art": "becken", "t": 0.19, "s": 0.9, "g": 0.85,
+        "satz": "Der Wegweiser über die ganze Strecke, mit dem Begriffslexikon.",
+        "eingriff": "Öffnen, wenn ein Dokument nicht gefunden oder ein Begriff falsch verwendet wird."
+      }
+    },
+    {
+      "wort": "Daten",
+      "dateien": ["data.md"],
+      "frage": "Was ist das verarbeitete Substrat?",
+      "satz": "Das Repo trägt einen data-Ordner, aber kein Dokument beschreibt ihn. Der Trigger ist erfüllt, das Organ fehlt.",
+      "schnitt": "Anlegen, bevor Datenfelder verwechselt oder Beispiele falsch zitiert werden.",
+      "art": "organ",
+      "organismus": { "x": 20, "y": 78, "g": 0.9 },
+      "planet": { "schicht": "mantel" },
+      "workflow": {
+        "art": "becken", "t": 0.26, "s": -0.85, "g": 0.9,
+        "satz": "Das Repo trägt einen data-Ordner, aber kein Dokument beschreibt ihn. Genau hier, kurz hinter der Quelle, läuft der Strom in den Boden.",
+        "eingriff": "Anlegen, bevor Datenfelder verwechselt oder Beispiele falsch zitiert werden."
+      }
+    },
+    {
+      "wort": "Stoff",
+      "dateien": ["paper.md", "paper-knowledge.md", "skriptum-video-1.md", "skriptum-video-2.md"],
+      "frage": "Welches fachliche Wissen trägt das Projekt?",
+      "satz": "Das Paper, sein kanonisches Wissensdokument und zwei Video-Skripten, das schwerste Bündel der Basis.",
+      "schnitt": "Aufschneiden, wenn eine Fachregel oder die Argumentation des Papers verletzt wird.",
+      "art": "organ",
+      "organismus": { "x": 46, "y": 68, "g": 1.35 },
+      "planet": { "schicht": "kruste" },
+      "workflow": {
+        "art": "becken", "t": 0.85, "s": -0.92, "g": 1.4,
+        "satz": "Das Paper, sein kanonisches Wissensdokument und zwei Video-Skripten, das mit Abstand tiefste Becken der Strecke.",
+        "eingriff": "Öffnen, wenn eine Fachregel oder die Argumentation des Papers verletzt wird."
+      }
+    },
+    {
+      "wort": "Stand",
+      "dateien": ["report.md"],
+      "frage": "Was ist der Stand zum Stichtag, für draußen?",
+      "satz": "Der Bericht des ZfdG-Einreichungs-Durchgangs, ein eingefrorener Moment.",
+      "schnitt": "Aufschneiden, wenn der kommunizierte Stand veraltet wirkt.",
+      "art": "organ",
+      "organismus": { "x": 84, "y": 38, "g": 0.85 },
+      "planet": { "schicht": "kruste" },
+      "workflow": {
+        "art": "becken", "t": 0.92, "s": 0.86, "g": 0.85,
+        "satz": "Der Bericht des ZfdG-Einreichungs-Durchgangs, ein eingefrorener Moment kurz vor der Mündung.",
+        "eingriff": "Öffnen, wenn der kommunizierte Stand veraltet wirkt."
+      }
+    },
+    {
+      "wort": "Woher",
+      "dateien": ["journal.md"],
+      "frage": "Wie sind wir hierhin gekommen?",
+      "satz": "Das Projektgedächtnis, rückwärts gelesen die ganze Geschichte.",
+      "schnitt": "Aufschneiden bei unklarer Entscheidungslogik und wiederholten Sackgassen.",
+      "art": "vene",
+      "richtung": -1,
+      "organismus": { "x": 64, "y": 56, "g": 1 },
+      "planet": { "schicht": "atmosphaere" },
+      "workflow": {
+        "art": "zeit", "t": 0.56, "s": -0.95, "g": 1.15,
+        "satz": "Das Projektgedächtnis liegt gegen die Strömung. Man liest es rückwärts und kommt dabei die ganze Strecke zurück.",
+        "eingriff": "Öffnen bei unklarer Entscheidungslogik und wiederholten Sackgassen."
+      }
+    },
+    {
+      "wort": "Wohin",
+      "dateien": ["plan.md"],
+      "frage": "Wohin geht es, in welcher Reihenfolge?",
+      "satz": "Die Vorwärtsrichtung, Phasen und nächste Schritte.",
+      "schnitt": "Aufschneiden, wenn der nächste Schritt nicht erkennbar ist.",
+      "art": "vene",
+      "richtung": 1,
+      "organismus": { "x": 78, "y": 66, "g": 0.9 },
+      "planet": { "schicht": "atmosphaere" },
+      "workflow": {
+        "art": "zeit", "t": 0.63, "s": 0.9, "g": 0.9,
+        "satz": "Die Vorwärtsrichtung, Phasen und nächste Schritte, mit der Strömung gelesen.",
+        "eingriff": "Öffnen, wenn der nächste Schritt nicht erkennbar ist."
+      }
+    },
+    {
+      "wort": "Regeln",
+      "dateien": ["CLAUDE.md"],
+      "frage": "Wie soll der Agent sich verhalten?",
+      "satz": "Die Verhaltensregeln im Repo-Root, sie feuern in alles hinein, was gebaut wird.",
+      "schnitt": "Aufschneiden bei Stilbruch oder ignorierten Verboten.",
+      "art": "nerv",
+      "organismus": { "x": 88, "y": 16, "g": 0.9 },
+      "planet": { "schicht": "magnetfeld" },
+      "workflow": {
+        "art": "schleuse", "t": 0.14, "s": -1.05, "g": 0.95,
+        "satz": "Die Schleuse gleich hinter der Quelle. Sie steht vor allem, was danach kommt, und stellt, wie hoch der Strom in jedes Becken einläuft.",
+        "eingriff": "Öffnen bei Stilbruch oder ignorierten Verboten, das Wasser steht dann falsch."
+      }
+    },
+    {
+      "wort": "Beweis",
+      "dateien": ["verification.md"],
+      "frage": "Halten die eigenen Claims einer Prüfung stand?",
+      "satz": "Adversariale Prüfung der empirischen Behauptungen für das Paper.",
+      "schnitt": "Aufschneiden, wenn ein außenwirksamer Claim unbelegt ist.",
+      "art": "organ",
+      "organismus": { "x": 68, "y": 24, "g": 1 },
+      "planet": { "schicht": "ring" },
+      "workflow": {
+        "art": "becken", "t": 0.77, "s": 0.86, "g": 1,
+        "satz": "Adversariale Prüfung der empirischen Behauptungen für das Paper, das letzte Sieb vor dem Artefakt.",
+        "eingriff": "Öffnen, wenn ein außenwirksamer Claim unbelegt ist."
+      }
+    },
+    {
+      "wort": "Prüfung",
+      "dateien": ["testing.md"],
+      "frage": "Was wird garantiert, und wie wird es geprüft?",
+      "satz": "Es gibt Werkzeuge, aber keine beschriebenen Garantien. Der Trigger ist erfüllt, das Organ fehlt.",
+      "schnitt": "Anlegen, bevor eine Garantie unklar wird.",
+      "art": "organ",
+      "organismus": { "x": 66, "y": 80, "g": 0.9 },
+      "planet": { "schicht": "ring" },
+      "workflow": {
+        "art": "becken", "t": 0.7, "s": -0.9, "g": 0.9,
+        "satz": "Es gibt Werkzeuge, aber keine beschriebenen Garantien. Kurz vor der Mündung fehlt dem Strom hier ein Bett.",
+        "eingriff": "Anlegen, bevor eine Garantie unklar wird."
+      }
+    }
+  ],
+  "stationen": [
+    {
+      "wort": "Forschungsdaten",
+      "kurz": "Quelle",
+      "datei": "data/",
+      "status": "Quelle",
+      "art": "rand",
+      "frage": "Womit fängt alles an?",
+      "satz": "Am linken Ende liegt das Material, Quellen, Korpora, Tabellen, alles noch ungedeutet.",
+      "eingriff": "Von hier fließt jede Aussage los. Was hier nicht liegt, kann rechts nicht herauskommen.",
+      "t": 0, "s": 0, "g": 1
+    },
+    {
+      "wort": "Forschungsartefakte",
+      "kurz": "Artefakte",
+      "datei": "Paper · Website · Video",
+      "status": "Ergebnis",
+      "art": "rand",
+      "farben": ["#e8b34c", "#7a5a1c"],
+      "frage": "Was kommt am rechten Ende heraus?",
+      "satz": "Alles, was die Strecke verlässt, Paper, Website, Video, jedes Stück auf die Daten am linken Ende zurückführbar.",
+      "eingriff": "Was hier ankommt, ohne ein Becken durchlaufen zu haben, ist ungedeckt.",
+      "t": 1, "s": 0, "g": 1
+    }
+  ]
+}

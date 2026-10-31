@@ -1,0 +1,383 @@
+{
+  "quelle": "mhdbdb-tei-only/testing/tests, Playwright-Spec-Dateien",
+  "kategorien": [
+    {
+      "wort": "Suchen",
+      "ico": "🔍",
+      "c1": "#e8b34c",
+      "c2": "#7a5a1e",
+      "halo": "rgba(232,179,76,.45)",
+      "x": 21,
+      "y": 37,
+      "tests": [
+        {
+          "w": "Finden",
+          "s": "Die Suche findet dein Wort, auch wenn du nur fast richtig liegst.",
+          "f": "search-engine"
+        },
+        {
+          "w": "Vereinfachen",
+          "s": "ô und æ werden vor jeder Suche zu o und a, überall gleich.",
+          "f": "search-normalization"
+        },
+        {
+          "w": "Sechs Wege",
+          "s": "Autoren, Werke, Wörter, Begriffe, Gattungen, Namen, alle sechs Suchen liefern.",
+          "f": "search-with-corpus"
+        },
+        {
+          "w": "Genau",
+          "s": "Markiert wird genau dein Wort, keine Wörter, die es nur enthalten.",
+          "f": "lemma-matching"
+        },
+        {
+          "w": "Teile",
+          "s": "wein findet alle Wörter, in denen wein steckt.",
+          "f": "word-component-search"
+        },
+        {
+          "w": "Nähe",
+          "s": "Zwei Wörter nah beieinander, der Abstand wird richtig gemessen.",
+          "f": "proximity-and-resolution"
+        },
+        {
+          "w": "Vers",
+          "s": "minne und herze im selben Vers finden.",
+          "f": "multi-lemma-verse"
+        },
+        {
+          "w": "Doppelt",
+          "s": "Gibt es ein Wort zweimal, gewinnt das häufigere, wechseln geht immer.",
+          "f": "cooccurrence-ranking"
+        },
+        {
+          "w": "Übergabe",
+          "s": "Springst du aus einer Liste in die Suche, kommt genau dein Wort an.",
+          "f": "lemma-occurrence-handoff"
+        }
+      ]
+    },
+    {
+      "wort": "Lesen",
+      "ico": "📖",
+      "c1": "#8fb083",
+      "c2": "#39543a",
+      "halo": "rgba(143,176,131,.4)",
+      "x": 81,
+      "y": 35,
+      "tests": [
+        {
+          "w": "Leuchten",
+          "s": "Dein gesuchtes Wort leuchtet farbig im alten Text.",
+          "f": "reading-view"
+        },
+        {
+          "w": "Zählen",
+          "s": "Alle Teile des Systems zählen die Wortpositionen exakt gleich.",
+          "f": "position-parity"
+        },
+        {
+          "w": "Merken",
+          "s": "Ein gelesener Text ist beim zweiten Mal sofort wieder da.",
+          "f": "tei-caching"
+        }
+      ]
+    },
+    {
+      "wort": "Bedeutung",
+      "ico": "📚",
+      "c1": "#d9c184",
+      "c2": "#6e5c2c",
+      "halo": "rgba(217,193,132,.4)",
+      "x": 58,
+      "y": 74,
+      "tests": [
+        {
+          "w": "Zuhause",
+          "s": "Jedes Wort hat eine eigene Seite mit Fundstellen und Links.",
+          "f": "lemma-page"
+        },
+        {
+          "w": "Blättern",
+          "s": "Von A bis Z, und jede Stelle hat eine merkbare Adresse.",
+          "f": "woerterbuch"
+        },
+        {
+          "w": "Fäden",
+          "s": "Vom Werk zum Autor, vom Wort zum Begriff, alles verknüpft.",
+          "f": "cross-reference-test"
+        }
+      ]
+    },
+    {
+      "wort": "Spielsachen",
+      "ico": "🎲",
+      "c1": "#c88bb0",
+      "c2": "#5d3a52",
+      "halo": "rgba(200,139,176,.35)",
+      "x": 28,
+      "y": 73,
+      "tests": [
+        {
+          "w": "Reime",
+          "s": "gân reimt auf begân, muot auf guot.",
+          "f": "rhyme-dictionary"
+        },
+        {
+          "w": "Enden",
+          "s": "Eine Zählung darüber, wie Verse aufhören.",
+          "f": "verse-ending-profile"
+        },
+        {
+          "w": "Namen",
+          "s": "Wie Figuren in den Geschichten genannt werden, mit Belegen.",
+          "f": "naming-explorer"
+        },
+        {
+          "w": "Einmal",
+          "s": "Wörter, die im ganzen Korpus nur ein einziges Mal vorkommen.",
+          "f": "hapax-legomena"
+        },
+        {
+          "w": "Flut",
+          "s": "Auch riesige Begriffsmengen frieren die Seite nicht ein.",
+          "f": "concept-distribution"
+        }
+      ]
+    },
+    {
+      "wort": "Treffer",
+      "ico": "📋",
+      "c1": "#a9b7c6",
+      "c2": "#46525e",
+      "halo": "rgba(169,183,198,.3)",
+      "x": 84,
+      "y": 71,
+      "tests": [
+        {
+          "w": "Tabelle",
+          "s": "Treffer als Liste oder Tabelle, sortierbar, mitnehmbar, gemerkt.",
+          "f": "results-table"
+        }
+      ]
+    },
+    {
+      "wort": "Fundament",
+      "ico": "🧱",
+      "c1": "#d4705b",
+      "c2": "#6e3126",
+      "halo": "rgba(212,112,91,.4)",
+      "x": 51,
+      "y": 36,
+      "tests": [
+        {
+          "w": "Start",
+          "s": "Die Startseite lädt ohne Fehler, die Suche geht sofort.",
+          "f": "main-site"
+        },
+        {
+          "w": "Fangen",
+          "s": "Geht etwas schief, kommt eine Meldung, die Seite lebt weiter.",
+          "f": "error-handling"
+        },
+        {
+          "w": "Laden",
+          "s": "Der Korpus mit allen Texten lädt zuverlässig.",
+          "f": "corpus"
+        },
+        {
+          "w": "667",
+          "s": "Alle 667 Texte kommen wirklich an.",
+          "f": "playground-corpus"
+        },
+        {
+          "w": "Werkstatt",
+          "s": "Der Datenbereich startet mit allen Bausteinen.",
+          "f": "playground"
+        },
+        {
+          "w": "Register",
+          "s": "Die großen Register laden schnell und vollständig.",
+          "f": "playground-authority-index"
+        },
+        {
+          "w": "Rahmen",
+          "s": "Menü und Fußzeile funktionieren auf jeder Unterseite.",
+          "f": "site-chrome"
+        },
+        {
+          "w": "Daheim",
+          "s": "Keine fremden Server, alle Bausteine liegen bei der Seite.",
+          "f": "vendor"
+        },
+        {
+          "w": "Handy",
+          "s": "Auch auf Handy und Tablet gut bedienbar.",
+          "f": "visual-mobile-test"
+        },
+        {
+          "w": "Gleich",
+          "s": "Python und JavaScript vereinfachen Wörter exakt gleich.",
+          "f": "normalization-parity"
+        }
+      ]
+    }
+  ],
+  "stufen": {
+    "search-engine": [
+      "Wort tippen",
+      "Index befragen",
+      "Nächstes prüfen"
+    ],
+    "search-normalization": [
+      "Sonderzeichen rein",
+      "vereinfachen",
+      "Gleichheit prüfen"
+    ],
+    "search-with-corpus": [
+      "Suchart wählen",
+      "suchen",
+      "Treffer zählen"
+    ],
+    "lemma-matching": [
+      "Text laden",
+      "Wort markieren",
+      "exakt zählen"
+    ],
+    "word-component-search": [
+      "Wortteil tippen",
+      "Komposita sammeln",
+      "Gruppen prüfen"
+    ],
+    "proximity-and-resolution": [
+      "zwei Wörter",
+      "Abstand messen",
+      "Fenster prüfen"
+    ],
+    "multi-lemma-verse": [
+      "Vers-Modus an",
+      "minne + herze",
+      "Vers prüfen"
+    ],
+    "cooccurrence-ranking": [
+      "Doppelwort tippen",
+      "häufigstes wählen",
+      "Wechsel prüfen"
+    ],
+    "lemma-occurrence-handoff": [
+      "Liste anklicken",
+      "Kennung mitgeben",
+      "Ankunft prüfen"
+    ],
+    "reading-view": [
+      "Text öffnen",
+      "Wort markieren",
+      "Leuchten prüfen"
+    ],
+    "position-parity": [
+      "Python zählt",
+      "JavaScript zählt",
+      "Gleichstand prüfen"
+    ],
+    "tei-caching": [
+      "Text laden",
+      "erneut öffnen",
+      "Speicher prüfen"
+    ],
+    "lemma-page": [
+      "Seite laden",
+      "Daten prüfen",
+      "Links prüfen"
+    ],
+    "woerterbuch": [
+      "Buchstabe A",
+      "blättern",
+      "Adresse prüfen"
+    ],
+    "cross-reference-test": [
+      "Werk öffnen",
+      "Faden folgen",
+      "Ziel prüfen"
+    ],
+    "rhyme-dictionary": [
+      "Wort geben",
+      "Reime scannen",
+      "begân finden"
+    ],
+    "verse-ending-profile": [
+      "Korpus scannen",
+      "Endungen zählen",
+      "Tabelle prüfen"
+    ],
+    "naming-explorer": [
+      "Werk + Figur",
+      "Namen sammeln",
+      "Belege prüfen"
+    ],
+    "hapax-legomena": [
+      "Korpus zählen",
+      "Einzelne filtern",
+      "Fundort prüfen"
+    ],
+    "concept-distribution": [
+      "Begriff wählen",
+      "aggregieren",
+      "flüssig bleiben"
+    ],
+    "results-table": [
+      "suchen",
+      "Tabelle schalten",
+      "sortiert prüfen"
+    ],
+    "main-site": [
+      "Startseite laden",
+      "Konsole lauschen",
+      "still bleiben"
+    ],
+    "error-handling": [
+      "Fehler auslösen",
+      "Meldung prüfen",
+      "weiterleben"
+    ],
+    "corpus": [
+      "Korpus laden",
+      "Struktur prüfen",
+      "Fortschritt sehen"
+    ],
+    "playground-corpus": [
+      "Playground öffnen",
+      "667 laden",
+      "Liste prüfen"
+    ],
+    "playground": [
+      "Seite öffnen",
+      "Module prüfen",
+      "Speicher leeren"
+    ],
+    "playground-authority-index": [
+      "Register laden",
+      "füllen",
+      "schnell bleiben"
+    ],
+    "site-chrome": [
+      "Unterseite öffnen",
+      "Menü prüfen",
+      "Fußzeile prüfen"
+    ],
+    "vendor": [
+      "Seiten scannen",
+      "Fremdes suchen",
+      "nichts finden"
+    ],
+    "visual-mobile-test": [
+      "Handy-Maß setzen",
+      "rendern",
+      "Berührung prüfen"
+    ],
+    "normalization-parity": [
+      "gleiche Wörter",
+      "beide vereinfachen",
+      "Gleichheit prüfen"
+    ]
+  }
+}

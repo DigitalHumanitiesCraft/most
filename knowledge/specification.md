@@ -17,15 +17,17 @@ Jede Gestalt zeigt vier Invarianten.
 3. **Regeln**, das Steuernde, visuell als das eine Element, das durch alles andere hindurchwirkt.
 4. **Lücken**, das Fehlende, immer sichtbar; ein Geisterdokument wird nie stillschweigend weggelassen.
 
-Darüber die nullte Zoomstufe, der Himmel; das Schichtenmodell dafür steht in [planet.md](planet.md).
+Die Rolle der nullten Zoomstufe trägt die Überseite. Eine eigene Himmelsansicht über allen Projekten ist verworfen; das Schichtenmodell in [planet.md](planet.md) gilt weiter für die Repräsentation eines einzelnen Projekts als Himmelskörper.
 
 ## Interaktionsschema
 
-Drei Ebenen, in jeder Gestalt gleich: Übersicht, Kategorie beziehungsweise Schicht, Fokus. Der Fokus zeigt ein Wort radikal groß, einen Satz, die Kennzahlen in Mono und bei Lücken oder fälligen Eingriffen eine Diagnose.
+Drei Ebenen, in jeder Gestalt gleich, Übersicht, Kategorie beziehungsweise Schicht, Fokus. Der Fokus zeigt ein Wort radikal groß, einen Satz, die Kennzahlen in Mono und bei Lücken oder fälligen Eingriffen eine Diagnose.
 
 ## Akzeptanzkriterien pro Seite
 
-* `<meta charset="utf-8">` und viewport-Meta in den ersten Zeilen; eine einzige selbstständige HTML-Datei ohne externe Ressourcen.
+* `<meta charset="utf-8">` und viewport-Meta im Kopf, gültige HTML-Struktur mit `<html lang="de">` zuerst.
+* Keine externe Ressource, kein CDN, keine Fremdschrift, kein Build. Geteilte lokale Geschwisterdateien sind erwünscht, `prototype/helio.css` und `prototype/helio.js` für die Tagseiten; Seitenspezifisches bleibt in der Seite.
+* Daten kommen aus `prototype/daten/*.json` zur Laufzeit, nie als eingebettete Kopie. Fehlt eine Datei, zeigt die Seite den betroffenen Zustand nicht an.
 * Alle Klickziele mindestens 44 mal 44 Pixel und statisch; Animation bewegt die Zeichnung, nie die Hitbox.
 * Escape geht immer genau eine Ebene zurück; Pfeiltasten wechseln zwischen Geschwistern; alle Buttons tragen aria-labels.
 * Links oben ein fester Rückweg zur Übersicht.
@@ -44,4 +46,4 @@ Die Überseite ist ein geführter Weg mit einem Standardpfad pro Projekt; altern
 
 ## Ehrlichkeit
 
-Keine Ansicht behauptet einen Zustand ohne Datenquelle. Der Ring der Prüfungen bleibt gestrichelt, solange kein echter Testlauf eingelesen wird.
+Keine Ansicht behauptet einen Zustand ohne Datenquelle. Für die MHDBDB liegt ein echter Playwright-Lauf vor, sein Ergebnis wird in der Tag- und in der Nachtgestalt gezeigt. Wo kein Lauf eingelesen ist, bleibt der Ring der Prüfungen gestrichelt. Ein Status wird immer auch als Text ausgegeben; Bedeutung liegt nie allein in der Form.

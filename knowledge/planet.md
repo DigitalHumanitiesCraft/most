@@ -6,7 +6,7 @@ updated: 2026-08-08
 
 # Planet, ein Himmelskörper pro Projekt
 
-Die nullte Zoomstufe des generalisierten UI (siehe [projekt.md](projekt.md)). Vor den drei interaktiven Ebenen Übersicht, Kategorie und Fokus steht eine Ansicht, die keine Interaktion verlangt, ein Himmelskörper, dessen Erscheinung der aggregierte Zustand des Projekts ist. Aus der Distanz beantwortet er drei Fragen, fehlt etwas (Silhouette), lebt es (Wetter), hält es (Ring).
+Die ruhende Ansicht eines einzelnen Projekts im generalisierten UI (siehe [projekt.md](projekt.md)), umgesetzt in `promptotyping-planet.html`. Vor den drei interaktiven Ebenen Übersicht, Kategorie und Fokus steht eine Ansicht, die keine Interaktion verlangt, ein Himmelskörper, dessen Erscheinung der aggregierte Zustand des Projekts ist. Aus der Distanz beantwortet er drei Fragen, fehlt etwas (Silhouette), lebt es (Wetter), hält es (Ring).
 
 ## Begründungsmaßstab
 

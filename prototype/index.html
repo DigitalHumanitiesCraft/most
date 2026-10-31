@@ -1,21 +1,16 @@
+<!doctype html>
+<html lang="de">
+<head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>most · Projekte</title>
+<link rel="stylesheet" href="helio.css">
 <style>
-/* Helio aesthetic per knowledge/design.md: two colors, banded sun motif, grain, heavy grotesk.
-   Single-theme by design, all colors explicit. */
-* { box-sizing: border-box; }
-:root {
-  --rot-a: #d81e12;
-  --rot-b: #e8402a;
-  --weiss: #efeae2;
-}
+/* page-specific: the guided overview. Tokens, type and the grain layer come
+   from helio.css; this page paints its own sun and its own coarse grain. */
 body {
-  margin: 0;
   min-height: 100vh;
-  background: linear-gradient(180deg, var(--rot-a), var(--rot-b));
-  color: var(--weiss);
-  font-family: system-ui, -apple-system, sans-serif;
+  background: linear-gradient(180deg, var(--grund-oben), var(--grund-unten));
   overflow-x: hidden;
 }
 #sonne {
@@ -32,15 +27,9 @@ body {
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  background: linear-gradient(100deg, rgba(221,44,27,.92) 38%, rgba(221,44,27,.55) 58%, rgba(221,44,27,0) 78%);
+  background: linear-gradient(100deg, rgba(221, 44, 27, .92) 38%, rgba(221, 44, 27, .55) 58%, rgba(221, 44, 27, 0) 78%);
 }
 #korn {
-  position: fixed;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 3;
   opacity: .16;
   mix-blend-mode: screen;
 }
@@ -110,8 +99,8 @@ a.gestalt {
   display: block;
   min-height: 44px;
   padding: .8rem 1.2rem .85rem;
-  border: 2px solid rgba(239,234,226,.55);
-  color: var(--weiss);
+  border: 2px solid rgba(239, 234, 226, .55);
+  color: var(--tinte);
   text-decoration: none;
   font-size: .95rem;
   line-height: 1.45;
@@ -126,8 +115,8 @@ a.gestalt b {
 }
 a.gestalt span { opacity: .8; }
 a.gestalt:hover, a.gestalt:focus-visible {
-  background: rgba(239,234,226,.14);
-  border-color: var(--weiss);
+  background: rgba(239, 234, 226, .14);
+  border-color: var(--tinte);
   outline: none;
 }
 a.gestalt.tag { border-style: solid; }
@@ -154,10 +143,12 @@ footer {
   max-width: 36rem;
 }
 </style>
+</head>
+<body>
 
-<canvas id="sonne"></canvas>
+<canvas id="sonne" aria-hidden="true"></canvas>
 <div id="schleier"></div>
-<canvas id="korn"></canvas>
+<canvas id="korn" aria-hidden="true"></canvas>
 
 <main>
   <p class="eyebrow">Projekt most</p>
@@ -168,7 +159,7 @@ footer {
 
   <section class="projekt">
     <h3>MHDBDB</h3>
-    <p class="was">Eine Website über mittelhochdeutsche Wörter, bewacht von 31 Prüfungen.</p>
+    <p class="was" id="was-mhdbdb">Eine Website über mittelhochdeutsche Wörter.</p>
     <div class="gestalten">
       <a class="gestalt tag" href="helio-mhdbdb.html"><b>Hier rein</b> <span>Die Prüfungen als Bänder einer roten Sonne.</span></a>
     </div>
@@ -182,7 +173,7 @@ footer {
 
   <section class="projekt">
     <h3>Promptotyping</h3>
-    <p class="was">Unsere Forschungsmethode, dreizehn Wissensdokumente, zwei fehlen.</p>
+    <p class="was" id="was-promptotyping">Unsere Forschungsmethode.</p>
     <div class="gestalten">
       <a class="gestalt tag" href="helio-promptotyping.html"><b>Hier rein</b> <span>Die Dokumente als Bänder der roten Sonnenscheibe.</span></a>
     </div>
@@ -198,10 +189,16 @@ footer {
 
   <section class="projekt">
     <h3>most</h3>
-    <p class="was">Dieses Projekt selbst. Jung und löchrig, das darf man sehen.</p>
+    <p class="was" id="was-most">Dieses Projekt selbst, mit seinem eigenen knowledge-Ordner.</p>
     <div class="gestalten">
-      <a class="gestalt nacht" href="promptotyping-organismus.html#most"><b>Hier rein</b> <span>Ein Körper, der noch fast nur aus Geisterorganen besteht.</span></a>
+      <a class="gestalt tag" href="helio-most.html"><b>Hier rein</b> <span>Die eigenen Wissensdokumente als Bänder.</span></a>
     </div>
+    <details>
+      <summary>anderes Gewand</summary>
+      <div class="gestalten">
+        <a class="gestalt nacht" href="promptotyping-organismus.html#most"><b>Organismus</b> <span>Dieselben Dokumente als Körper mit Organen.</span></a>
+      </div>
+    </details>
   </section>
 
   <footer>
@@ -209,11 +206,8 @@ footer {
   </footer>
 </main>
 
-<script>
-// Deterministic LCG, no Math.random per project convention.
-let seed = 20260808;
-function rnd() { seed = seed * 16807 % 2147483647; return seed / 2147483647; }
-const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+<script type="module">
+import { rnd, saatSetzen, stillGestellt as still, datenLaden } from './helio.js';
 
 // Banded sun with wave interruptions, mirrored below the horizon (design.md motif).
 const sc = document.getElementById('sonne'), sx = sc.getContext('2d');
@@ -223,7 +217,7 @@ function sonne() {
   sx.clearRect(0, 0, w, h);
   const cx = w * .72, hy = h * .78, r = Math.min(w, h) * .52;
   sx.fillStyle = 'rgba(239,234,226,.5)';
-  seed = 20260808;
+  saatSetzen(20260808);
   const bands = 14;
   for (let i = 0; i < bands; i++) {
     const y0 = hy - r + (i / bands) * r;
@@ -254,7 +248,7 @@ function sonne() {
   }
 }
 
-// Living monochrome grain over everything.
+// Living monochrome grain over everything, coarser than the Helio print grain.
 const kc = document.getElementById('korn'), kx = kc.getContext('2d');
 function korn() {
   const w = kc.width = Math.floor(innerWidth / 3);
@@ -271,4 +265,31 @@ function alles() { sonne(); korn(); }
 alles();
 addEventListener('resize', alles);
 if (!still) setInterval(korn, 420); // grain lives at a low rate
+
+// The counts are read from the same files the project pages draw from;
+// without them the page names no number.
+const [mhdbdb, prompto, most] = await Promise.all([
+  datenLaden('daten/mhdbdb.json'),
+  datenLaden('daten/promptotyping.json'),
+  datenLaden('daten/most.json'),
+]);
+if (mhdbdb) {
+  const n = mhdbdb.kategorien.reduce((a, k) => a + k.tests.length, 0);
+  document.getElementById('was-mhdbdb').textContent =
+    'Eine Website über mittelhochdeutsche Wörter, bewacht von ' + n + ' Prüfungen.';
+}
+if (prompto) {
+  const n = prompto.dokumente.filter(d => d.art !== 'regel').length;
+  document.getElementById('was-promptotyping').textContent =
+    'Unsere Forschungsmethode, ' + n + ' Wissensdokumente und die Regeln, die durch alle schneiden.';
+}
+if (most) {
+  const docs = most.dokumente.filter(d => d.art !== 'regel');
+  const zeilen = docs.reduce((a, d) => a + d.zeilen, 0);
+  document.getElementById('was-most').textContent =
+    'Dieses Projekt selbst, ' + docs.length + ' Wissensdokumente mit ' + zeilen +
+    ' Zeilen, dazu die eigenen Regeln.';
+}
 </script>
+</body>
+</html>

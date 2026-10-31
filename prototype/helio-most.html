@@ -1,0 +1,431 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>most · Helio</title>
+<link rel="stylesheet" href="helio.css">
+<style>
+/* page-specific: the disc scene and the focus view.
+   Colors, type, rows and the way back come from helio.css. */
+html, body { height: 100%; }
+body {
+  overflow: hidden;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.szene {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: none;
+  overflow: hidden; /* bleed: display type is cut by the frame, never shrunk to fit */
+}
+.szene.offen { display: block; }
+.szene.kompakt .riesig { font-size: clamp(2.2rem, 8vw, 4.6rem); }
+.szene.kompakt .kopf .still { display: none; }
+
+/* the rule document cuts through every band and gets its own upright hitbox */
+#regel-griff {
+  position: absolute;
+  z-index: 12;
+  min-width: 52px;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  color: var(--tinte);
+}
+#regel-griff:focus-visible { outline: 3px solid var(--tinte); outline-offset: -4px; }
+
+#fok-flaeche {
+  position: absolute;
+  inset: 0;
+  padding: clamp(4.5rem, 12vh, 8rem) clamp(.9rem, 3vw, 2.2rem) clamp(6rem, 14vh, 9rem);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 11;
+}
+#fok-wort {
+  margin: 0;
+  font-weight: 900;
+  letter-spacing: -.05em;
+  line-height: .82;
+  font-size: clamp(3rem, 15vw, 10rem);
+  margin-left: -.06em;
+  overflow-wrap: anywhere;
+  text-transform: uppercase;
+}
+#fok-titel { max-width: 32ch; }
+#fok-zahlen {
+  margin: clamp(1.2rem, 3vh, 2rem) 0 0;
+  font-family: ui-monospace, 'Cascadia Mono', Consolas, monospace;
+  font-weight: 700;
+  font-size: 1.2rem;
+  letter-spacing: -.01em;
+}
+#fok-auszug {
+  margin: .9rem 0 0;
+  max-width: 48ch;
+  font-weight: 700;
+  font-size: 1.2rem;
+  line-height: 1.5;
+}
+#fok-nav {
+  position: absolute;
+  left: clamp(.5rem, 2vw, 1.6rem);
+  bottom: clamp(.5rem, 2vh, 1.4rem);
+  display: flex;
+  gap: .4rem;
+  z-index: 30;
+}
+#fok-nav button {
+  min-width: 64px;
+  min-height: 48px;
+  background: none;
+  border: 0;
+  color: var(--tinte);
+  font-family: inherit;
+  font-weight: 900;
+  font-size: 1.7rem;
+  cursor: pointer;
+}
+#fok-nav button:focus-visible { outline: 3px solid var(--tinte); outline-offset: -4px; }
+#fok-nav button[disabled] { opacity: .35; cursor: default; }
+</style>
+</head>
+<body>
+
+<canvas id="motiv" aria-hidden="true"></canvas>
+<canvas id="korn" aria-hidden="true"></canvas>
+
+<a class="heim" href="index.html">&#8592; &#220;bersicht</a>
+
+<section id="uebersicht" class="szene offen" aria-label="Übersicht">
+  <div class="kopf">
+    <h1 class="riesig">most</h1>
+    <p class="still" id="kopf-still"></p>
+  </div>
+  <div class="reihen" id="dok-reihen"></div>
+  <button type="button" id="regel-griff"></button>
+</section>
+
+<section id="fokus" class="szene" aria-label="Einzelnes Dokument" inert>
+  <div id="fok-flaeche">
+    <p class="riesig" id="fok-wort"></p>
+    <p class="still" id="fok-titel"></p>
+    <p id="fok-zahlen"></p>
+    <p id="fok-auszug"></p>
+  </div>
+  <p class="still hinweis" id="fok-hinweis"></p>
+  <div id="fok-nav">
+    <button type="button" id="fok-vor" aria-label="Vorheriges Dokument">←</button>
+    <button type="button" id="fok-nach" aria-label="Nächstes Dokument">→</button>
+  </div>
+  <button class="zurueck" id="fok-zu" aria-label="Zurück zur Sonnenscheibe">↑</button>
+</section>
+
+<script type="module">
+import {
+  stillGestellt as still, ZEIT_FEST, messen, kornBauen, kornWeiter, kornFuellen,
+  band, wellen, grund, datenLaden,
+} from './helio.js';
+
+/* The knowledge folder of most itself, read by scripts/promptotyping-ingest.mjs;
+   the page carries no copy. One band per document, its thickness the square root
+   of its line count, the rules the one cut running through all of them. */
+const daten = await datenLaden('daten/most.json');
+const DOKUMENTE = daten ? daten.dokumente : [];
+const BAENDER = DOKUMENTE.filter(d => d.art !== 'regel');
+const REGEL = DOKUMENTE.find(d => d.art === 'regel') || null;
+const REIHENFOLGE = REGEL ? BAENDER.concat([REGEL]) : BAENDER;
+const ZEILEN = BAENDER.reduce((a, d) => a + d.zeilen, 0);
+
+/* Band thickness carries the volume: sqrt of the line count, scaled across the
+   range this folder actually spans, so the thinnest document stays visible. */
+const WURZEL = d => Math.sqrt(d.zeilen || 1);
+const W_MIN = BAENDER.length ? Math.min(...BAENDER.map(WURZEL)) : 0;
+const W_MAX = BAENDER.length ? Math.max(...BAENDER.map(WURZEL)) : 1;
+function dicke(d) {
+  const t = W_MAX > W_MIN ? (WURZEL(d) - W_MIN) / (W_MAX - W_MIN) : .5;
+  return 7 + t * 26;
+}
+
+const kopfStill = document.getElementById('kopf-still');
+kopfStill.textContent = BAENDER.length
+  ? BAENDER.length + ' Wissensdokumente, ' + ZEILEN + ' Zeilen. Bandstärke ist der Umfang.'
+  : 'Keine Daten geladen.';
+
+/* ---------- canvas plumbing ---------- */
+const mc = document.getElementById('motiv'), mg = mc.getContext('2d');
+const kc = document.getElementById('korn'), kg = kc.getContext('2d');
+let W = 0, H = 0;
+function messenHier() { ({ W, H } = messen([[mc, mg], [kc, kg]])); }
+
+/* ---------- layout ---------- */
+let RECTS = [];      /* row rectangles, shared by DOM hitboxes and canvas */
+let modus = 'uebersicht';
+let aktiv = -1;
+let kreis = null;
+let feldX = 0, horizont = 0, schnittX = 0;
+
+function kopfUnterkante(szene) {
+  const k = szene.querySelector('.kopf');
+  return k ? k.getBoundingClientRect().bottom : H * .3;
+}
+
+function layouten() {
+  const szene = document.querySelector('.szene.offen');
+  if (!szene) return;
+  feldX = Math.min(Math.max(W * .34, 148), 340);
+  RECTS = [];
+  kreis = null;
+  if (modus !== 'uebersicht' || !BAENDER.length) { zeilenSetzen(szene, []); return; }
+
+  szene.classList.remove('kompakt');
+  let oben = kopfUnterkante(szene) + Math.min(22, H * .03);
+  horizont = H * .82;
+  let spanne = horizont - 12 - oben;
+  if (spanne / BAENDER.length < 48) {
+    szene.classList.add('kompakt');
+    oben = kopfUnterkante(szene) + 12;
+    spanne = horizont - 8 - oben;
+  }
+  /* Every row keeps the 44px target; the stack is scaled as a whole so the
+     thickness proportions keep carrying the line counts. */
+  let hoehen = BAENDER.map(d => Math.max(44, dicke(d) + 18));
+  const summe = hoehen.reduce((a, b) => a + b, 0);
+  if (summe > spanne) hoehen = hoehen.map(h => h * spanne / summe);
+  const kleinste = Math.min(...hoehen);
+  if (kleinste < 44) hoehen = hoehen.map(h => h * 44 / kleinste);
+  const gesamt = hoehen.reduce((a, b) => a + b, 0);
+  let y = Math.max(6, Math.min(oben, H - 8 - gesamt));
+  for (let i = 0; i < BAENDER.length; i++) {
+    const h = dicke(BAENDER[i]);
+    RECTS.push({ y0: y, y1: y + hoehen[i], y: y + (hoehen[i] - h) / 2, h, i });
+    y += hoehen[i];
+  }
+  /* the disc: one circle holding the whole stack, cut by the right edge if need be */
+  const hwMax = Math.max(70, (W - feldX - 14) * .55);
+  const R = Math.max(gesamt / 1.55, hwMax);
+  kreis = { cx: feldX + 12 + hwMax * .98, cy: RECTS[0].y0 + gesamt / 2, R, rx: hwMax };
+  horizont = Math.min(H - 30, RECTS[RECTS.length - 1].y1 + 26);
+  schnittX = feldX + 12 + hwMax * 1.32;
+  zeilenSetzen(szene, RECTS);
+  regelGriffSetzen();
+}
+
+function zeilenSetzen(szene, rects) {
+  szene.querySelectorAll('.reihe').forEach((b, i) => {
+    const r = rects[i];
+    if (!r) { b.style.display = 'none'; return; }
+    b.style.display = '';
+    b.style.top = r.y0.toFixed(1) + 'px';
+    b.style.height = (r.y1 - r.y0).toFixed(1) + 'px';
+    const sp = b.querySelector('.spalte');
+    if (sp) sp.style.maxWidth = (feldX - 26) + 'px';
+  });
+}
+
+function regelGriffSetzen() {
+  const g = document.getElementById('regel-griff');
+  if (!REGEL || !RECTS.length) { g.style.display = 'none'; return; }
+  g.style.display = '';
+  g.style.left = (schnittX - 26) + 'px';
+  g.style.top = RECTS[0].y0 + 'px';
+  g.style.height = Math.max(44, H - RECTS[0].y0 - 6) + 'px';
+}
+
+/* ---------- the motif ---------- */
+function halbBreite(y) {
+  if (!kreis) return 0;
+  const dy = (y - kreis.cy) / kreis.R;
+  const q = 1 - dy * dy;
+  return q > 0 ? kreis.rx * Math.sqrt(q) : 0;
+}
+
+function zeichnen(t) {
+  const g = mg;
+  g.clearRect(0, 0, W, H);
+  grund(g, W, H);
+  if (modus !== 'uebersicht' || !kreis) {
+    fokusFeld(g, t);
+    return;
+  }
+  const w = wellen(t, .0036, 7, .00005);
+  const spanne = (y) => {
+    const hw = halbBreite(y);
+    return hw > 0 ? [Math.max(feldX + 6, kreis.cx - hw), kreis.cx + hw] : [0, 0];
+  };
+  RECTS.forEach((r, i) => {
+    const heiss = i === aktiv;
+    band(g, r.y + r.h / 2, r.h, {
+      alpha: heiss ? 1 : .87,
+      spanne,
+      welle: w,
+      stoer: (x, y2) => r.h * .22 * Math.sin(x * .009 + i * 1.7 + t * .00004),
+    });
+  });
+  /* the reflection: same order, compressed spacing, density as depth */
+  RECTS.forEach((r, i) => {
+    const abstand = horizont - (r.y + r.h / 2);
+    const yr = horizont + abstand * .38;
+    if (yr > H + 20) return;
+    band(g, yr, Math.max(1.5, r.h * .5), {
+      alpha: .1 + .3 * Math.max(0, 1 - abstand / (horizont - RECTS[0].y0)),
+      spanne: (y) => {
+        const hw = halbBreite(horizont - (y - horizont) / .38);
+        return hw > 0 ? [kreis.cx - hw * .92, kreis.cx + hw * .92] : [0, 0];
+      },
+      welle: w,
+      stoer: (x) => 2.4 * Math.sin(x * .017 + i * 2.1 + t * .00006),
+    });
+  });
+  /* horizon: the one continuous band, bleeding past both edges */
+  band(g, horizont, 5, { alpha: .55, spanne: () => [-40, W + 40], welle: w, stoer: () => 0 });
+  /* the cut of the rules, carved out of everything it crosses */
+  if (REGEL) {
+    g.save();
+    g.globalCompositeOperation = 'destination-out';
+    g.beginPath();
+    for (let y = -20; y <= H + 20; y += 6) g.lineTo(schnittX - 13 + 9 * Math.sin(y * .0062), y);
+    for (let y = H + 20; y >= -20; y -= 6) g.lineTo(schnittX + 13 + 9 * Math.sin(y * .0062), y);
+    g.closePath();
+    g.fill();
+    g.restore();
+  }
+}
+
+/* focus: the field goes quiet so the word can carry the screen alone */
+function fokusFeld(g, t) {
+  const w = wellen(t, .003, 8, .00004);
+  for (let i = 0; i < 16; i++) {
+    const y = H * (i + .5) / 16;
+    band(g, y, 4 + i * .9, {
+      alpha: .12 + i * .006,
+      spanne: () => [-40, W + 40],
+      welle: w,
+      stoer: () => 0,
+    });
+  }
+}
+
+/* ---------- scenes ---------- */
+const szenen = {
+  uebersicht: document.getElementById('uebersicht'),
+  fokus: document.getElementById('fokus'),
+};
+let idx = -1;
+
+function zeige(name, fokusZiel) {
+  modus = name;
+  for (const [k, el] of Object.entries(szenen)) {
+    const an = k === name;
+    el.classList.toggle('offen', an);
+    el.inert = !an;
+  }
+  aktiv = -1;
+  layouten();
+  neuZeichnen();
+  if (fokusZiel) fokusZiel.focus();
+}
+
+function beschriftung(d) {
+  return d.zeilen + ' Zeilen' + (d.status ? ' · ' + d.status : '');
+}
+
+/* overview rows */
+const reihen = document.getElementById('dok-reihen');
+BAENDER.forEach((d, i) => {
+  const b = document.createElement('button');
+  b.type = 'button';
+  b.className = 'reihe';
+  b.setAttribute('aria-label', d.stamm + ', ' + d.datei + ', ' + beschriftung(d) + ', öffnen');
+  b.innerHTML = '<span class="spalte"><span class="wort"></span><span class="zahl"></span></span>';
+  b.querySelector('.wort').textContent = d.stamm;
+  b.querySelector('.zahl').textContent = beschriftung(d);
+  b.addEventListener('click', () => fokus(i));
+  b.addEventListener('pointerenter', () => { aktiv = i; if (still) neuZeichnen(); });
+  b.addEventListener('pointerleave', () => { aktiv = -1; if (still) neuZeichnen(); });
+  b.addEventListener('focus', () => { aktiv = i; if (still) neuZeichnen(); });
+  b.addEventListener('blur', () => { aktiv = -1; if (still) neuZeichnen(); });
+  reihen.appendChild(b);
+});
+
+const regelGriff = document.getElementById('regel-griff');
+if (REGEL) {
+  regelGriff.setAttribute('aria-label', REGEL.datei + ', ' + beschriftung(REGEL) + ', schneidet durch alle Bänder');
+  regelGriff.addEventListener('click', () => fokus(REIHENFOLGE.indexOf(REGEL)));
+} else {
+  regelGriff.style.display = 'none';
+}
+
+function fokus(k) {
+  idx = k;
+  const d = REIHENFOLGE[k];
+  if (!d) return;
+  document.getElementById('fok-wort').textContent = d.stamm;
+  document.getElementById('fok-titel').textContent = d.titel || '';
+  document.getElementById('fok-zahlen').textContent =
+    [d.datei, d.zeilen + ' Zeilen', d.status].filter(Boolean).join(' · ');
+  document.getElementById('fok-auszug').textContent = d.auszug || '';
+  document.getElementById('fok-hinweis').textContent =
+    'Dokument ' + (k + 1) + ' von ' + REIHENFOLGE.length + ' · Pfeiltasten weiter, Esc zurück';
+  document.getElementById('fok-vor').disabled = k === 0;
+  document.getElementById('fok-nach').disabled = k === REIHENFOLGE.length - 1;
+  zeige('fokus', document.getElementById('fok-zu'));
+}
+
+function zurueck() {
+  const d = REIHENFOLGE[idx];
+  const ziel = d && d.art === 'regel' ? regelGriff : reihen.children[idx];
+  zeige('uebersicht', ziel || null);
+}
+
+document.getElementById('fok-zu').addEventListener('click', zurueck);
+document.getElementById('fok-vor').addEventListener('click', (e) => { e.stopPropagation(); if (idx > 0) fokus(idx - 1); });
+document.getElementById('fok-nach').addEventListener('click', (e) => { e.stopPropagation(); if (idx + 1 < REIHENFOLGE.length) fokus(idx + 1); });
+document.getElementById('fok-flaeche').addEventListener('click', () => {
+  if (idx + 1 < REIHENFOLGE.length) fokus(idx + 1); else zurueck();
+});
+
+addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    if (modus === 'fokus') zurueck();
+    else location.href = 'index.html';
+    return;
+  }
+  if (modus !== 'fokus') return;
+  if (e.key === 'ArrowRight' && idx + 1 < REIHENFOLGE.length) { e.preventDefault(); fokus(idx + 1); }
+  if (e.key === 'ArrowLeft' && idx > 0) { e.preventDefault(); fokus(idx - 1); }
+});
+
+/* ---------- loop ---------- */
+function neuZeichnen() { if (still) zeichnen(ZEIT_FEST); }
+
+let letzt = 0, kornLetzt = 0;
+function tick(ts) {
+  if (ts - letzt > 60) { letzt = ts; zeichnen(ts); }
+  if (ts - kornLetzt > 200) { kornLetzt = ts; kornWeiter(); kornFuellen(kg, W, H); }
+  requestAnimationFrame(tick);
+}
+
+let resizeTimer = 0;
+addEventListener('resize', () => {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(() => {
+    messenHier(); kornFuellen(kg, W, H); layouten(); neuZeichnen();
+  }, 120);
+});
+
+messenHier();
+kornBauen();
+kornFuellen(kg, W, H);
+layouten();
+if (still) zeichnen(ZEIT_FEST); else requestAnimationFrame(tick);
+</script>
+</body>
+</html>

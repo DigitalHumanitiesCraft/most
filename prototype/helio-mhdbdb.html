@@ -1,26 +1,19 @@
+<!doctype html>
+<html lang="de">
+<head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<html lang="de">
 <title>MHDBDB · Helio</title>
+<link rel="stylesheet" href="helio.css">
 <style>
-/* Helio: two inks only. Red ground #d81e12..#e8402a, warm off-white #efeae2.
-   Every intermediate value comes from transparency or grain, never from a third hue. */
-* { box-sizing: border-box; }
+/* page-specific: the three scenes and the focus view.
+   Colors, type and rows come from helio.css. */
 html, body { height: 100%; }
 body {
-  margin: 0;
   overflow: hidden;
-  background: #dd2c1b;
-  color: #efeae2;
-  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   -webkit-user-select: none;
   user-select: none;
-  -webkit-text-size-adjust: 100%;
 }
-canvas { position: fixed; inset: 0; width: 100%; height: 100%; }
-#motiv { z-index: 0; }
-/* the grain sits above everything, so type and motif share one printed surface */
-#korn { z-index: 40; pointer-events: none; mix-blend-mode: normal; }
 
 .szene {
   position: fixed;
@@ -30,84 +23,8 @@ canvas { position: fixed; inset: 0; width: 100%; height: 100%; }
   overflow: hidden; /* bleed: display type is cut by the frame, never shrunk to fit */
 }
 .szene.offen { display: block; }
-
-.kopf {
-  position: absolute;
-  top: clamp(1.4rem, 4vh, 3rem);
-  left: 0;
-  right: 0;
-  padding: 0 clamp(.9rem, 3vw, 2.2rem);
-  pointer-events: none;
-  z-index: 12;
-}
-.riesig {
-  margin: 0;
-  font-weight: 900;
-  letter-spacing: -.045em;
-  line-height: .84;
-  font-size: clamp(3rem, 15vw, 9.5rem);
-  margin-left: -.055em; /* optical bleed past the left edge */
-  overflow-wrap: anywhere;
-}
 .szene.kompakt .riesig { font-size: clamp(2.2rem, 8vw, 4.6rem); }
 .szene.kompakt .kopf .still { display: none; }
-/* Small type stays bold and >= 19px: off-white on this red only clears WCAG
-   at the large-text threshold (3:1), so nothing here drops below it. */
-.still {
-  margin: .7rem 0 0;
-  font-weight: 700;
-  font-size: clamp(1.2rem, 1.7vw, 1.4rem);
-  line-height: 1.35;
-  max-width: 34ch;
-  letter-spacing: -.005em;
-}
-
-.reihen { position: absolute; inset: 0; z-index: 11; pointer-events: none; }
-/* A row is the hitbox and never moves. Only the band painted beneath it travels. */
-.reihe {
-  position: absolute;
-  left: 0;
-  width: 100%;
-  min-height: 44px;
-  display: flex;
-  align-items: center;
-  padding: 0 clamp(.9rem, 3vw, 2.2rem);
-  background: none;
-  border: 0;
-  color: #efeae2;
-  font: inherit;
-  text-align: left;
-  cursor: pointer;
-  pointer-events: auto;
-}
-.reihe .spalte { display: flex; flex-direction: column; gap: .12em; }
-.reihe .wort {
-  font-weight: 900;
-  letter-spacing: -.03em;
-  line-height: 1;
-  font-size: clamp(1.15rem, 2.6vw, 2.1rem);
-  overflow-wrap: anywhere;
-}
-.reihe .zahl { font-weight: 700; font-size: 1.2rem; line-height: 1; opacity: .82; }
-.reihe:focus-visible { outline: 3px solid #efeae2; outline-offset: -5px; }
-
-.zurueck {
-  position: absolute;
-  top: clamp(.7rem, 2.4vh, 1.6rem);
-  right: clamp(.7rem, 2.4vw, 1.6rem);
-  width: 56px;
-  height: 56px;
-  z-index: 30;
-  background: none;
-  border: 0;
-  color: #efeae2;
-  font-family: inherit;
-  font-weight: 900;
-  font-size: 2rem;
-  line-height: 1;
-  cursor: pointer;
-}
-.zurueck:focus-visible { outline: 3px solid #efeae2; outline-offset: -4px; }
 
 #fok-flaeche {
   position: absolute;
@@ -141,7 +58,7 @@ canvas { position: fixed; inset: 0; width: 100%; height: 100%; }
   height: 13px;
   flex: 0 0 auto;
   width: var(--w);
-  background: #efeae2;
+  background: var(--tinte);
   opacity: var(--o);
 }
 #fok-stufen .txt { font-weight: 700; font-size: clamp(1.2rem, 1.6vw, 1.35rem); }
@@ -151,16 +68,6 @@ canvas { position: fixed; inset: 0; width: 100%; height: 100%; }
   font-weight: 700;
   font-size: 1.2rem;
   letter-spacing: -.01em;
-}
-.hinweis {
-  position: absolute;
-  left: clamp(.9rem, 3vw, 2.2rem);
-  right: clamp(.9rem, 3vw, 2.2rem);
-  bottom: clamp(4.6rem, 8vh, 5.4rem);
-  margin: 0;
-  max-width: none;
-  z-index: 12;
-  pointer-events: none;
 }
 #fok-nav {
   position: absolute;
@@ -175,23 +82,27 @@ canvas { position: fixed; inset: 0; width: 100%; height: 100%; }
   min-height: 48px;
   background: none;
   border: 0;
-  color: #efeae2;
+  color: var(--tinte);
   font-family: inherit;
   font-weight: 900;
   font-size: 1.7rem;
   cursor: pointer;
 }
-#fok-nav button:focus-visible { outline: 3px solid #efeae2; outline-offset: -4px; }
+#fok-nav button:focus-visible { outline: 3px solid var(--tinte); outline-offset: -4px; }
 #fok-nav button[disabled] { opacity: .35; cursor: default; }
 </style>
+</head>
+<body>
 
 <canvas id="motiv" aria-hidden="true"></canvas>
 <canvas id="korn" aria-hidden="true"></canvas>
 
-<section id="uebersicht" class="szene offen" aria-label="Übersicht, sechs Bänder">
+<a class="heim" href="index.html">&#8592; &#220;bersicht</a>
+
+<section id="uebersicht" class="szene offen" aria-label="Übersicht">
   <div class="kopf">
     <h1 class="riesig">MHDBDB</h1>
-    <p class="still">Sechs Bänder, 31 Prüfungen. Bandhöhe und Banddichte tragen die Anzahl.</p>
+    <p class="still"></p>
   </div>
   <div class="reihen" id="kat-reihen"></div>
 </section>
@@ -220,211 +131,29 @@ canvas { position: fixed; inset: 0; width: 100%; height: 100%; }
   <button class="zurueck" id="fok-zu" aria-label="Zurück zur Kategorie">↑</button>
 </section>
 
-<script>
-const ROOMS = [
-  { wort: 'Suchen', tests: [
-    { w: 'Finden', s: 'Die Suche findet dein Wort, auch wenn du nur fast richtig liegst.', f: 'search-engine' },
-    { w: 'Vereinfachen', s: 'ô und æ werden vor jeder Suche zu o und a, überall gleich.', f: 'search-normalization' },
-    { w: 'Sechs Wege', s: 'Autoren, Werke, Wörter, Begriffe, Gattungen, Namen, alle sechs Suchen liefern.', f: 'search-with-corpus' },
-    { w: 'Genau', s: 'Markiert wird genau dein Wort, keine Wörter, die es nur enthalten.', f: 'lemma-matching' },
-    { w: 'Teile', s: 'wein findet alle Wörter, in denen wein steckt.', f: 'word-component-search' },
-    { w: 'Nähe', s: 'Zwei Wörter nah beieinander, der Abstand wird richtig gemessen.', f: 'proximity-and-resolution' },
-    { w: 'Vers', s: 'minne und herze im selben Vers finden.', f: 'multi-lemma-verse' },
-    { w: 'Doppelt', s: 'Gibt es ein Wort zweimal, gewinnt das häufigere, wechseln geht immer.', f: 'cooccurrence-ranking' },
-    { w: 'Übergabe', s: 'Springst du aus einer Liste in die Suche, kommt genau dein Wort an.', f: 'lemma-occurrence-handoff' },
-  ]},
-  { wort: 'Lesen', tests: [
-    { w: 'Leuchten', s: 'Dein gesuchtes Wort leuchtet farbig im alten Text.', f: 'reading-view' },
-    { w: 'Zählen', s: 'Alle Teile des Systems zählen die Wortpositionen exakt gleich.', f: 'position-parity' },
-    { w: 'Merken', s: 'Ein gelesener Text ist beim zweiten Mal sofort wieder da.', f: 'tei-caching' },
-  ]},
-  { wort: 'Bedeutung', tests: [
-    { w: 'Zuhause', s: 'Jedes Wort hat eine eigene Seite mit Fundstellen und Links.', f: 'lemma-page' },
-    { w: 'Blättern', s: 'Von A bis Z, und jede Stelle hat eine merkbare Adresse.', f: 'woerterbuch' },
-    { w: 'Fäden', s: 'Vom Werk zum Autor, vom Wort zum Begriff, alles verknüpft.', f: 'cross-reference-test' },
-  ]},
-  { wort: 'Spielsachen', tests: [
-    { w: 'Reime', s: 'gân reimt auf begân, muot auf guot.', f: 'rhyme-dictionary' },
-    { w: 'Enden', s: 'Eine Zählung darüber, wie Verse aufhören.', f: 'verse-ending-profile' },
-    { w: 'Namen', s: 'Wie Figuren in den Geschichten genannt werden, mit Belegen.', f: 'naming-explorer' },
-    { w: 'Einmal', s: 'Wörter, die im ganzen Korpus nur ein einziges Mal vorkommen.', f: 'hapax-legomena' },
-    { w: 'Flut', s: 'Auch riesige Begriffsmengen frieren die Seite nicht ein.', f: 'concept-distribution' },
-  ]},
-  { wort: 'Treffer', tests: [
-    { w: 'Tabelle', s: 'Treffer als Liste oder Tabelle, sortierbar, mitnehmbar, gemerkt.', f: 'results-table' },
-  ]},
-  { wort: 'Fundament', tests: [
-    { w: 'Start', s: 'Die Startseite lädt ohne Fehler, die Suche geht sofort.', f: 'main-site' },
-    { w: 'Fangen', s: 'Geht etwas schief, kommt eine Meldung, die Seite lebt weiter.', f: 'error-handling' },
-    { w: 'Laden', s: 'Der Korpus mit allen Texten lädt zuverlässig.', f: 'corpus' },
-    { w: '667', s: 'Alle 667 Texte kommen wirklich an.', f: 'playground-corpus' },
-    { w: 'Werkstatt', s: 'Der Datenbereich startet mit allen Bausteinen.', f: 'playground' },
-    { w: 'Register', s: 'Die großen Register laden schnell und vollständig.', f: 'playground-authority-index' },
-    { w: 'Rahmen', s: 'Menü und Fußzeile funktionieren auf jeder Unterseite.', f: 'site-chrome' },
-    { w: 'Daheim', s: 'Keine fremden Server, alle Bausteine liegen bei der Seite.', f: 'vendor' },
-    { w: 'Handy', s: 'Auch auf Handy und Tablet gut bedienbar.', f: 'visual-mobile-test' },
-    { w: 'Gleich', s: 'Python und JavaScript vereinfachen Wörter exakt gleich.', f: 'normalization-parity' },
-  ]},
-];
+<script type="module">
+import {
+  stillGestellt as still, ZEIT_FEST, sig, messen, kornBauen, kornWeiter, kornFuellen,
+  band, wellen, grund, datenLaden, laufLaden, lauf, stand, riss, standWort, laufDatum,
+} from './helio.js';
 
-/* Formal structure of every spec as a three-station process:
-   prepare → act → assert. Drawn as a band that grows to full width. */
-const STEPS = {
-  'search-engine': ['Wort tippen', 'Index befragen', 'Nächstes prüfen'],
-  'search-normalization': ['Sonderzeichen rein', 'vereinfachen', 'Gleichheit prüfen'],
-  'search-with-corpus': ['Suchart wählen', 'suchen', 'Treffer zählen'],
-  'lemma-matching': ['Text laden', 'Wort markieren', 'exakt zählen'],
-  'word-component-search': ['Wortteil tippen', 'Komposita sammeln', 'Gruppen prüfen'],
-  'proximity-and-resolution': ['zwei Wörter', 'Abstand messen', 'Fenster prüfen'],
-  'multi-lemma-verse': ['Vers-Modus an', 'minne + herze', 'Vers prüfen'],
-  'cooccurrence-ranking': ['Doppelwort tippen', 'häufigstes wählen', 'Wechsel prüfen'],
-  'lemma-occurrence-handoff': ['Liste anklicken', 'Kennung mitgeben', 'Ankunft prüfen'],
-  'reading-view': ['Text öffnen', 'Wort markieren', 'Leuchten prüfen'],
-  'position-parity': ['Python zählt', 'JavaScript zählt', 'Gleichstand prüfen'],
-  'tei-caching': ['Text laden', 'erneut öffnen', 'Speicher prüfen'],
-  'lemma-page': ['Seite laden', 'Daten prüfen', 'Links prüfen'],
-  'woerterbuch': ['Buchstabe A', 'blättern', 'Adresse prüfen'],
-  'cross-reference-test': ['Werk öffnen', 'Faden folgen', 'Ziel prüfen'],
-  'rhyme-dictionary': ['Wort geben', 'Reime scannen', 'begân finden'],
-  'verse-ending-profile': ['Korpus scannen', 'Endungen zählen', 'Tabelle prüfen'],
-  'naming-explorer': ['Werk + Figur', 'Namen sammeln', 'Belege prüfen'],
-  'hapax-legomena': ['Korpus zählen', 'Einzelne filtern', 'Fundort prüfen'],
-  'concept-distribution': ['Begriff wählen', 'aggregieren', 'flüssig bleiben'],
-  'results-table': ['suchen', 'Tabelle schalten', 'sortiert prüfen'],
-  'main-site': ['Startseite laden', 'Konsole lauschen', 'still bleiben'],
-  'error-handling': ['Fehler auslösen', 'Meldung prüfen', 'weiterleben'],
-  'corpus': ['Korpus laden', 'Struktur prüfen', 'Fortschritt sehen'],
-  'playground-corpus': ['Playground öffnen', '667 laden', 'Liste prüfen'],
-  'playground': ['Seite öffnen', 'Module prüfen', 'Speicher leeren'],
-  'playground-authority-index': ['Register laden', 'füllen', 'schnell bleiben'],
-  'site-chrome': ['Unterseite öffnen', 'Menü prüfen', 'Fußzeile prüfen'],
-  'vendor': ['Seiten scannen', 'Fremdes suchen', 'nichts finden'],
-  'visual-mobile-test': ['Handy-Maß setzen', 'rendern', 'Berührung prüfen'],
-  'normalization-parity': ['gleiche Wörter', 'beide vereinfachen', 'Gleichheit prüfen'],
-};
-
-/* ---------- real test run ----------
-   daten/testlauf.json is written by scripts/testlauf-ingest.mjs from the
-   Playwright JSON report. Without the file no view claims any state; with it,
-   a failed spec tears its band at the very spot of its swell, a flaky one
-   gets a notch. Two inks stay two inks: the break carries the meaning. */
-let LAUF = null;
-function stand(f) { return LAUF ? (LAUF.specs[f] || null) : null; }
-/* cut depth in band thicknesses: > .5 severs (failed), .35 leaves a thin
-   sharp-edged sliver (flaky), 0 keeps the band whole */
-function riss(st) { return st ? (st.gefallen ? 2.6 : st.flaky ? .35 : 0) : 0; }
-function standWort(st) {
-  if (!st) return '';
-  if (st.gefallen) return st.gefallen + ' von ' + st.gesamt + ' gefallen';
-  if (st.flaky) return 'bestanden, ' + st.flaky + ' erst im zweiten Versuch';
-  if (st.uebersprungen === st.gesamt) return 'übersprungen';
-  return st.gesamt === 1 ? 'bestanden' : 'alle ' + st.gesamt + ' bestanden';
-}
-function laufDatum() {
-  return LAUF && LAUF.lauf.start
-    ? new Date(LAUF.lauf.start).toLocaleDateString('de-AT', { day: 'numeric', month: 'long' })
-    : '';
-}
-fetch('daten/testlauf.json')
-  .then(r => (r.ok ? r.json() : null))
-  .then(d => { if (d) { LAUF = d; laufAnzeigen(); } })
-  .catch(() => {});
-
-const WEISS = '239,234,226';
-const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
-const ZEIT_FEST = 41000; /* frozen frame for reduced motion, a fully valid still */
-
-/* Seeded LCG, no Math.random anywhere: the print stays identical on every load. */
-let seed = 20260808;
-function rnd() { seed = (seed * 16807) % 2147483647; return seed / 2147483647; }
-
-/* Stable per-test signature: position, amplitude and frequency of its disturbance
-   come from the spec filename, so a test always sits in the same place in its band. */
-function hash(s) {
-  let h = 2166136261;
-  for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619) >>> 0; }
-  return h;
-}
-function sig(f) {
-  const h = hash(f);
-  return {
-    pos: .22 + ((h & 255) / 255) * .62,
-    amp: .45 + (((h >> 8) & 255) / 255) * .55,
-    br: .045 + (((h >> 16) & 255) / 255) * .06,
-    ph: ((h >> 24) & 255) / 255 * 6.283,
-  };
-}
+/* Categories, tests and their three process stations come from the spec files
+   of the MHDBDB suite; the page never carries a copy of them. */
+const daten = await datenLaden('daten/mhdbdb.json');
+const ROOMS = daten ? daten.kategorien : [];
+const STEPS = daten ? daten.stufen : {};
+const GESAMT = ROOMS.reduce((a, r) => a + r.tests.length, 0);
+const ZAHLWORT = ['null', 'Ein', 'Zwei', 'Drei', 'Vier', 'Fünf', 'Sechs', 'Sieben', 'Acht', 'Neun', 'Zehn'];
+const KOPFZEILE = ROOMS.length
+  ? (ZAHLWORT[ROOMS.length] ?? ROOMS.length) + ' Bänder, ' + GESAMT + ' Prüfungen.'
+  : '';
 
 /* ---------- canvas plumbing ---------- */
 const mc = document.getElementById('motiv'), mg = mc.getContext('2d');
 const kc = document.getElementById('korn'), kg = kc.getContext('2d');
-let W = 0, H = 0, DPR = 1;
+let W = 0, H = 0;
 
-function messen() {
-  DPR = Math.min(devicePixelRatio || 1, 2);
-  W = innerWidth; H = innerHeight;
-  for (const [c, g] of [[mc, mg], [kc, kg]]) {
-    c.width = Math.round(W * DPR); c.height = Math.round(H * DPR);
-    g.setTransform(DPR, 0, 0, DPR, 0, 0);
-  }
-}
-
-/* Grain tiles: monochrome speckle of the off-white, pre-rendered once and
-   cycled at a low rate so the surface lives without anything moving. */
-const KACHELN = [];
-function kornBauen() {
-  KACHELN.length = 0;
-  for (let k = 0; k < 4; k++) {
-    const t = document.createElement('canvas');
-    t.width = t.height = 168;
-    const g = t.getContext('2d');
-    const img = g.createImageData(168, 168);
-    const d = img.data;
-    for (let i = 0; i < d.length; i += 4) {
-      const v = rnd();
-      d[i] = 239; d[i + 1] = 234; d[i + 2] = 226;
-      d[i + 3] = v > .52 ? Math.round(Math.pow((v - .52) / .48, 1.6) * 128) : 0;
-    }
-    g.putImageData(img, 0, 0);
-    KACHELN.push(g.createPattern(t, 'repeat'));
-  }
-}
-let kornIdx = 0;
-function kornFuellen() {
-  kg.clearRect(0, 0, W, H);
-  kg.fillStyle = KACHELN[kornIdx];
-  kg.fillRect(0, 0, W, H);
-}
-
-/* ---------- band drawing ---------- */
-/* One band, sampled across x. Where the disturbance pinches the band shut,
-   the run breaks: the interruption is the carrier of meaning, not decoration. */
-function band(g, y, dicke, cfg) {
-  const [x0, x1] = cfg.spanne(y);
-  if (x1 - x0 < 3) return;
-  const schritt = 5;
-  let ot = [], ob = [];
-  const fertig = () => {
-    if (ot.length > 1) {
-      g.beginPath();
-      g.moveTo(ot[0][0], ot[0][1]);
-      for (let i = 1; i < ot.length; i++) g.lineTo(ot[i][0], ot[i][1]);
-      for (let i = ob.length - 1; i >= 0; i--) g.lineTo(ob[i][0], ob[i][1]);
-      g.closePath();
-      g.fill();
-    }
-    ot = []; ob = [];
-  };
-  g.fillStyle = 'rgba(' + WEISS + ',' + cfg.alpha + ')';
-  for (let x = x0; x <= x1 + schritt; x += schritt) {
-    const xx = Math.min(x, x1);
-    const o = cfg.welle(xx, y);
-    const s = cfg.stoer(xx, y);
-    const t = y - dicke / 2 + o - s, b = y + dicke / 2 + o + s;
-    if (b - t > 1.4) { ot.push([xx, t]); ob.push([xx, b]); } else fertig();
-  }
-  fertig();
-}
+function messenHier() { ({ W, H } = messen([[mc, mg], [kc, kg]])); }
 
 /* ---------- layout ---------- */
 let RECTS = [];       /* current row rectangles, shared by DOM hitboxes and canvas */
@@ -460,8 +189,7 @@ function layouten() {
   if (modus === 'uebersicht') {
     /* Height carries the count, but every band keeps a floor so no row
        falls under the 44px target. Density inside the band carries it exactly. */
-    const summe = ROOMS.reduce((a, r) => a + r.tests.length, 0);
-    for (const r of ROOMS) hoehen.push(spanne * (.5 / ROOMS.length + .5 * r.tests.length / summe));
+    for (const r of ROOMS) hoehen.push(spanne * (.5 / ROOMS.length + .5 * r.tests.length / GESAMT));
   } else {
     for (let i = 0; i < n; i++) hoehen.push(spanne / n);
   }
@@ -503,19 +231,6 @@ function zeilenSetzen(szene, rects) {
 }
 
 /* ---------- the motif ---------- */
-function grund(g) {
-  const lg = g.createLinearGradient(0, 0, 0, H);
-  lg.addColorStop(0, '#d81e12');
-  lg.addColorStop(1, '#e8402a');
-  g.fillStyle = lg;
-  g.fillRect(0, 0, W, H);
-}
-
-function wellen(t, k, amp, sp) {
-  return (x, y) => amp * Math.sin(x * k + t * sp + y * .006)
-                 + amp * .42 * Math.sin(x * k * 2.6 - t * sp * .7 + y * .011);
-}
-
 function himmel(g, t, oben) {
   /* faint cloud bands above the motif, the quiet part of the surface */
   const w = wellen(t, .0042, 9, .000055);
@@ -533,11 +248,12 @@ function himmel(g, t, oben) {
 function zeichnen(t) {
   const g = mg;
   g.clearRect(0, 0, W, H);
-  grund(g);
+  grund(g, W, H);
   const oben = RECTS.length ? RECTS[0].y0 : H * .3;
   himmel(g, t, Math.max(oben, 60));
 
   if (modus === 'uebersicht') {
+    if (!kreis) return;
     const w = wellen(t, .0036, 7, .00005);
     const spanne = (y) => {
       const dy = y - kreis.cy;
@@ -661,6 +377,11 @@ function zahlwort(n) { return n + (n === 1 ? ' Prüfung' : ' Prüfungen'); }
 
 /* overview rows */
 const katReihen = document.getElementById('kat-reihen');
+const kopfStill = document.querySelector('#uebersicht .kopf .still');
+kopfStill.textContent = ROOMS.length
+  ? KOPFZEILE + ' Bandhöhe und Banddichte tragen die Anzahl.'
+  : 'Keine Daten geladen.';
+if (ROOMS.length) szenen.uebersicht.setAttribute('aria-label', 'Übersicht, ' + KOPFZEILE);
 ROOMS.forEach((r, i) => {
   const b = document.createElement('button');
   b.type = 'button';
@@ -679,9 +400,8 @@ ROOMS.forEach((r, i) => {
 
 /* Once the run data is there, the words say what the bands already show. */
 function laufAnzeigen() {
-  const l = LAUF.lauf;
-  document.querySelector('#uebersicht .kopf .still').textContent =
-    'Sechs Bänder, 31 Prüfungen. Lauf vom ' + laufDatum() + ': ' +
+  const l = lauf();
+  kopfStill.textContent = KOPFZEILE + ' Lauf vom ' + laufDatum() + ': ' +
     (l.gefallen ? l.gefallen + ' von ' + l.gesamt + ' Tests gefallen, Risse im Band.'
                 : 'alle ' + l.gesamt + ' Tests bestanden.');
   ROOMS.forEach((r, i) => {
@@ -699,13 +419,14 @@ const testReihen = document.getElementById('test-reihen');
 function raumOeffnen(i) {
   aktRaum = ROOMS[i];
   document.getElementById('kat-wort').textContent = aktRaum.wort;
-  const kaputt = LAUF
+  const gelaufen = lauf();
+  const kaputt = gelaufen
     ? aktRaum.tests.filter(tt => { const st = stand(tt.f); return st && st.gefallen; }).length
     : 0;
   document.getElementById('kat-still').textContent =
     zahlwort(aktRaum.tests.length) + ' als Störungen im Band. ' +
-    (LAUF ? (kaputt ? (kaputt === 1 ? 'Eine ist gefallen, ihr Band reißt.' : kaputt + ' sind gefallen, ihre Bänder reißen.')
-                    : 'Alle bestanden.') + ' ' : '') +
+    (gelaufen ? (kaputt ? (kaputt === 1 ? 'Eine ist gefallen, ihr Band reißt.' : kaputt + ' sind gefallen, ihre Bänder reißen.')
+                        : 'Alle bestanden.') + ' ' : '') +
     'Antippen für den einzelnen Test.';
   testReihen.innerHTML = '';
   aktRaum.tests.forEach((t, k) => {
@@ -795,8 +516,8 @@ function tick(ts) {
   if (ts - letzt > 60) { letzt = ts; zeichnen(ts); }
   if (ts - kornLetzt > 200) {
     kornLetzt = ts;
-    kornIdx = (kornIdx + 1) % KACHELN.length;
-    kornFuellen();
+    kornWeiter();
+    kornFuellen(kg, W, H);
   }
   requestAnimationFrame(tick);
 }
@@ -805,14 +526,18 @@ let resizeTimer = 0;
 addEventListener('resize', () => {
   clearTimeout(resizeTimer);
   resizeTimer = setTimeout(() => {
-    messen(); kornFuellen(); layouten(); neuZeichnen();
+    messenHier(); kornFuellen(kg, W, H); layouten(); neuZeichnen();
   }, 120);
 });
 
-messen();
+messenHier();
 kornBauen();
-kornFuellen();
+kornFuellen(kg, W, H);
 layouten();
 if (still) zeichnen(ZEIT_FEST); else requestAnimationFrame(tick);
+
+/* the real run arrives late and only sharpens what is already drawn */
+laufLaden('daten/testlauf.json').then(d => { if (d) laufAnzeigen(); });
 </script>
-<a href="index.html" style="position:fixed;top:10px;left:14px;z-index:99;font-family:system-ui,sans-serif;font-size:.9rem;font-weight:700;color:#efeae2;text-decoration:none;padding:10px 12px;min-height:44px;display:flex;align-items:center;">&#8592; &#220;bersicht</a>
+</body>
+</html>

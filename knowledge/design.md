@@ -6,7 +6,9 @@ updated: 2026-08-08
 
 # Design, User-Interface-Ästhetik "Helio"
 
-Team-Entscheidung 2026-08-08, Helio ist die Leitästhetik des Projekts. `helio-mhdbdb.html` ist die Referenz-Gestalt, an der sich alle weiteren Ansichten ausrichten; sie wird ausgearbeitet und verbessert. Die Himmels-Übersicht (`himmel.html`, Nachtwelt) ist als eigenständige Gestalt verworfen ("das braucht niemand") und wird nicht weiterentwickelt.
+Team-Entscheidung 2026-08-08, Helio ist die Leitästhetik des Projekts. `helio-mhdbdb.html` ist die Referenz-Gestalt, an der sich alle weiteren Ansichten ausrichten; sie wird ausgearbeitet und verbessert. Die Himmels-Übersicht (`himmel.html`, Nachtwelt) ist als eigenständige Gestalt verworfen ("das braucht niemand") und aus dem Prototyp gelöscht.
+
+Stand der Umsetzung. Jedes der drei Projekte hat seine Helio-Gestalt, MHDBDB als Sonnenbänder der Prüfungen, Promptotyping als Sonnenscheibe der Dokumente, most als Bänder des eigenen Wissensstandes. Die Überseite liegt ebenfalls im Tag. Farbwerte und gemeinsame Komponenten stehen als Tokens in `prototype/helio.css`, die Bänder-, Korn- und Zufallslogik in `prototype/helio.js`; neue Tagseiten bauen darauf auf, statt die Ästhetik nachzubilden. Die Nachtgestalten bleiben als alternatives Gewand erreichbar.
 
 Ausgearbeitet aus dem Artwork der Band The Helio Sequence (Spotify-Künstlerseite, Screenshots vom 2026-08-08). Das Dokument destilliert die Ästhetik in ein anwendbares Designsystem und hält fest, wie sie zu den Designprinzipien von most passt. Es beschreibt eine zweite Gestalt neben dem Nachtgarten-Thema; beide sind Linsen im Sinne von [projekt.md](projekt.md), Abschnitt Metaphern-Linsen.
 
@@ -55,5 +57,4 @@ Die Ästhetik erfüllt die most-Prinzipien auf eigene Weise. Ein Motiv pro Scree
 
 ## Offen
 
-* Prototyp einer Helio-Gestalt für eines der drei Projekte, Kandidat sind die Testläufe der MHDBDB als Frequenzbänder.
-* Barrierefreiheit prüfen, Off-White auf Sattrot hat begrenzten Kontrast; für Fließtext ist die reduzierte Deckkraft gegen WCAG-Werte zu verifizieren, notfalls volle Deckkraft für alles unterhalb der Display-Größe.
+Barrierefreiheit prüfen. Off-White auf Sattrot hat begrenzten Kontrast. `helio.css` hält kleinen Text deshalb fett und oberhalb der Large-Text-Schwelle, damit das Verhältnis von 3:1 greift; gemessen ist das noch nicht. Zu verifizieren sind die tatsächlichen Kontrastwerte über alle Tagseiten, insbesondere die Stellen mit reduzierter Deckkraft. Was die Messung ergibt, wird hier als verbindliche Regel eingetragen.
