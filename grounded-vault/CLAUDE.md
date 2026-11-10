@@ -36,4 +36,3 @@ Read in this order: `knowledge/index.md` (terminology), `knowledge/state.md` (wh
 - Record `checked.quote` only after `python tools/quote-check.py` has actually passed for the affected reference.
 - Keep `examples/`; `tests/test_validate.py` runs against those fixtures.
 - Third-party personal names stay out of produced prose; use role and institution. Bibliographic author fields in `references/` are the declared exception, see `knowledge/specification.md`.
-- Grokipedia is never used as a source, in any context.

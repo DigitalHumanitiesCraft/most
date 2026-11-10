@@ -18,6 +18,7 @@ most ist seit dem 15.10.2026 als eigenständiges Vorhaben abgeschlossen. Second 
 | [grounding-kommunikation.md](grounding-kommunikation.md) | Worauf stützt sich die Persona-Simulation empirisch? | Fachdokument |
 | [journal.md](journal.md) | Wie sind wir hierhin gekommen? | journal.md, rückwärts lesen |
 | [plan.md](plan.md) | Was wurde abgeschlossen und was bleibt ungetestetes Ausgangsmaterial? | plan.md |
+| [handoff.md](handoff.md) | Welche übernommenen Punkte warten auf Einarbeitung, und wie geht es nach dem Abschluss weiter? | handoff.md |
 
 Die Verhaltensregeln für Agenten stehen in der [CLAUDE.md](../CLAUDE.md) im Repo-Root, der Einstieg für Außenstehende in der [README.md](../README.md).
 

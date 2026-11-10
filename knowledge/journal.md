@@ -1,10 +1,14 @@
 ---
 title: Projektgedächtnis
 status: active
-updated: 2026-10-15
+updated: 2026-11-10
 ---
 
 # Journal, rückwärts lesen
+
+## 2026-11-10, Repository-Pflege
+
+Die am 15.10.2026 erhaltenen uncommitteten Änderungen an Prototypen, Daten und Wissensdokumenten sind seit dem 31.10.2026 mit `5a320d4` gesichert und liegen auf `origin/master`. Die README sagt das jetzt so. Die Grounded-Vault-Instanz unter `grounded-vault/` folgt der globalen Regeländerung vom 10.11.2026 und schließt Grokipedia nicht mehr als Quelle aus, ihre Validator-Tests bestehen. `handoff.md` hält den Wiedereinstieg für das abgeschlossene Vorhaben.
 
 ## 2026-10-15, Abschluss und Einordnung in Second Brain
 

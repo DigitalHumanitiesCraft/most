@@ -48,7 +48,7 @@ The deliverable is German prose with English technical terms. No dash or colon a
 
 Every load-bearing sentence carries a footnote. A footnote is either `Grounded in [[claim]]` or `Posit: <rationale>. Offene Belegfrage: <question>`; a single footnote never mixes the two, because the validator counts by the leading keyword. Personal names of third parties do not appear in produced prose; roles and institutions take their place. Bibliographic author fields in `references/` are the one exception, and only for peer-reviewed publications, where omitting authorship would break the citation; the reasoning is in [[knowledge/journal]].
 
-Grokipedia is excluded as a source in every context. Tertiary sources may define a term and never carry an empirical claim on their own.
+Tertiary sources may define a term and never carry an empirical claim on their own.
 
 ## Settled decisions
 

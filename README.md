@@ -1,6 +1,6 @@
 # most
 
-The standalone experiment was closed on 15 October 2026. Its limited design findings were integrated into Second Brain. This repository retains the original prototypes and inquiry, including existing local uncommitted work. The earlier backlog creates no ongoing assignment; see [knowledge/plan.md](knowledge/plan.md). No general usability benefit has been demonstrated.
+The standalone experiment was closed on 15 October 2026. Its limited design findings were integrated into Second Brain. This repository retains the original prototypes and inquiry, including the work in progress secured on 31 October 2026. The earlier backlog creates no ongoing assignment; see [knowledge/plan.md](knowledge/plan.md). No general usability benefit has been demonstrated.
 
 A Promptotyping experiment. `most` builds a knowledge interface that stays usable under heavy cognitive load, on the working hypothesis that an interface which holds up in that state holds up for everyone, because the state exaggerates the ordinary conditions of tiredness, distraction and stress.
 
