@@ -6,6 +6,14 @@ updated: 2026-11-10
 
 # Journal, rückwärts lesen
 
+## Open
+
+Nothing open.
+
+## 2026-11-14, handoff.md in dieses Journal aufgelöst
+
+Der Operator hat am 2026-11-14 entschieden, dass ein Promptotyping-Repository kein `knowledge/handoff.md` mehr führt, das Journal beginnt mit `## Open`. Die Handoff-Datei enthielt keinen offenen Punkt, übernommen wurde nichts. Ihr Hinweis zum Wiedereinstieg (most ist seit dem 15.10.2026 abgeschlossen, Arbeit beginnt nur mit einem neuen Auftrag, Einstieg ist dann `INDEX.md`) steht schon in `INDEX.md` und `plan.md`. Die Datei ist entfernt, `INDEX.md` führt sie nicht mehr.
+
 ## 2026-11-10, Repository-Pflege
 
 Die am 15.10.2026 erhaltenen uncommitteten Änderungen an Prototypen, Daten und Wissensdokumenten sind seit dem 31.10.2026 mit `5a320d4` gesichert und liegen auf `origin/master`. Die README sagt das jetzt so. Die Grounded-Vault-Instanz unter `grounded-vault/` folgt der globalen Regeländerung vom 10.11.2026 und schließt Grokipedia nicht mehr als Quelle aus, ihre Validator-Tests bestehen. `handoff.md` hält den Wiedereinstieg für das abgeschlossene Vorhaben.
